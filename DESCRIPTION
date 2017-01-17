@@ -1,0 +1,24 @@
+Package: rrbsTMLE
+Title: Targeted Minimum Loss-Based Estimation for Sparse Genomics Data
+Version: 0.0.1
+Authors@R: as.person(c(
+  "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre]",
+  "Mark van der Laan <laan@stat.berkeley.edu> [aut]"))
+Description: This package provides an implementation of a genomic target
+  parameter that arises in the analysis of reduced representation bisulfite
+  sequencing (RRBS) data. The target parameter of interest is estimated using
+  Targeted Minimum Loss-Based Estimation.
+Depends:
+  R (>= 3.3.1)
+Imports:
+  tmle,
+  foreach,
+  parallel,
+  doParallel,
+  SuperLearner,
+  limma
+License: MIT + file LICENSE
+URL: https://github.com/nhejazi/rrbs-tmle
+Encoding: UTF-8
+LazyData: true
+Suggests: testthat
