@@ -1,23 +1,33 @@
+branches:
+  only:
+  - master
+  - develop
+
+env:
+  global:
+    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual"
+
 language: r
-r:
-  - oldrel
-  - release
-  - devel
-
 sudo: required
-
-before_install:
-  - cd pkg
-
+cache: packages
 warnings_are_errors: true
 
-cache: packages
+r:
+  - release
+  - devel
 
 r_github_packages:
   - jimhester/covr
 
+bioc_packages:
+  - limma
+  - BiocCheck
+
+## coverage
 after_success:
-  - Rscript -e 'covr::coveralls()'
+  - Rscript -e 'covr::codecov()'
+  - R CMD BiocCheck .
 
 notifications:
   email:

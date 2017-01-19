@@ -1,10 +1,8 @@
 # R/`methadapt`
 
-[![Travis-CI Build Status](https://travis-ci.org/nhejazi/methadapt.svg?branch=master)
-](https://travis-ci.org/nhejazi/methadapt)
+[![Travis-CI Build Status](https://travis-ci.org/nhejazi/methadapt.svg?branch=master)](https://travis-ci.org/nhejazi/methadapt)
 [![AppVeyor Build  Status](https://ci.appveyor.com/api/projects/status/github/nhejazi/methadapt?branch=master&svg=true)](https://ci.appveyor.com/project/nhejazi/methadapt)
-[![Coverage Status](https://coveralls.io/repos/github/nhejazi/methadapt/badge.svg?branch=master)](https://coveralls.io/github/nhejazi/methadapt?branch=master)
-[![RPKG](http://www.r-pkg.org/badges/version/methadapt)](http://www.r-pkg.org/pkg/methadapt)
+[![Coverage Status](https://img.shields.io/codecov/c/github/nhejazi/methadapt/master.svg)](https://codecov.io/github/nhejazi/methadapt?branch=master)
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
