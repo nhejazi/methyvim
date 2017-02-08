@@ -2,17 +2,16 @@
 
 #' clustering of sites for TMLE-based evaluation of neighboring regions
 #'
-#' @importFrom bumphunter boundedClusterMaker
+#' @importFrom bumphunter clusterMaker
 #'
 cluster_sites <- function(granges, ...) {
   if(dim(mcols(granges))[2] != 0) {
     mcols(granges) <- NULL
   }
-  clusters <- bumphunter::boundedClusterMaker(chr = seqnames(granges),
-                                              pos = start(ranges(granges)),
-                                              assumeSorted = FALSE,
-                                              maxClusterWidth = 3000,
-                                              maxGap = 300)
+  clusters <- bumphunter::clusterMaker(chr = seqnames(granges),
+                                       pos = start(ranges(granges)),
+                                       assumeSorted = FALSE,
+                                       maxGap = 1000)
   return(clusters)
 }
 

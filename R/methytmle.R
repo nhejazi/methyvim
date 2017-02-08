@@ -21,14 +21,16 @@
 #' @importFrom parallel detectCores
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%dopar%"
+#' @importFrom tmle tmle
 #'
-#' @export biomarkertmle
+#' @export methytmle
 #'
 
 methytmle <- function(GRanges,
                       varEffect,
                       sitesReduced,
                       parallel = TRUE,
+                      type = "exposure",
                       family = "gaussian",
                       Q_lib = c("SL.mean", "SL.randomForest"),
                       g_lib = c("SL.mean", "SL.glm", "SL.randomForest")
@@ -38,12 +40,18 @@ methytmle <- function(GRanges,
   # catch input and return in output object for user convenience
   # ============================================================================
   call <- match.call(expand.dots = TRUE)
+  type <- match.arg(type)
 
   # ============================================================================
-  # invoke S3 class constructor for "biotmle" object
+  # invoke S4 class constructor for "methadapt" object
   # ============================================================================
-  methadapt <- methadapt(call = call, tmleOut = NULL)
-
+  .methadapt(
+      SummarizedExperiment(
+          as.matrix(methadapt[["tmleOut"]]),
+          as.matrix(methadapt[["estIC"]])
+      ),
+      call = methytmle[["call"]]
+   )
   #=============================================================================
   # set up parallelization based on input
   # ============================================================================

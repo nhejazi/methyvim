@@ -1,4 +1,4 @@
-.onAttach <- function(...) {
-    packageStartupMessage("methadapt: targeted learning for DNA methylation")
-  packageStartupMessage("Version: ",      utils::packageDescription("methadapt")$Version)
-}
+packageStartupMessage(
+      "methadapt: Adaptive Estimation of DNA Methylation",
+      "\nVersion: ", utils::packageVersion("methadapt")
+)
