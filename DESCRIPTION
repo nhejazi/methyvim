@@ -1,24 +1,23 @@
-Package: rrbsTMLE
-Title: Targeted Minimum Loss-Based Estimation for Sparse Genomics Data
+Package: methyvim 
+Title: DNA Methylation Analysis via Variable Importance Measures
 Version: 0.0.1
 Authors@R: as.person(c(
   "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre]",
+  "Alan Hubbard <hubbard@berkeley.edu> [aut]",
   "Mark van der Laan <laan@stat.berkeley.edu> [aut]"))
-Description: This package provides an implementation of a genomic target
-  parameter that arises in the analysis of reduced representation bisulfite
-  sequencing (RRBS) data. The target parameter of interest is estimated using
-  Targeted Minimum Loss-Based Estimation.
+Description: This package provides.
 Depends:
   R (>= 3.3.1)
 Imports:
   tmle,
+  tmle.npvi,
   foreach,
   parallel,
   doParallel,
   SuperLearner,
   limma
 License: MIT + file LICENSE
-URL: https://github.com/nhejazi/rrbs-tmle
+URL: https://github.com/nhejazi/methyvim
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat

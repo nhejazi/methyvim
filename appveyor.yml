@@ -63,7 +63,7 @@ notifications:
    to:
      - nh@nimahejazi.org
    subject: 'r-appveyor build {{status}}'
-   message: "https://ci.appveyor.com/project/nhejazi/methadapt"
+   message: "https://ci.appveyor.com/project/nhejazi/methyvim"
    on_build_success: false
    on_build_failure: true
    on_build_status_changed: true

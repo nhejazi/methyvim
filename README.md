@@ -1,35 +1,42 @@
-# R/`methadapt`
+# R/`methyvim`
 
-[![Travis-CI Build Status](https://travis-ci.org/nhejazi/methadapt.svg?branch=master)](https://travis-ci.org/nhejazi/methadapt)
-[![AppVeyor Build  Status](https://ci.appveyor.com/api/projects/status/github/nhejazi/methadapt?branch=master&svg=true)](https://ci.appveyor.com/project/nhejazi/methadapt)
-[![Coverage Status](https://img.shields.io/codecov/c/github/nhejazi/methadapt/master.svg)](https://codecov.io/github/nhejazi/methadapt?branch=master)
+[![Travis-CI Build Status](https://travis-ci.org/nhejazi/methyvim.svg?branch=master)](https://travis-ci.org/nhejazi/methyvim)
+[![AppVeyor Build  Status](https://ci.appveyor.com/api/projects/status/github/nhejazi/methyvim?branch=master&svg=true)](https://ci.appveyor.com/project/nhejazi/methyvim)
+[![Coverage Status](https://img.shields.io/codecov/c/github/nhejazi/methyvim/master.svg)](https://codecov.io/github/nhejazi/methyvim?branch=master)
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 
-`methadapt` is an R package that provides differential methylation analysis
-and associated inference based on a statistical target parameter: the local
-average treatment effect (L-ATE). The principal technique implemented here
-relies on the use of targeted minimum loss-based estimation (TMLE) to analyze
-and provide inference for a reduced set of genomic sites on which data is
-typically made available by DNA methylation assays. In this procedure, multiple
-testing corrections are made using a modified marginal Benjamini & Hochberg
-step-up False Discovery Rate controlling procedure for multi-stage analyses
-(FDR-MSA). While making allowance for the user to specify the reduced set of
-genomic sites to be tested (e.g., those related to a particular gene of
-interest), this package provides several screening procedures to facilitate
-the initial reduction of genomic sites, including one based on the well-known
-linear modeling method of the R package
-[`limma`](https://bioconductor.org/packages/release/bioc/html/limma.html) and
-another based on data-adaptive statistical procedures for multiple testing,
-implemented in the R package
-[`data.adapt.multi.test`](https://github.com/wilsoncai1992/data.adapt.multi.test).
+`methyvim` is an R package that provides facilities for differential methylation
+analysis based on _variable importance measures_ (VIMs), a class of statistical
+target parameters that arise in causal inference. The statistical techniques
+implemented rely on the use of targeted minimum loss-based estimation (TMLE) to
+assess two particular VIMs: (1) the "local" average treatment effect for
+discrete exposures, and (2) a nonparametric variable importance measure for
+continuous exposures. Within this framework, these methods allow differential
+methylation effects to be estimated in an assumption-free manner, on a
+pre-screened set of genomic sites measured by DNA methylation assays. As the
+statistical algorithm uses a multi-stage approach, multiple testing corrections
+are made using a modified marginal Benjamini & Hochberg step-up False Discovery
+Rate controlling procedure for multi-stage analyses (FDR-MSA). In order to allow
+the user significant flexibility with respect to the scientific questions posed,
+the procedure estimates one of the appropriate VIMs for each of a reduced set of
+genomic sites, using screening procedures to identify a reduced set from the
+full data when a reduced set is not pre-specified. While making allowance for
+the user to specify the reduced set of genomic sites to be tested (e.g., those
+related to a particular gene of interest), this package comes equipped with
+screening procedures to facilitate the initial reduction of genomic sites, the
+two most noteworthy of these being a procedure based on the well-known R package
+[`limma`](https://bioconductor.org/packages/release/bioc/html/limma.html) and an
+extension of data-adaptive statistical target parameters for multiple testing
+(implemented in the R package
+[`data.adapt.multi.test`](https://github.com/wilsoncai1992/data.adapt.multi.test)).
 
 ---
 
 ## Installation
 
-- Install from GitHub: `devtools::install_github("nhejazi/methadapt", subdir = "pkg")`
+- Install from GitHub: `devtools::install_github("nhejazi/methyvim")`
 
 ---
 
@@ -38,6 +45,11 @@ implemented in the R package
 * [Mark J. van der Laan & Sherri Rose. _Targeted Learning: Causal Inference for
     Observational and Experimental Data_,
     2011.](http://www.targetedlearningbook.com)
+
+* [Antoine Chambaz, Pierre Neuvial, & Mark J. van der Laan. "Estimation of a
+    non-parametric variable importance measure of a continuous exposure",
+    _Electronic Journal of Statistics_,
+    2012.](http://www.math-info.univ-paris5.fr/~chambaz/Papiers/chambazNeuvialvanderLaan_EJS2012.pdf)
 
 * [Catherine Tuglus & Mark J. van der Laan. "FDR controlling procedures for
     multi-stage analyses", _UC Berkeley Division of Biostatistics Working
@@ -56,7 +68,7 @@ implemented in the R package
 
 ## License
 
-&copy; 2016-2017 [Nima S. Hejazi](http://nimahejazi.org), [Alan E.
+&copy; 2017 [Nima S. Hejazi](http://nimahejazi.org), [Alan E.
 Hubbard](http://sph.berkeley.edu/alan-hubbard), [Mark J. van der
 Laan](https://www.stat.berkeley.edu/~laan/)
 
