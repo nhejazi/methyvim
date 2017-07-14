@@ -2,8 +2,15 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^appveyor\.yml$
-^README\.md$
+^codecov\.yml$
+^CONTRIBUTING\.md$
+^Makefile$
 ^\.git$
 ^\.gitignore$
-^docs$
+^data-raw$
 ^paper$
+^docs$
+^README\.md$
+^README\.Rmd$
+^README\.html$
+^README-.*\.png$

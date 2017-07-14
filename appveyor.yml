@@ -13,24 +13,23 @@ cache:
   - C:\RLibrary
 
 # Adapt as necessary starting from here
+branches:
+  only:
+    - master
+    - develop
+
 environment:
-  matrix:
-  - TEST_DIR: pkg
-
-before_build:
-  - cp ..\travis-tool.sh .\travis-tool.sh
-  - cp travis-tool.sh.cmd %TEST_DIR%\travis-tool.sh.cmd
-  - cd %TEST_DIR%
-  - bash -c "echo '^travis-tool\.sh\.cmd$' >> .Rbuildignore"
-
-before_test:
-  - ps: cd pkg
-  - cinst pandoc
-  - ps: $env:Path += ";C:\Program Files (x86)\Pandoc\"
-  - pandoc -v
+  global:
+    WARNINGS_ARE_ERRORS: 0
+    USE_RTOOLS: true
+    GITHUB_PAT:
+      secure: NOkWY7zLKevHO11BcijFIDC95MS6o0J+Oh1rCsnUFEmjIR26uW9JKy/HMwasCi7x
 
 build_script:
   - travis-tool.sh install_deps
+  - travis-tool.sh install_bioc SummarizedExperiment
+  - travis-tool.sh install_bioc limma
+  - travis-tool.sh install_bioc_deps
 
 test_script:
   - travis-tool.sh run_tests
@@ -64,6 +63,6 @@ notifications:
      - nh@nimahejazi.org
    subject: 'r-appveyor build {{status}}'
    message: "https://ci.appveyor.com/project/nhejazi/methyvim"
-   on_build_success: false
+   on_build_success: true
    on_build_failure: true
    on_build_status_changed: true
