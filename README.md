@@ -9,6 +9,11 @@ R/`methyvim`
 
 **Author:** [Nima Hejazi](http://nimahejazi.org)
 
+------------------------------------------------------------------------
+
+Description
+-----------
+
 `methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistical target parameters that arise in causal inference. The statistical techniques implemented rely on the use of targeted minimum loss-based estimation (TMLE) to assess two particular VIMs: (1) the "local" average treatment effect for discrete exposures, and (2) a nonparametric variable importance measure for continuous exposures. Within this framework, these methods allow differential methylation effects to be estimated in an assumption-free manner, on a pre-screened set of genomic sites measured by DNA methylation assays. As the statistical algorithm uses a multi-stage approach, multiple testing corrections are made using a modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA). In order to allow the user significant flexibility with respect to the scientific questions posed, the procedure estimates one of the appropriate VIMs for each of a reduced set of genomic sites, using screening procedures to identify a reduced set from the full data when a reduced set is not pre-specified. While making allowance for the user to specify the reduced set of genomic sites to be tested (e.g., those related to a particular gene of interest), this package comes equipped with screening procedures to facilitate the initial reduction of genomic sites, the two most noteworthy of these being a procedure based on the well-known R package [`limma`](https://bioconductor.org/packages/release/bioc/html/limma.html) and an extension of data-adaptive statistical target parameters for multiple testing (implemented in the R package [`DA.Test`](https://github.com/wilsoncai1992/data.adapt.multi.test)).
 
 ------------------------------------------------------------------------

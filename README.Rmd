@@ -25,6 +25,10 @@ knitr::opts_chunk$set(
 
 __Author:__ [Nima Hejazi](http://nimahejazi.org)
 
+---
+
+## Description
+
 `methyvim` is an R package that provides facilities for differential methylation
 analysis based on _variable importance measures_ (VIMs), a class of statistical
 target parameters that arise in causal inference. The statistical techniques
