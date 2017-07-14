@@ -1,11 +1,17 @@
-Package: methyvim 
-Title: DNA Methylation Analysis via Variable Importance Measures
+Package: methyvim
+Title: Nonparametric Variable Importance for Differential Methylation Analysis
 Version: 0.0.1
 Authors@R: as.person(c(
   "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre]",
-  "Alan Hubbard <hubbard@berkeley.edu> [aut]",
+  "Alan Hubbard <hubbard@berkeley.edu> [ctb]",
   "Mark van der Laan <laan@stat.berkeley.edu> [aut]"))
-Description: This package provides.
+Description: This package provides facilities for differential methylation
+  analysis based on variable importance measures (VIMs), a class of statistical
+  target parameters that arise in causal inference. The estimation and inference
+  procedures provided are nonparametric, relying on ensemble machine learning to
+  flexibly assess functional relationship among covariates and the outcome of
+  interest. These tools can be applied to differential methylation at the level
+  of CpG sites, with valid inference after multiple hypothesis testing.
 Depends:
   R (>= 3.3.1)
 Imports:
@@ -15,9 +21,21 @@ Imports:
   parallel,
   doParallel,
   SuperLearner,
-  limma
+  limma,
+  minfi,
+  dplyr,
+  ggplot2,
+  tibble
 License: MIT + file LICENSE
 URL: https://github.com/nhejazi/methyvim
+BugReports: https://github.com/nhejazi/methyvim/issues
 Encoding: UTF-8
 LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
+biocViews:
+    DNAMethylation,
+    DifferentialMethylation,
+    MethylSeq,
+    MethylationArray
 Suggests: testthat
