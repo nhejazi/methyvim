@@ -1,10 +1,11 @@
-#' Screening procedure based on LIMMA for reducing genomic sites to be tested
+#' Screening procedure based on LIMMA
 #'
 #' @importFrom limma lmFit eBayes topTable
 #'
-#' @export lmFit_screen
+#' @export lmfit_screen
 #'
-lmFit_screen <- function(meth, design, cutoff, ...) {
+
+lmfit_screen <- function(meth, design, cutoff, ...) {
   mod_fit <- limma::lmFit(meth, design)
   mod_fit <- limma::eBayes(mod_fit)
   tt_out <- limma::topTable(mod_fit, coef = 2, num = Inf, sort.by = "none")

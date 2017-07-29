@@ -1,6 +1,12 @@
-# procedure to perform variance shrinkage over the influence curve
-# representation of a particular target parameter, as per Hejazi & Hubbard,
-# 2017-2018
+#' Shrink influence curve estimates
+#'
+#' Use moderated statistical tests (empirical Bayes methods) to shrink the
+#' influence curve estimates of a target parameter
+#'
+#'
+#'
+#'
 
-# function will check whether return_ic = TRUE, if so, apply limma shrinkage;
-# else, merely error out
+shrink_ic <- function() {
+  message("This method has not yet been implemented.")
+}
