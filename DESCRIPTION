@@ -1,8 +1,9 @@
 Package: methyvim
-Title: Nonparametric Variable Importance for Differential Methylation Analysis
+Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
+  Estimates of Variable Importance Measures
 Version: 0.0.1
 Authors@R: as.person(c(
-  "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre]",
+  "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre, cph]",
   "Alan Hubbard <hubbard@berkeley.edu> [ctb]",
   "Mark van der Laan <laan@stat.berkeley.edu> [aut]"))
 Description: This package provides facilities for differential methylation
@@ -26,6 +27,7 @@ Imports:
   dplyr,
   ggplot2,
   tibble
+Suggests: testthat
 License: MIT + file LICENSE
 URL: https://github.com/nhejazi/methyvim
 BugReports: https://github.com/nhejazi/methyvim/issues
@@ -38,4 +40,3 @@ biocViews:
     DifferentialMethylation,
     MethylSeq,
     MethylationArray
-Suggests: testthat

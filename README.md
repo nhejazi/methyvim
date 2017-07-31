@@ -14,7 +14,24 @@ R/`methyvim`
 Description
 -----------
 
-`methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistical target parameters that arise in causal inference. The statistical techniques implemented rely on the use of targeted minimum loss-based estimation (TMLE) to assess two particular VIMs: (1) the "local" average treatment effect for discrete exposures, and (2) a nonparametric variable importance measure for continuous exposures. Within this framework, these methods allow differential methylation effects to be estimated in an assumption-free manner, on a pre-screened set of genomic sites measured by DNA methylation assays. As the statistical algorithm uses a multi-stage approach, multiple testing corrections are made using a modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA). In order to allow the user significant flexibility with respect to the scientific questions posed, the procedure estimates one of the appropriate VIMs for each of a reduced set of genomic sites, using screening procedures to identify a reduced set from the full data when a reduced set is not pre-specified. While making allowance for the user to specify the reduced set of genomic sites to be tested (e.g., those related to a particular gene of interest), this package comes equipped with screening procedures to facilitate the initial reduction of genomic sites, the two most noteworthy of these being a procedure based on the well-known R package [`limma`](https://bioconductor.org/packages/release/bioc/html/limma.html) and an extension of data-adaptive statistical target parameters for multiple testing (implemented in the R package [`DA.Test`](https://github.com/wilsoncai1992/data.adapt.multi.test)).
+`methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistical target parameters that arise in causal inference.
+
+The statistical methodology implemented computes targeted minimum loss-based estimates of well-studied variable importance measures:
+
+1.  The average treatment effect (ATE) for discrete exposures/treatments,
+2.  A nonparametric variable importance measure (NPVI) for continuous exposures (Chambaz, Neuvial, and van der Laan 2012).
+
+These methods allow differential methylation effects to be quantified in a manner that is largely free of assumptions, especially of the variety exploited in parametric models. **The statistical algorithm consists in several major steps:**
+
+1.  Pre-screening of genomic sites is used to isolate a subset of sites for which there is evidence of differential methylation. Targeted minimum loss-based estimates of VIMs are computed for this subset of sites only (for the sake of computational feasibility). Several screening approaches are available, adapting core routines from the following R packages: [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html), [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi), [`adaptest`](https://github.com/nhejazi/adaptest).
+2.  Nonparametric VIMs are estimated for the specified parameter, currently using routines from the R packages [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) to estimate the NPVI parameter, or [`tmle`](https://CRAN.R-project.org/package=tmle) to estimate the ATE.
+3.  Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings, specifically we use the modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der Laan 2009).
+
+See van der Laan and Rose (2011) for a general description of the framework of targeted minimum loss-based estimation.
+
+Note about shrinkage of influence curves, adapting Smyth (2004).
+
+More exposition here....
 
 ------------------------------------------------------------------------
 
@@ -35,11 +52,15 @@ Install the most recent *stable release* from GitHub via [`devtools`](https://ww
 devtools::install_github("nhejazi/methyvim")
 ```
 
-To contribute, install the *development version* from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
+<!--
+To contribute, install the _development version_ from GitHub via
+[`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
 
-``` r
+
+```r
 devtools::install_github("nhejazi/methyvim", ref = "develop")
 ```
+-->
 
 ------------------------------------------------------------------------
 
@@ -71,7 +92,7 @@ It is our hope that `methyvim` will grow to be widely adopted as a tool for the 
 Citation
 --------
 
-After using the `methyvim` R package, please cite it:
+After using the `methyvim` R package, please cite both of the following:
 
         @article{hejazi2017methyvim,
           doi = {},
@@ -81,26 +102,24 @@ After using the `methyvim` R package, please cite it:
           publisher={Faculty of 1000 Ltd},
           volume = {},
           author = {Hejazi, Nima S. and Hubbard, Alan E. and {van der Laan},
-                    Mark J.},
-          title = {methyvim: Nonparametric Assessment of Variable Importance for
-                   Differential Methylation Analysis},
+            Mark J.},
+          title = {methyvim: Differential methylation analysis with targeted
+            nonparametric variable importance measures},
           journal = {F1000Research}
         }
 
+        @misc{hejazi2017methyvim-r,
+          doi = {},
+          url = {},
+          howpublished = {\url{https://github.com/nhejazi/methyvim}},
+          year  = {2017},
+          author = {Hejazi, Nima S. and Hubbard, Alan E. and {van der Laan},
+            Mark J.},
+          title = {methyvim: Differential methylation analysis with targeted
+            minimum loss-based estimates of variable importance measures}
+        }
+
 ------------------------------------------------------------------------
-
-References
-----------
-
--   [Mark J. van der Laan & Sherri Rose. *Targeted Learning: Causal Inference for Observational and Experimental Data*, 2011.](http://www.targetedlearningbook.com)
-
--   [Antoine Chambaz, Pierre Neuvial, & Mark J. van der Laan. "Estimation of a non-parametric variable importance measure of a continuous exposure", *Electronic Journal of Statistics*, 2012.](http://www.math-info.univ-paris5.fr/~chambaz/Papiers/chambazNeuvialvanderLaan_EJS2012.pdf)
-
--   [Catherine Tuglus & Mark J. van der Laan. "FDR controlling procedures for multi-stage analyses", *UC Berkeley Division of Biostatistics Working Paper Series*, 2008.](http://biostats.bepress.com/ucbbiostat/paper239/)
-
--   [Weixin Cai, Nima S. Hejazi, & Alan E. Hubbard. "Data-adaptive statistics for multiple testing in high-dimensional settings", *In preparation*, 2017.](https://www.overleaf.com/5660573pjjrxh#/25678897/)
-
--   [Gordon K. Smyth. "Linear models and empirical Bayes methods for assessing differential expression in microarray experiments." *Statistical Applications in Genetics and Molecular Biology*, 3(1), 2004.](http://www.statsci.org/smyth/pubs/ebayes.pdf)
 
 ------------------------------------------------------------------------
 
@@ -110,3 +129,16 @@ License
 © 2017 [Nima S. Hejazi](http://nimahejazi.org), [Alan E. Hubbard](http://sph.berkeley.edu/alan-hubbard), [Mark J. van der Laan](https://www.stat.berkeley.edu/~laan/)
 
 The contents of this repository are distributed under the MIT license. See file `LICENSE` for details.
+
+------------------------------------------------------------------------
+
+References
+----------
+
+Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public Access: 1059.
+
+Smyth, Gordon K. 2004. “Linear Models and Empirical Bayes Methods for Assessing Differential Expression in Microarray Experiments.” *Statistical Applications in Genetics and Molecular Biology* 3 (1). Walter de Gruyter GmbH: 1–25. doi:[10.2202/1544-6115.1027](https://doi.org/10.2202/1544-6115.1027).
+
+Tuglus, Catherine, and Mark J. van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” *Statistical Applications in Genetics and Molecular Biology* 8 (1). Walter de Gruyter GmbH: 1–15. doi:[10.2202/1544-6115.1397](https://doi.org/10.2202/1544-6115.1397).
+
+van der Laan, Mark J., and Sherri Rose. 2011. *Targeted Learning: Causal Inference for Observational and Experimental Data*. Springer Science & Business Media.

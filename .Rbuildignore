@@ -9,9 +9,8 @@
 ^README\.html$
 ^README-.*\.png$
 ^Makefile$
-^\.git$
+^refs\.bib$
 ^\.gitignore$
-^data-raw$
 ^docs$
-^paper_F1000Bioc$
+^paper$
 ^debug$
