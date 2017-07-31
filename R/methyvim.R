@@ -25,32 +25,32 @@
 methyvim <- function(data_grs,
                      var_int = 1,
                      cpg_is = "exposure",
-                     type = c("Beta", "M"),
+                     type = c("Beta", "Mval"),
                      vim = c("ate", "npvi"),
+                     filter = c("limma", "npvi", "adaptest"),
                      neighbors = 1e3,
-                     normalize = NULL,
-                     filter = TRUE,
-                     min_sites = 1e4,
+                     preprocess = NULL,
                      family = "gaussian",
                      g_lib = c("SL.mean", "SL.glm", "SL.randomForest"),
                      Q_lib = c("SL.mean", "SL.randomForest"),
                      parallel = TRUE,
                      return_ic = TRUE,
-                     shrink_ic = TRUE
-                     ) {
+                     shrink_ic = FALSE
+                    ) {
 
   # ============================================================================
   # catch input and return in output object for user convenience
   # ============================================================================
   call <- match.call(expand.dots = TRUE)
   type <- match.arg(type)
+  vim <- match.arg(vim)
 
   # ============================================================================
   # catch inputs to pass to downstream functions (for estimation and such)
   # ============================================================================
   catch_inputs <- list(data = data_grs, var = var_int, cpg_iss = cpg_is,
                        type = type, vim = vim, neighbors = neighbors,
-                       normalize = normalize, filter = filter,
+                       preprocess = preprocess, filter = filter,
                        min_sites = min_sites, family = family,
                        g_lib = g_lib, Q_lib = Q_lib, parallel = parallel,
                        return_ic = return_ic, shrink_ic = shrink_ic)
@@ -59,35 +59,31 @@ methyvim <- function(data_grs,
   # ============================================================================
   # invoke S4 class constructor for "methadapt" object
   # ============================================================================
-  methy_tmle <- .methytmle(catch_inputs[["data"]])
+  methy_tmle <- .methytmle(catch_inputs$data)
   methy_tmle@call <- call
 
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  if (catch_inputs[["parallel"]]) {
+  if (catch_inputs$parallel) {
     set_parallel()
   }
 
   # ============================================================================
   # operate on the type of data specified
   # ============================================================================
-  if (catch_inputs[["type"]] == "Beta") {
-    cpg_data <- getBeta(methy_tmle)
-  } else if (catch_inputs[["type"]] == "M") {
-    cpg_data <- getM(methy_tmle)
+  if (catch_inputs$type == "Beta") {
+    extract_measures <- parse(text = "getBeta(methy_tmle)")
+  } else if (catch_inputs$type == "Mval") {
+    extract_measures <- parse(text = "getM(methy_tmle)")
   }
 
   # ============================================================================
-  # normalize array data if so requested
+  # preprocess array data if so requested
   # ============================================================================
-  if (!is.null(catch_inputs[["normalize"]])) {
-    #cpg_data <- ...
-  }
-  if (catch_inputs[["type"]] == "Beta") {
-    getBeta(methy_tmle) <- cpg_data
-  } else if (catch_inputs[["type"]] == "M") {
-    getM(methy_tmle) <- cpg_data
+  if (!is.null(catch_inputs$preprocess)) {
+    # methy_tmle <- do_preprocess(methy_tmle)
+    message("Support for preprocesing is planned but not yet implemented.")
   }
 
   #=============================================================================
@@ -95,41 +91,30 @@ methyvim <- function(data_grs,
   # ============================================================================
   cols_na <- colSums(sapply(colData(methy_tmle), is.na))
   na_var_id <- names(which(cols_na != 0))
-  message(paste("Missing data detected: Dropping variable(s)", na_var_id,
-                "from phenotype matrix."))
+  if (length(na_var_id) != 0) {
+    message(paste("Missing data detected: Dropping variable(s)", na_var_id,
+                  "from phenotype matrix."))
+  }
   colData(methy_tmle)[na_var_id] <- NULL
+
+  #=============================================================================
+  # screen sites to produce a subset on which to estimate VIMs
+  # ============================================================================
+  if (catch_inputs$filter == "limma") {
+    methy_tmle <- limma_screen(methytmle = methy_tmle,
+                               var_int = catch_inputs$var,
+                               type = catch_inputs$type)
+  } else {
+    stop("The chosen filtering method has not yet been implemented.")
+  }
+
 
   #=============================================================================
   # TMLE procedure for targeted differential methylation analysis
   # ============================================================================
-  methyTMLEout <- foreach(site = 1:length(sitesReduced),
-                          .combine = cbind) %dopar% {
-
-    cluster <- as.numeric(sitesClust[site, 1, drop = FALSE])
-    targetSite <- as.numeric(sitesClust[site, -1, drop = FALSE])
-    nearbySites <- subset(sitesClust, sitesClust[, 1] == cluster)
-    nearbySites <- as.data.frame(t(nearbySites[, -1, drop = FALSE]))
-
-    if(ncol(nearbySites) > round(nrow(nearbySites) / perSubj)) {
-      print(paste("insufficient sample size to compute L-ATE for site", site))
-      out <- rbind(Inf, Inf, Inf, Inf, Inf)
-    } else {
-      print(paste("Estimating L-ATE for", site, "of", length(sitesReduced)))
-      out <- tmle(Y = targetSite,
-                  A = exposureDiscrete,
-                  W = nearbySites,
-                  Q.SL.library = Q_lib,
-                  g.SL.library = g_lib,
-                  family = "gaussian",
-                  verbose = FALSE
-                 )
-
-      out <- out$estimates$ATE
-      out <- rbind(out$CI[1], out$psi, out$CI[2], out$var.psi, out$pvalue)
-    }
+  if (catch_inputs$vim == "ate") {
+    methy_tmle <- methytmle_ate(methy_tmle)
+  } else if (catch_inputs$vim == "npvi") {
+    methy_tmle <- methytmle_npvi(methy_tmle)
   }
-  methytmle <- as.data.frame(t(methyTMLEout))
-  colnames(methytmle) <- c("lowerCI", "ATE", "upperCI", "Var", "pval")
-  methadapt$tmleOut <- methytmle
-  return(methadapt)
 }

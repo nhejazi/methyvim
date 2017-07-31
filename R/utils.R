@@ -16,7 +16,10 @@ cluster_sites <- function(granges, ...) {
 
 ################################################################################
 
-#' FDR-MSA correction (van der Laan and Tuglus, 2009, <doi:>)
+#' FDR-MSA correction
+#'
+#' Modified FDR Controlling Procedure for Multi-Stage Analyses (MJ van der Laan
+#' and C Tuglus, 2009, <doi:10.2202/1544-6115.1397>)
 #'
 #' @importFrom stats p.adjust
 #'
@@ -25,7 +28,7 @@ fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
   fdr_adj <- p.adjust(pvals_all, method = "fdr")
-  fdr_out <- fdr_adj[1:length(pvals)]
+  fdr_out <- fdr_adj[seq_len(pvals)]
   return(fdr_out)
 }
 
@@ -52,4 +55,21 @@ set_parallel <- function(parallel) {
                will likely take on the order of days to run to completion.")
     }
   }
+}
+
+################################################################################
+
+#' Find correlations between neighboring CpGs
+#'
+#' Determine those CpG sites highly correlated with a particular site, towards
+#' the purpose of removing such sites from the baseline covariates included in
+#' TMLEs of a parameter of interest, to avoid practical positivity violations.
+#'
+#'
+#'
+#'
+#'
+
+corr_cpg <- function() {
+  message("This method has not been implemented yet.")
 }

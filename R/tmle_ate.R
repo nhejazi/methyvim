@@ -1,82 +1,22 @@
-methytmle_disc <- function(sumExp,
-                           clusters,
-                           outcomeVar,
-                           targetSites,
-                           txCutoff = "50%",
-                           type = "exposure",
-                           numberSites = NULL,
-                           positivityMin = 10,
-                           covarPerSubj = 20,
-                           parallel = TRUE,
-                           family = "binomial",
-                           g_lib = list("SL.mean", "SL.glm", "SL.bayesglm"),
-                           Q_lib = list("SL.mean", "SL.glm", "SL.knn", "SL.gam")
-                          ) {
-
-  # ============================================================================
-  # check inputs are of the correct type before proceeding
-  # ============================================================================
-  type <- match.arg(type)
-  family <- match.arg(family)
-
-  # ============================================================================
-  # catch input and return in output object for user convenience
-  # ============================================================================
-  call <- match.call(expand.dots = TRUE)
-
-  #=============================================================================
-  # set up parallelization based on input
-  # ============================================================================
-  if (class(parallel) == "numeric") doParallel::registerDoParallel(parallel)
-  if (class(parallel) == "logical") {
-     nCores <- parallel::detectCores()
-     if (nCores > 1) {
-        doParallel::registerDoParallel(nCores)
-     } else {
-        warning("option 'parallel' is set to TRUE but only 1 core detected.")
-     }
-     if (parallel == FALSE) {
-        warning("parallelization set to FALSE: manually abort procedure.")
-     }
-  }
-
-  #=============================================================================
-  # heuristics for getting the value of the outcome variable
-  # ============================================================================
-  if (length(outcomeVar) == 1) {
-    # assume referring to column of design matrix if a scalar
-    outcomeValues <- as.data.frame(colData(sumExp))[, outcomeVar]
-  } else if (length(outcomeVar) > 1) {
-    # assume actual outcome data if a vector
-    outcomeValues <- outcomeVar
-  } else {
-    warning("inappropriate value specified for 'outcomeVar' argument")
-  }
+methyvim_ate <- function(methy_tmle, catch_inputs) {
 
   # make sure that the outcome data is of class numeric
-  if (class(outcomeValues) != "numeric") {
-    warning("outcome not numeric...coercing to numeric, but may cause errors.")
-    outcomeValues <- as.numeric(outcomeValues)
+  var_of_interest <- as.numeric(colData(methy_tmle)[, catch_inputs$var])
+  if (class(var_of_interest) != "numeric") {
+    var_of_interest <- as.numeric(var_of_interest)
   }
 
   # find all cases that have no missing values
-  cases_complete <- complete.cases(colData(sumExp))
+  cases_complete <- complete.cases(colData(methy_tmle))
 
   # scale outcome variable for use with binomial TMLE
-  a = min(outcomeValues, na.rm = TRUE)
-  b = max(outcomeValues, na.rm = TRUE)
-  y_star <- (outcomeValues - a) / (b - a)
+  a = min(var_of_interest, na.rm = TRUE)
+  b = max(var_of_interest, na.rm = TRUE)
+  y_star <- (var_of_interest - a) / (b - a)
 
   # remove all missing values in case outcome specified via design matrix
   if(length(y_star) > sum(cases_complete)) {
     y_star <- as.numeric(y_star[cases_complete])
-  }
-
-  #=============================================================================
-  # set number of sites to be tested...
-  # ============================================================================
-  if (is.null(numberSites)) {
-    numberSites <- length(targetSites)
   }
 
   #=============================================================================
@@ -90,8 +30,8 @@ methytmle_disc <- function(sumExp,
      cluster <- as.numeric(clusters[target])
 
      # create vector for target site + matrix for all others WITH cluster ID
-     targetSite <- as.numeric(as.data.frame(assay(sumExp)[target, ]))
-     methData <- as.data.frame(cbind(clusters, as.data.frame(assay(sumExp))))
+     targetSite <- as.numeric(as.data.frame(assay(methy_tmle)[target, ]))
+     methData <- as.data.frame(cbind(clusters, as.data.frame(assay(methy_tmle))))
 
      # find neighbors based on clusters and remove target itself from neighbors
      nearbySites <- subset(methData, methData[, 1] == cluster)
@@ -166,18 +106,18 @@ methytmle_disc <- function(sumExp,
   methTMLE <- as.data.frame(methyTMLEout)
   colnames(methTMLE) <- c("Wj", "TxCutoff", "lowerCI", "LocalATE", "upperCI",
                           "Variance", "pvalue")
-  rownames(methTMLE) <- names(rowRanges(sumExp)[targetSites[1:numberSites]])
+  rownames(methTMLE) <- names(rowRanges(methy_tmle)[targetSites[1:numberSites]])
 
   # use the FDR-MSA adjustment procedure from Tuglus & van der Laan (2008)
-  totalTests <- nrow(assay(sumExp))
+  totalTests <- nrow(assay(methy_tmle))
   tmle_pvals <- methTMLE$pvalue
   tmle_pvals[which(is.na(tmle_pvals))] <- 1
   resultsFDR <- FDR_msa(pvals = tmle_pvals, totalTests = totalTests)
   methTMLE$pvalFDR <- resultsFDR
 
   # build SummarizedExperiment object for output
-  tmleOut_rR <- subset(rowRanges(sumExp), names(sumExp) %in% rownames(methTMLE))
-  tmleOut_cD <- colData(sumExp)[complete.cases(colData(sumExp)), ]
+  tmleOut_rR <- subset(rowRanges(methy_tmle), names(methy_tmle) %in% rownames(methTMLE))
+  tmleOut_cD <- colData(methy_tmle)[complete.cases(colData(methy_tmle)), ]
   tmleOut_se <- SummarizedExperiment(rowRanges=tmleOut_rR, colData=tmleOut_cD)
   rowData(tmleOut_se) <- methTMLE
   metadata(tmleOut_se) <- list(type = "methadapt output", created = Sys.time(),

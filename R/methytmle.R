@@ -11,6 +11,7 @@
 .methytmle <- methods::setClass(
        Class = "methytmle",
        slots = list(call = "call",
+                    screen_ind = "numeric",
                     g = "matrix",
                     Q = "matrix",
                     ic = "data.frame",
