@@ -1,6 +1,10 @@
 # needed pkgs
 library(here)
 library(minfi)
+library(parallel)
+library(doParallel)
+n_cores <- detectCores()
+registerDoParallel(n_cores)
 
 # check system
 stopifnot(
@@ -13,17 +17,18 @@ load(here("..", "data", "epic-smith-2017",
 
 # methyvim args
 var_int = 3 #exposed
-cpg_is = "exposure"
-neighbors = 1e3
-normalize = NULL
+window_bp = 1e3
+corr_max = 0.35
+obs_per_var = 15
+preprocess = NULL
 filter = TRUE
-min_sites = 1e4
 family = "gaussian"
 g_lib = c("SL.mean", "SL.glm", "SL.randomForest")
 Q_lib = c("SL.mean", "SL.randomForest")
 parallel = TRUE
 return_ic = TRUE
 shrink_ic = TRUE
-type = "M"
+dimen_red = TRUE
+type = "Mval"
 vim = "npvi"
 data_grs <- buccal_funnorm

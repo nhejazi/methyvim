@@ -1,7 +1,8 @@
 # screen CpG sites using LIMMA method
 methy_tmle_screened <- limma_screen(methytmle = methy_tmle,
                                     var_int = catch_inputs$var,
-                                    type = catch_inputs$type)
+                                    type = catch_inputs$type,
+                                    cutoff = catch_inputs$cutoff)
 
 # NOTE: work out ATE procedure "by hand"
 var_of_interest <- as.numeric(colData(methy_tmle_screened)[, catch_inputs$var])
@@ -10,7 +11,8 @@ if (class(var_of_interest) != "numeric") {
 }
 
 # create clusters
-methy_tmle_screened <- cluster_sites(methy_tmle = methy_tmle_screened)
+methy_tmle_screened <- cluster_sites(methy_tmle = methy_tmle_screened,
+                                     window_size = catch_inputs$window)
 
 # find all cases that have no missing values
 cases_complete <- complete.cases(colData(methy_tmle_screened))
@@ -18,7 +20,8 @@ cases_complete <- complete.cases(colData(methy_tmle_screened))
 # run the ATE procedure
 no_neighbors <- NULL
 methy_tmle_ind <- seq_along(methy_tmle_screened@screen_ind)
-methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+sites_rand <- sort(sample(methy_tmle_ind, 50))
+methy_vim_out <- foreach::foreach(i_site = sites_rand,
                                   .packages = c("tmle", "class", "gtools"),
                                   .combine = rbind) %dopar% {
 
@@ -51,10 +54,12 @@ methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
     w <- expr[only_neighbors, ]
 
     # find maximum number of covariates that can be in W
-    w_max <- round(length(y_star) / catch_inputs$subj_per_covar)
+    w_max <- round(length(y_star) / catch_inputs$obs_per_var)
 
     # remove neighbors that are highly correlated with target site
-    w <- w[-which(abs(cor(y, t(w))) > catch_inputs$corr_max), ]
+    if (sum(abs(cor(y, t(w))) > catch_inputs$corr) > 0) {
+      w <- w[-which(abs(cor(y, t(w))) > catch_inputs$corr), ]
+    }
 
     # use HOPACH to force dimension reduction of W
     if (nrow(w) > w_max) {
@@ -67,7 +72,7 @@ methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
     }
 
     # strictly enforces the assumption of positivity by discretizing W
-    w_pos <- force_positivity(var_of_interest, t(w))
+    w_pos <- force_positivity(var_of_interest, t(w), pos_min = 0.15)
 
     # compute the ATE
     out <- tmle(Y = as.numeric(y_star),

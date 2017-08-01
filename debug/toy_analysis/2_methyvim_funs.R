@@ -1,10 +1,10 @@
 # catch inputs
-catch_inputs <- list(data = data_grs, var = var_int, cpg_iss = cpg_is,
-                     type = type, vim = vim, neighbors = neighbors,
-                     normalize = normalize, filter = filter,
-                     min_sites = min_sites, family = family,
-                     g_lib = g_lib, Q_lib = Q_lib, parallel = parallel,
-                     return_ic = return_ic, shrink_ic = shrink_ic)
+catch_inputs <- list(data = data_grs, var = var_int, vim = vim,
+                     filter = filter, type = type, window = window_bp,
+                     corr = corr_max, obs_per_var = obs_per_var,
+                     preproc = preprocess, par = parallel, dm = dimen_red,
+                     return_ic = return_ic, shrink_ic = shrink_ic,
+                     family = family, g_lib = g_lib, Q_lib = Q_lib)
 
 # define methytmle class
 .methytmle <- methods::setClass(
@@ -64,33 +64,30 @@ cluster_sites <- function(methy_tmle, window_size = 1000) {
 }
 
 # force positivity assumption to hold
-force_positivity <- function(A, W, pos_min = 0.1) {
+force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
-
-  n_obs <- length(A)
-  guess_w <- round((pos_min * n_obs) / length(unique(A))) # heuristic W binning
 
   if (class(W) != "data.frame") W <- as.data.frame(W) # cover use of "ncol"
   out_w <- NULL # concatenate W columnwise as we discretize each covar below
 
   for (obs_w in seq_len(ncol(W))) {
     in_w <- as.numeric(W[, obs_w])
-    discr_w <- as.numeric(as.factor(gtools::quantcut(x = in_w, q = guess_w)))
-    check <- sum((table(A, discr_w) / n_obs) < pos_min)
-    next_guess_w <- guess_w
+    discr_w <- as.numeric(as.factor(gtools::quantcut(x = in_w, q = q_init)))
+    check <- sum((table(A, discr_w) / length(A)) < pos_min)
+    next_guess_q <- q_init
     while (check > 0) {
-      next_guess_w <- (next_guess_w - 1)
+      next_guess_q <- (next_guess_q - 1)
       discr_w <- as.numeric(as.factor(gtools::quantcut(x = in_w,
-                                                       q = next_guess_w)))
-      check <- sum((table(A, discr_w) / n_obs) < pos_min)
+                                                       q = next_guess_q)))
+      check <- sum((table(A, discr_w) / length(A)) < pos_min)
     }
     out_w <- cbind(out_w, discr_w)
   }
   out <- as.data.frame(out_w)
   colnames(out) <- colnames(W)
   rownames(out) <- rownames(W)
-  if(length(which(colSums(out) == n_obs)) > 0) {
-    out <- out[, -which(colSums(out) == n_obs), drop = FALSE]
+  if(length(which(colSums(out) == length(A))) > 0) {
+    out <- out[, -which(colSums(out) == length(A)), drop = FALSE]
   }
   return(out)
 }

@@ -24,12 +24,13 @@
 
 methyvim <- function(data_grs,
                      var_int = 1,
-                     cpg_is = "exposure",
-                     type = c("Beta", "Mval"),
                      vim = c("ATE", "NPVI"),
+                     type = c("Beta", "Mval"),
                      filter = c("limma", "npvi", "adaptest"),
-                     neighbors = 1e3,
+                     filter_cutoff = 0.05,
+                     window_bp = 1e3,
                      corr_max = 0.35,
+                     obs_per_covar = 15,
                      preprocess = NULL,
                      parallel = TRUE,
                      dimen_red = FALSE,
@@ -37,8 +38,7 @@ methyvim <- function(data_grs,
                      shrink_ic = FALSE,
                      family = "gaussian",
                      g_lib = c("SL.mean", "SL.glm", "SL.randomForest"),
-                     Q_lib = c("SL.mean", "SL.randomForest"),
-                     subj_per_covar = 15
+                     Q_lib = c("SL.mean", "SL.randomForest")
                     ) {
 
   # ============================================================================
@@ -52,14 +52,13 @@ methyvim <- function(data_grs,
   # ============================================================================
   # catch inputs to pass to downstream functions (for estimation and such)
   # ============================================================================
-  catch_inputs <- list(data = data_grs, var = var_int, cpg_iss = cpg_is,
-                       type = type, vim = vim, neighbors = neighbors,
-                       preprocess = preprocess, filter = filter,
-                       min_sites = min_sites, family = family,
-                       g_lib = g_lib, Q_lib = Q_lib, parallel = parallel,
-                       return_ic = return_ic, shrink_ic = shrink_ic,
-                       dm = dimen_red, corr_max = corr_max,
-                       subj_per_covar = subj_per_covar)
+  catch_inputs <- list(data = data_grs, var = var_int, vim = vim,
+                       type = type, filter = filter, cutoff = filter_cutoff,
+                       window = window_bp, corr = corr_max,
+                       obs_per_covar = obs_per_covar, pre = preprocess,
+                       par = parallel, dm = dimen_red, return_ic = return_ic,
+                       shrink_ic = shrink_ic, family = family, g_lib = g_lib,
+                       Q_lib = Q_lib)
   catch_inputs <- check_inputs(catch_inputs)
 
   # ============================================================================
@@ -71,23 +70,23 @@ methyvim <- function(data_grs,
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  if (catch_inputs$parallel) {
+  if (catch_inputs$par) {
     set_parallel()
   }
 
   # ============================================================================
   # operate on the type of data specified
   # ============================================================================
-  if (catch_inputs$type == "Beta") {
-    extract_measures <- parse(text = "getBeta(methy_tmle)")
-  } else if (catch_inputs$type == "Mval") {
-    extract_measures <- parse(text = "getM(methy_tmle)")
-  }
+  #if (catch_inputs$type == "Beta") {
+  #  extract_measures <- parse(text = "getBeta(methy_tmle)")
+  #} else if (catch_inputs$type == "Mval") {
+  #  extract_measures <- parse(text = "getM(methy_tmle)")
+  #}
 
   # ============================================================================
   # preprocess array data if so requested
   # ============================================================================
-  if (!is.null(catch_inputs$preprocess)) {
+  if (!is.null(catch_inputs$pre)) {
     # methy_tmle <- do_preprocess(methy_tmle)
     message("Support for preprocesing is planned but not yet implemented.")
   }
@@ -99,7 +98,7 @@ methyvim <- function(data_grs,
   na_var_id <- names(which(cols_na != 0))
   if (length(na_var_id) != 0) {
     message(paste("Missing data detected: Dropping variable(s)", na_var_id,
-                  "from phenotype matrix."))
+                  "from phenotype-level data matrix."))
   }
   colData(methy_tmle)[na_var_id] <- NULL
 
