@@ -1,4 +1,4 @@
-methytmle_cont <- function(sumExp,
+methyvim_npvi <- function(sumExp,
                            clusters,
                            outcomeVar,
                            targetSites,
@@ -15,36 +15,10 @@ methytmle_cont <- function(sumExp,
                           ) {
 
   # ============================================================================
-  # check inputs are of the correct type before proceeding
-  # ============================================================================
-  type <- match.arg(type)
-
-  # ============================================================================
-  # catch input and return in output object for user convenience
-  # ============================================================================
-  call <- match.call(expand.dots = TRUE)
-
-  # ============================================================================
   # create TMLE-NPVI description list for convenient input later
   # ============================================================================
   descr <- list(f = identity, iter = 10, cvControl = cvControl, nMax = nMax,
                 stoppingCriteria = list(mic = 0.001, div = 0.001, psi = 0.01))
-
-  #=============================================================================
-  # set up parallelization based on input
-  # ============================================================================
-  if (class(parallel) == "numeric") doParallel::registerDoParallel(parallel)
-  if (class(parallel) == "logical") {
-     nCores <- parallel::detectCores()
-     if (nCores > 1) {
-        doParallel::registerDoParallel(nCores)
-     } else {
-        warning("option 'parallel' is set to TRUE but only 1 core detected.")
-     }
-     if (parallel == FALSE) {
-        warning("parallelization set to FALSE: manually abort procedure.")
-     }
-  }
 
   #=============================================================================
   # heuristics for getting the value of the outcome variable
@@ -75,7 +49,6 @@ methytmle_cont <- function(sumExp,
   } else {
     y <- as.numeric(outcomeValues)
   }
-
 
   # ============================================================================
   # get confidence level and sample size
@@ -180,14 +153,4 @@ methytmle_cont <- function(sumExp,
   tmle_pvals[which(is.na(tmle_pvals))] <- 1
   resultsFDR <- FDR_msa(pvals = tmle_pvals, totalTests = totalTests)
   methTMLE$pvalFDR <- resultsFDR
-
-  # build SummarizedExperiment object for output
-  tmleOut_rR <- subset(rowRanges(sumExp), names(sumExp) %in% rownames(methTMLE))
-  tmleOut_cD <- colData(sumExp)[complete.cases(colData(sumExp)), ]
-  tmleOut_se <- SummarizedExperiment(rowRanges=tmleOut_rR, colData=tmleOut_cD)
-  rowData(tmleOut_se) <- methTMLE
-  metadata(tmleOut_se) <- list(type = "methadapt output", created = Sys.time(),
-                               call = call)
-  # return output as SummarizedExperiment container object
-  return(tmleOut_se)
 }

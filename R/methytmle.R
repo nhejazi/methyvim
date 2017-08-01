@@ -12,6 +12,7 @@
        Class = "methytmle",
        slots = list(call = "call",
                     screen_ind = "numeric",
+                    clusters = "numeric",
                     g = "matrix",
                     Q = "matrix",
                     ic = "data.frame",

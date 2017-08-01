@@ -1,17 +1,21 @@
 #' Clustering of sites to generate CpG neighborhoods
 #'
 #' @importFrom bumphunter clusterMaker
+#' @importFrom SummarizedExperiment rowRanges
+#' @importFrom GenomeInfoDb seqnames
+#' @importFrom BiocGenerics start
+#' @importFrom IRanges ranges
 #'
 
-cluster_sites <- function(granges, ...) {
-  if(dim(mcols(granges))[2] != 0) {
-    mcols(granges) <- NULL
-  }
-  clusters <- bumphunter::clusterMaker(chr = seqnames(granges),
-                                       pos = start(ranges(granges)),
+cluster_sites <- function(methy_tmle, window_size = 1000) {
+  gr <- SummarizedExperiment::rowRanges(methy_tmle)
+  pos <- BiocGenerics::start(IRanges::ranges(gr))
+  clusters <- bumphunter::clusterMaker(chr = GenomeInfoDb::seqnames(gr),
+                                       pos = pos,
                                        assumeSorted = FALSE,
-                                       maxGap = 1000)
-  return(clusters)
+                                       maxGap = window_size)
+  methy_tmle@clusters <- as.numeric(clusters)
+  return(methy_tmle)
 }
 
 ################################################################################
@@ -72,4 +76,30 @@ set_parallel <- function(parallel) {
 
 corr_cpg <- function() {
   message("This method has not been implemented yet.")
+}
+
+################################################################################
+
+#' Discretize a vector
+#'
+#' Discretizes a non-factor input vector and returns the result as numeric.
+#'
+#' @param x A vector containing arbitrary data.
+#'
+#' @return A numeric vector with the data re-coded to based on the quantiles.
+#'
+#' @importFrom gtools quantcut
+#'
+#' @export
+#'
+#' @examples
+#' x <- rnorm(1000)
+#' discrete_by_quantile(x)
+
+discrete_by_quantile <- function(x) {
+  if( class(x) != "factor" ) {
+    as.numeric(gtools::quantcut(x))
+  } else {
+    as.numeric(x)
+  }
 }

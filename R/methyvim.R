@@ -26,22 +26,26 @@ methyvim <- function(data_grs,
                      var_int = 1,
                      cpg_is = "exposure",
                      type = c("Beta", "Mval"),
-                     vim = c("ate", "npvi"),
+                     vim = c("ATE", "NPVI"),
                      filter = c("limma", "npvi", "adaptest"),
                      neighbors = 1e3,
+                     corr_max = 0.35,
                      preprocess = NULL,
+                     parallel = TRUE,
+                     dimen_red = FALSE,
+                     return_ic = FALSE,
+                     shrink_ic = FALSE,
                      family = "gaussian",
                      g_lib = c("SL.mean", "SL.glm", "SL.randomForest"),
                      Q_lib = c("SL.mean", "SL.randomForest"),
-                     parallel = TRUE,
-                     return_ic = TRUE,
-                     shrink_ic = FALSE
+                     subj_per_covar = 15
                     ) {
 
   # ============================================================================
   # catch input and return in output object for user convenience
   # ============================================================================
   call <- match.call(expand.dots = TRUE)
+  filter <- match.arg(filter)
   type <- match.arg(type)
   vim <- match.arg(vim)
 
@@ -53,7 +57,9 @@ methyvim <- function(data_grs,
                        preprocess = preprocess, filter = filter,
                        min_sites = min_sites, family = family,
                        g_lib = g_lib, Q_lib = Q_lib, parallel = parallel,
-                       return_ic = return_ic, shrink_ic = shrink_ic)
+                       return_ic = return_ic, shrink_ic = shrink_ic,
+                       dm = dimen_red, corr_max = corr_max,
+                       subj_per_covar = subj_per_covar)
   catch_inputs <- check_inputs(catch_inputs)
 
   # ============================================================================
@@ -108,13 +114,21 @@ methyvim <- function(data_grs,
     stop("The chosen filtering method has not yet been implemented.")
   }
 
+  #=============================================================================
+  # cluster sites based on genomic windows
+  #=============================================================================
+  methy_tmle <- cluster_sites(methy_tmle = methy_tmle)
 
   #=============================================================================
   # TMLE procedure for targeted differential methylation analysis
   # ============================================================================
-  if (catch_inputs$vim == "ate") {
-    methy_tmle <- methytmle_ate(methy_tmle)
-  } else if (catch_inputs$vim == "npvi") {
-    methy_tmle <- methytmle_npvi(methy_tmle)
+  if (catch_inputs$vim == "ATE") {
+    methy_tmle <- methyvim_ate(methy_tmle)
+  } else if (catch_inputs$vim == "NPVI") {
+    methy_tmle <- methyvim_npvi(methy_tmle)
+  } else {
+    stop("The specified variable importance parameter is not available.")
   }
+
+  # NOTE: what else do we do before returning output...
 }

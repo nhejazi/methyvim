@@ -9,22 +9,25 @@ methyvim_ate <- function(methy_tmle, catch_inputs) {
   # find all cases that have no missing values
   cases_complete <- complete.cases(colData(methy_tmle))
 
-  # scale outcome variable for use with binomial TMLE
-  a = min(var_of_interest, na.rm = TRUE)
-  b = max(var_of_interest, na.rm = TRUE)
-  y_star <- (var_of_interest - a) / (b - a)
-
-  # remove all missing values in case outcome specified via design matrix
-  if(length(y_star) > sum(cases_complete)) {
-    y_star <- as.numeric(y_star[cases_complete])
-  }
-
   #=============================================================================
   # perform TMLE estimation of L-ATE for all genomic (CpG) sites individually
   # ============================================================================
-  methyTMLEout <- foreach::foreach(site = 1:numberSites,
-                                   .packages = c("tmle", "class", "gtools"),
-                                   .combine = rbind) %dopar% {
+  methy_vim_out <- foreach::foreach(site = seq_along(methy_tmle@screen_ind),
+                                    .packages = c("tmle", "class", "gtools"),
+                                    .combine = rbind) %dopar% {
+
+    # find neighbors of target site
+
+    # scale outcome variable for use with binomial TMLE
+    a = min(var_of_interest, na.rm = TRUE)
+    b = max(var_of_interest, na.rm = TRUE)
+    y_star <- (var_of_interest - a) / (b - a)
+
+    # remove all missing values in case outcome specified via design matrix
+    if(length(y_star) > sum(cases_complete)) {
+      y_star <- as.numeric(y_star[cases_complete])
+    }
+    #
      set.seed(64014617)
      target <- targetSites[site]
      cluster <- as.numeric(clusters[target])
@@ -114,14 +117,4 @@ methyvim_ate <- function(methy_tmle, catch_inputs) {
   tmle_pvals[which(is.na(tmle_pvals))] <- 1
   resultsFDR <- FDR_msa(pvals = tmle_pvals, totalTests = totalTests)
   methTMLE$pvalFDR <- resultsFDR
-
-  # build SummarizedExperiment object for output
-  tmleOut_rR <- subset(rowRanges(methy_tmle), names(methy_tmle) %in% rownames(methTMLE))
-  tmleOut_cD <- colData(methy_tmle)[complete.cases(colData(methy_tmle)), ]
-  tmleOut_se <- SummarizedExperiment(rowRanges=tmleOut_rR, colData=tmleOut_cD)
-  rowData(tmleOut_se) <- methTMLE
-  metadata(tmleOut_se) <- list(type = "methadapt output", created = Sys.time(),
-                               call = call)
-  # return output as SummarizedExperiment container object
-  return(tmleOut_se)
 }

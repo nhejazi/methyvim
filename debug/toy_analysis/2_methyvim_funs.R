@@ -1,20 +1,3 @@
-# methyvim args
-var_int = 3 #exposed
-cpg_is = "exposure"
-neighbors = 1e3
-normalize = NULL
-filter = TRUE
-min_sites = 1e4
-family = "gaussian"
-g_lib = c("SL.mean", "SL.glm", "SL.randomForest")
-Q_lib = c("SL.mean", "SL.randomForest")
-parallel = TRUE
-return_ic = TRUE
-shrink_ic = TRUE
-type = "M"
-vim = "npvi"
-data_grs <- buccal_funnorm
-
 # catch inputs
 catch_inputs <- list(data = data_grs, var = var_int, cpg_iss = cpg_is,
                      type = type, vim = vim, neighbors = neighbors,
@@ -28,6 +11,7 @@ catch_inputs <- list(data = data_grs, var = var_int, cpg_iss = cpg_is,
        Class = "methytmle",
        slots = list(call = "call",
                     screen_ind = "numeric",
+                    clusters = "numeric",
                     g = "matrix",
                     Q = "matrix",
                     ic = "data.frame",
@@ -67,9 +51,46 @@ limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   return(methytmle)
 }
 
-# screen CpG sites using LIMMA method
-methy_tmle_screened <- limma_screen(methytmle = methy_tmle,
-                                    var_int = catch_inputs$var,
-                                    type = catch_inputs$type)
+# function to cluster sites
+cluster_sites <- function(methy_tmle, window_size = 1000) {
+  gr <- SummarizedExperiment::rowRanges(methy_tmle)
+  pos <- BiocGenerics::start(IRanges::ranges(gr))
+  clusters <- bumphunter::clusterMaker(chr = GenomeInfoDb::seqnames(gr),
+                                       pos = pos,
+                                       assumeSorted = FALSE,
+                                       maxGap = window_size)
+  methy_tmle@clusters <- as.numeric(clusters)
+  return(methy_tmle)
+}
 
-# NOTE: work out ATE procedure "by hand"
+# force positivity assumption to hold
+force_positivity <- function(A, W, pos_min = 0.1) {
+  stopifnot(length(A) == nrow(W))
+
+  n_obs <- length(A)
+  guess_w <- round((pos_min * n_obs) / length(unique(A))) # heuristic W binning
+
+  if (class(W) != "data.frame") W <- as.data.frame(W) # cover use of "ncol"
+  out_w <- NULL # concatenate W columnwise as we discretize each covar below
+
+  for (obs_w in seq_len(ncol(W))) {
+    in_w <- as.numeric(W[, obs_w])
+    discr_w <- as.numeric(as.factor(gtools::quantcut(x = in_w, q = guess_w)))
+    check <- sum((table(A, discr_w) / n_obs) < pos_min)
+    next_guess_w <- guess_w
+    while (check > 0) {
+      next_guess_w <- (next_guess_w - 1)
+      discr_w <- as.numeric(as.factor(gtools::quantcut(x = in_w,
+                                                       q = next_guess_w)))
+      check <- sum((table(A, discr_w) / n_obs) < pos_min)
+    }
+    out_w <- cbind(out_w, discr_w)
+  }
+  out <- as.data.frame(out_w)
+  colnames(out) <- colnames(W)
+  rownames(out) <- rownames(W)
+  if(length(which(colSums(out) == n_obs)) > 0) {
+    out <- out[, -which(colSums(out) == n_obs), drop = FALSE]
+  }
+  return(out)
+}
