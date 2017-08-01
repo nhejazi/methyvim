@@ -19,10 +19,11 @@ load(here("..", "data", "epic-smith-2017",
 var_int = 3 #exposed
 window_bp = 1e3
 corr_max = 0.35
+cutoff = 0.05
 obs_per_var = 15
 preprocess = NULL
 filter = TRUE
-family = "gaussian"
+family = "binomial"  # for logistic fluctuation model with scaled Y
 g_lib = c("SL.mean", "SL.glm", "SL.randomForest")
 Q_lib = c("SL.mean", "SL.randomForest")
 parallel = TRUE

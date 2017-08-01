@@ -36,9 +36,15 @@ methyvim <- function(data_grs,
                      dimen_red = FALSE,
                      return_ic = FALSE,
                      shrink_ic = FALSE,
-                     family = "gaussian",
+                     family = "binomial",
                      g_lib = c("SL.mean", "SL.glm", "SL.randomForest"),
-                     Q_lib = c("SL.mean", "SL.randomForest")
+                     Q_lib = c("SL.mean", "SL.randomForest"),
+                     npvi_cutoff = 0.25,
+                     npvi_descr = list(f = identity, iter = 10,
+                                       cvControl = 2, nMax = 30,
+                                       stoppingCriteria = list(mic = 0.001,
+                                                               div = 0.001,
+                                                               psi = 0.01))
                     ) {
 
   # ============================================================================
@@ -57,8 +63,11 @@ methyvim <- function(data_grs,
                        window = window_bp, corr = corr_max,
                        obs_per_covar = obs_per_covar, pre = preprocess,
                        par = parallel, dm = dimen_red, return_ic = return_ic,
-                       shrink_ic = shrink_ic, family = family, g_lib = g_lib,
-                       Q_lib = Q_lib)
+                       shrink_ic = shrink_ic,
+                       family = family, g_lib = g_lib, Q_lib = Q_lib,
+                       npvi_cut = npvi_cutoff, npvi_descr = npvi_descr)
+  # check that inputs satisfy expectations
+  ## and clean up check_inputs (e.g., rm NPVI stuff if ATE is specified)
   catch_inputs <- check_inputs(catch_inputs)
 
   # ============================================================================

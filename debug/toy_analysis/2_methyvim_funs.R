@@ -4,7 +4,8 @@ catch_inputs <- list(data = data_grs, var = var_int, vim = vim,
                      corr = corr_max, obs_per_var = obs_per_var,
                      preproc = preprocess, par = parallel, dm = dimen_red,
                      return_ic = return_ic, shrink_ic = shrink_ic,
-                     family = family, g_lib = g_lib, Q_lib = Q_lib)
+                     family = family, g_lib = g_lib, Q_lib = Q_lib,
+                     cutoff = cutoff)
 
 # define methytmle class
 .methytmle <- methods::setClass(
