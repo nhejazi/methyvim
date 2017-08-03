@@ -13,4 +13,4 @@
 ^\.gitignore$
 ^docs$
 ^paper$
-^debug$
+^sandbox$
