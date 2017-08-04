@@ -1,4 +1,3 @@
-
 # define methytmle class
 .methytmle <- methods::setClass(
        Class = "methytmle",
@@ -15,7 +14,7 @@
 # set up methyvim object
 call <- "testing123"
 class(call) <- "call" # hacking the call object
-methy_tmle <- .methytmle(catch_inputs$data)
+methy_tmle <- .methytmle(catch_inputs_ate$data)
 methy_tmle@call <- call
 
 # using LIMMA for screening

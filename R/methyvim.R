@@ -31,20 +31,16 @@ methyvim <- function(data_grs,
                      window_bp = 1e3,
                      corr_max = 0.35,
                      obs_per_covar = 15,
-                     preprocess = NULL,
                      parallel = TRUE,
-                     dimen_red = FALSE,
                      return_ic = FALSE,
                      shrink_ic = FALSE,
-                     family = "binomial",
-                     g_lib = c("SL.mean", "SL.glm", "SL.randomForest"),
-                     Q_lib = c("SL.mean", "SL.randomForest"),
-                     npvi_cutoff = 0.25,
-                     npvi_descr = list(f = identity, iter = 10,
-                                       cvControl = 2, nMax = 30,
-                                       stoppingCriteria = list(mic = 0.001,
-                                                               div = 0.001,
-                                                               psi = 0.01))
+                     tmle_type = c("glm", "super_learning"),
+                     tmle_args = list(family = "binomial",
+                                      g_lib = c("SL.mean", "SL.glm",
+                                                "SL.randomForest"),
+                                      Q_lib = c("SL.mean", "SL.glm"),
+                                      npvi_cutoff = 0.25,
+                                      npvi_descr = NULL)
                     ) {
 
   # ============================================================================
@@ -58,14 +54,20 @@ methyvim <- function(data_grs,
   # ============================================================================
   # catch inputs to pass to downstream functions (for estimation and such)
   # ============================================================================
-  catch_inputs <- list(data = data_grs, var = var_int, vim = vim,
-                       type = type, filter = filter, cutoff = filter_cutoff,
-                       window = window_bp, corr = corr_max,
-                       obs_per_covar = obs_per_covar, pre = preprocess,
-                       par = parallel, dm = dimen_red, return_ic = return_ic,
+  catch_inputs <- list(data = data_grs,
+                       var = var_int,
+                       vim = vim,
+                       type = type,
+                       filter = filter,
+                       filter_cutoff = filter_cutoff,
+                       window = window_bp,
+                       corr = corr_max,
+                       obs_per_covar = obs_per_covar,
+                       par = parallel,
+                       return_ic = return_ic,
                        shrink_ic = shrink_ic,
-                       family = family, g_lib = g_lib, Q_lib = Q_lib,
-                       npvi_cut = npvi_cutoff, npvi_descr = npvi_descr)
+                       tmle_type = tmle_type,
+                       tmle_args = tmle_args)
   # check that inputs satisfy expectations
   ## and clean up check_inputs (e.g., rm NPVI stuff if ATE is specified)
   catch_inputs <- check_inputs(catch_inputs)
@@ -91,14 +93,6 @@ methyvim <- function(data_grs,
   #} else if (catch_inputs$type == "Mval") {
   #  extract_measures <- parse(text = "getM(methy_tmle)")
   #}
-
-  # ============================================================================
-  # preprocess array data if so requested
-  # ============================================================================
-  if (!is.null(catch_inputs$pre)) {
-    # methy_tmle <- do_preprocess(methy_tmle)
-    message("Support for preprocesing is planned but not yet implemented.")
-  }
 
   #=============================================================================
   # check if there is missing data in the phenotype-level matrix and drop if so
