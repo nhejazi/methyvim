@@ -5,7 +5,7 @@ R/`methyvim`
 
 [![Travis-CI Build Status](https://travis-ci.org/nhejazi/methyvim.svg?branch=master)](https://travis-ci.org/nhejazi/methyvim) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/nhejazi/methyvim?branch=master&svg=true)](https://ci.appveyor.com/project/nhejazi/methyvim) [![Coverage Status](https://img.shields.io/codecov/c/github/nhejazi/methyvim/master.svg)](https://codecov.io/github/nhejazi/methyvim?branch=master) [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip) [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
-> Nonparametric variable importance analysis for the assessment of differential methylation
+> Targeted learning of variable importance measures for the analysis of differential methylation experiments
 
 **Author:** [Nima Hejazi](http://nimahejazi.org)
 
@@ -29,9 +29,11 @@ These methods allow differential methylation effects to be quantified in a manne
 
 See van der Laan and Rose (2011) for a general description of the framework of targeted minimum loss-based estimation.
 
-Note about shrinkage of influence curves, adapting Smyth (2004).
+<!--
+Note about shrinkage of influence curves, adapting @smyth2004linear.
 
 More exposition here....
+-->
 
 ------------------------------------------------------------------------
 
@@ -64,17 +66,16 @@ devtools::install_github("nhejazi/methyvim", ref = "develop")
 
 ------------------------------------------------------------------------
 
-Example
--------
+<!--
+## Example
 
 This is a basic example which shows you how to solve a common problem:
 
-``` r
+
+```r
 ## basic example code
 ```
-
-------------------------------------------------------------------------
-
+-->
 Issues
 ------
 
@@ -121,8 +122,6 @@ After using the `methyvim` R package, please cite both of the following:
 
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
-
 License
 -------
 
@@ -137,8 +136,6 @@ References
 
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public Access: 1059.
 
-Smyth, Gordon K. 2004. “Linear Models and Empirical Bayes Methods for Assessing Differential Expression in Microarray Experiments.” *Statistical Applications in Genetics and Molecular Biology* 3 (1). Walter de Gruyter GmbH: 1–25. doi:[10.2202/1544-6115.1027](https://doi.org/10.2202/1544-6115.1027).
-
-Tuglus, Catherine, and Mark J. van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” *Statistical Applications in Genetics and Molecular Biology* 8 (1). Walter de Gruyter GmbH: 1–15. doi:[10.2202/1544-6115.1397](https://doi.org/10.2202/1544-6115.1397).
+Tuglus, Catherine, and Mark J. van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” *Statistical Applications in Genetics and Molecular Biology* 8 (1). Walter de Gruyter: 1–15. doi:[10.2202/1544-6115.1397](https://doi.org/10.2202/1544-6115.1397).
 
 van der Laan, Mark J., and Sherri Rose. 2011. *Targeted Learning: Causal Inference for Observational and Experimental Data*. Springer Science & Business Media.

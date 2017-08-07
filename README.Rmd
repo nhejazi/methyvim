@@ -21,8 +21,8 @@ knitr::opts_chunk$set(
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
-> Nonparametric variable importance analysis for the assessment of differential
-> methylation
+> Targeted learning of variable importance measures for the analysis of
+> differential methylation experiments
 
 __Author:__ [Nima Hejazi](http://nimahejazi.org)
 
@@ -67,9 +67,11 @@ controlling procedure for multi-stage analyses (FDR-MSA) [@tuglus2009modified].
 See @vdl2011targeted for a general description of the framework of targeted
 minimum loss-based estimation.
 
+<!--
 Note about shrinkage of influence curves, adapting @smyth2004linear.
 
 More exposition here....
+-->
 
 ---
 
@@ -101,6 +103,7 @@ devtools::install_github("nhejazi/methyvim", ref = "develop")
 
 ---
 
+<!--
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
@@ -108,8 +111,7 @@ This is a basic example which shows you how to solve a common problem:
 ```{r example}
 ## basic example code
 ```
-
----
+-->
 
 ## Issues
 
@@ -157,8 +159,6 @@ After using the `methyvim` R package, please cite both of the following:
           title = {methyvim: Differential methylation analysis with targeted
             minimum loss-based estimates of variable importance measures}
         }
-
----
 
 ---
 
