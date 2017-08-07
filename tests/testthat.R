@@ -1,4 +1,4 @@
 library(testthat)
-library(rrbsTMLE)
+library(methyvim)
 
-test_check("rrbsTMLE")
+#test_check("methyvim")

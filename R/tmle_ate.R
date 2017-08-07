@@ -1,4 +1,18 @@
-methyvim_ate <- function(methy_tmle, catch_inputs) {
+#' Differential Methylation with the Average Treatment Effect
+#'
+#' Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
+#' Effect (ATE), treating DNA methylation as an outcome (Y) and the indicated
+#' variable of interest (which ought to be binarized) as a treatment/exposure
+#' (A), using the neighbors of a given CpG site as the adjustment set (W).
+#'
+#' @param methy_tmle An object of class \code{methytmle}...
+#'        ...
+#' @param catch_inputs_ate List...
+#'        ...
+#'
+
+methyvim_ate <- function(methy_tmle,
+                         catch_inputs_ate) {
 
   # make sure that the outcome data is of class numeric
   var_of_interest <- as.numeric(colData(methy_tmle)[, catch_inputs$var])
@@ -6,115 +20,153 @@ methyvim_ate <- function(methy_tmle, catch_inputs) {
     var_of_interest <- as.numeric(var_of_interest)
   }
 
-  # find all cases that have no missing values
-  cases_complete <- complete.cases(colData(methy_tmle))
+  # get names of sites to be added to output object
+  cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
+
+  # object of screened CpG site indices to loop over in TMLE procedure
+  methy_tmle_ind <- seq_along(methy_tmle_screened@screen_ind)
 
   #=============================================================================
   # perform TMLE estimation of L-ATE for all genomic (CpG) sites individually
   # ============================================================================
-  methy_vim_out <- foreach::foreach(site = seq_along(methy_tmle@screen_ind),
+  methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
                                     .packages = c("tmle", "class", "gtools"),
                                     .combine = rbind) %dopar% {
 
-    # find neighbors of target site
+    ### create message for monitoring
+    message(paste("Beginning estimation for site", i_site))
 
-    # scale outcome variable for use with binomial TMLE
-    a = min(var_of_interest, na.rm = TRUE)
-    b = max(var_of_interest, na.rm = TRUE)
-    y_star <- (var_of_interest - a) / (b - a)
+    ### get target site
+    target_site <- methy_tmle_screened@screen_ind[i_site]
 
-    # remove all missing values in case outcome specified via design matrix
-    if(length(y_star) > sum(cases_complete)) {
-      y_star <- as.numeric(y_star[cases_complete])
+    ### get neighboring site
+    in_cluster <- which(methy_tmle_screened@clusters %in%
+                        methy_tmle_screened@clusters[target_site])
+
+    ### remove target site from the set of neighbors
+    only_neighbors <- in_cluster[in_cluster != target_site]
+
+    # get expression measures based on input
+    if (catch_inputs_ate$type == "Beta") {
+      expr <- minfi::getBeta(methy_tmle_screened)
+    } else if (catch_inputs_ate$type == "Mval") {
+      expr <- minfi::getM(methy_tmle_screened)
     }
-    #
-     set.seed(64014617)
-     target <- targetSites[site]
-     cluster <- as.numeric(clusters[target])
 
-     # create vector for target site + matrix for all others WITH cluster ID
-     targetSite <- as.numeric(as.data.frame(assay(methy_tmle)[target, ]))
-     methData <- as.data.frame(cbind(clusters, as.data.frame(assay(methy_tmle))))
+    # get measures at the target site and perform scaling
+    y <- as.numeric(as.matrix(expr[target_site, , drop = FALSE]))
+    a <- min(y, na.rm = TRUE)
+    b <- max(y, na.rm = TRUE)
+    y_star <- (y - a) / (b - a)
 
-     # find neighbors based on clusters and remove target itself from neighbors
-     nearbySites <- subset(methData, methData[, 1] == cluster)
-     nearbySites <- as.data.frame(t(nearbySites[, -1, drop = FALSE]))
-     targetIndex <- as.numeric(which(colSums(nearbySites - targetSite) == 0))
-     nearbySites <- as.data.frame(nearbySites[, -targetIndex, drop = FALSE])
+    ### are there enough neighbors for this estimate to be meaningful
+    if (length(only_neighbors) != 0) {
+      # how many neighbors were there originally?
+      n_neighbors_total <- length(only_neighbors)
 
-     ## rarely, the only neighbor a target site has is itself. In these cases,
-     ## it is obviously not possible to define the TMLE for the parameter of
-     ## interest (since W = NULL).
-     if (dim(nearbySites)[2] == 0) {
-       res <- rep(NA, 7)
-     } else {
-       # remove subjects for which data is not "complete" (based on design)
-       targetSite <- targetSite[cases_complete]
-       nearbySites <- as.data.frame(nearbySites[cases_complete, ])
+      # extract measures for neighboring sites
+      w <- as.data.frame(expr[only_neighbors, , drop = FALSE])
 
-       # discretize gene of interest for use in Local ATE
-       targetScaled <- as.numeric(scale(targetSite))
-       cutoffTargetScaled <- quantile(abs(targetScaled))[as.character(txCutoff)]
-       targetInd <- as.numeric(abs(targetScaled) > cutoffTargetScaled)
+      # quick sanity check of the size of w
+      stopifnot(nrow(w) == length(only_neighbors))
 
-       # discretize measures from nearby sites, dropping bad sites if necessary
-       posMinProp = round(positivityMin / length(targetInd), digits = 3)
-       niceNearbySites <- optimPosit(A = targetInd,
-                                     W = nearbySites,
-                                     posMin = posMinProp)
+      # find maximum number of covariates that can be in W
+      w_max <- round(length(y_star) / catch_inputs_ate$obs_per_covar)
 
-       if (dim(niceNearbySites)[2] == 0) {
-         resNA <- rep(NA, 5)
-         numNeighbors <- 0
-         res <- c(numNeighbors, cutoffTargetScaled, resNA)
-       } else {
-         # find maximum number of neighboring sites that can be controlled for
-         # (based on a heuristic centered around sample size)
-         maxNearbySites <- round(nrow(niceNearbySites) / covarPerSubj)
+      # remove neighbors that are highly correlated with target site
+      if (sum(abs(cor(y, t(w))) > catch_inputs_ate$corr) > 0) {
+        # find neighbors that are highly correlated with the target site
+        neighbors_corr_high <- which(abs(cor(y, t(w))) > catch_inputs_ate$corr)
 
-         # TMLE procedure to estimate variable importance of CpG sites
-         if (ncol(niceNearbySites) < maxNearbySites) {
-           print(paste("Computing Local ATE for site", site, "/", numberSites))
-           out <- tmle(Y = as.numeric(y_star),
-                       A = as.numeric(targetInd),
-                       W = as.data.frame(niceNearbySites),
-                       Q.SL.library = Q_lib,
-                       g.SL.library = g_lib,
-                       family = family,
-                       verbose = FALSE
-                      )
-           numNeighbors <- ncol(as.data.frame(niceNearbySites))
-         } else {
-           print(paste("Computing Local ATE for site", site, "/", numberSites))
-           maxNiceNearbySites <- niceNearbySites[, 1:maxNearbySites]
-           out <- tmle(Y = as.numeric(y_star),
-                       A = as.numeric(targetInd),
-                       W = as.data.frame(maxNiceNearbySites),
-                       Q.SL.library = Q_lib,
-                       g.SL.library = g_lib,
-                       family = family,
-                       verbose = FALSE
-                      )
-           numNeighbors <- ncol(as.data.frame(maxNiceNearbySites))
-         }
-         est <- out$estimates$ATE
-         est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
-         est_rescaled <- est_raw[1:3] * (b - a)
-         var_rescaled <- est_raw[4] * ((b - a)^2)
-         res <- c(numNeighbors, cutoffTargetScaled, est_rescaled, var_rescaled,
-                  est_raw[5])
-       }
-     }
+        # if all neighbors are too highly correlated, we'll simply ignore W
+        if (length(neighbors_corr_high) == length(only_neighbors)) {
+          w_no_corr <- NULL
+          w_in <- as.data.frame(t(rep(1, length(y))))
+        } else if (length(neighbors_corr_high) != 0) {
+          w_no_corr <- TRUE
+          w_in <- as.data.frame(w[-neighbors_corr_high, ])
+        }
+      } else {
+        w_no_corr <- TRUE
+        w_in <- w
+      }
+
+      # use PAM to reduce W by selecting medoids
+      if (!is.null(w_no_corr) & nrow(w_in) > w_max) {
+        message("PAM will be used to reduce W but is not yet implemented.")
+        # write utility function to perform PAM clustering and select medoids
+        # TODO: w <- cluster_w_pam(w)
+      }
+
+      # strictly enforces the assumption of positivity by discretizing W
+      if (!is.null(w_no_corr)) {
+        w_pos <- force_positivity(var_of_interest, t(w_in), pos_min = 0.15)
+      } else {
+        w_pos <- as.data.frame(t(w_in))
+      }
+
+      # get length of remaining neighbors in the adjustment set
+      if (!is.null(w_no_corr)) {
+        n_neighbors_reduced <- ncol(w_pos)
+      } else {
+        n_neighbors_reduced <- 0
+      }
+
+      # maximum correlation among neighbors in the adjustment set
+      max_corr_w <- max(cor(y, t(w)))
+
+      # compute the ATE
+      out <- tmle(Y = as.numeric(y_star),
+                  A = as.numeric(var_of_interest),
+                  W = as.data.frame(w_pos),
+                  Q.SL.library = catch_inputs_ate$tmle_args$Q_lib,
+                  g.SL.library = catch_inputs_ate$tmle_args$g_lib,
+                  family = catch_inputs_ate$tmle_args$family,
+                  verbose = FALSE
+                 )
+    } else {
+      n_neighbors_total <- 0
+      n_neighbors_reduced <- 0
+      max_corr_w <- NA
+
+      # perform estimation with W = 1 if there are no neighbors
+      w_int <- as.data.frame(rep(1, length(var_of_interest)))
+
+      # compute the ATE
+      out <- tmle(Y = as.numeric(y_star),
+                  A = as.numeric(var_of_interest),
+                  W = as.data.frame(w_int),
+                  Q.SL.library = catch_inputs_ate$tmle_args$Q_lib,
+                  g.SL.library = catch_inputs_ate$tmle_args$g_lib,
+                  family = catch_inputs_ate$tmle_args$family,
+                  verbose = FALSE
+                 )
+    }
+
+    # get the influence curve estimates if so requested
+    if (catch_inputs_ate$return_ic) {
+      ate_ic <- out$estimates$IC$IC.ATE
+      ate_g <- out$g$g1W
+      ate_Q <- out$Qstar
+      ic <- list(ate_ic, ate_g, ate_Q)
+    }
+
+    # extract and rescale estimates
+    est <- out$estimates$ATE
+    est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
+    est_rescaled <- est_raw[1:3] * (b - a)
+    var_rescaled <- est_raw[4] * ((b - a)^2)
+    res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
+             n_neighbors_reduced, max_corr_w)
   }
-  methTMLE <- as.data.frame(methyTMLEout)
-  colnames(methTMLE) <- c("Wj", "TxCutoff", "lowerCI", "LocalATE", "upperCI",
-                          "Variance", "pvalue")
-  rownames(methTMLE) <- names(rowRanges(methy_tmle)[targetSites[1:numberSites]])
 
-  # use the FDR-MSA adjustment procedure from Tuglus & van der Laan (2008)
-  totalTests <- nrow(assay(methy_tmle))
-  tmle_pvals <- methTMLE$pvalue
-  tmle_pvals[which(is.na(tmle_pvals))] <- 1
-  resultsFDR <- FDR_msa(pvals = tmle_pvals, totalTests = totalTests)
-  methTMLE$pvalFDR <- resultsFDR
+  #=============================================================================
+  # TMLE procedure is now done, so let's just make the output object pretty...
+  # ============================================================================
+  methy_vim_out <- as.data.frame(methy_vim_out)
+  colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE", "Var",
+                               "pval", "n_neighbors_all", "n_neighbors_w",
+                               "max_corr_w")
+  rownames(methy_vim_out) <- cpg_screened_names
+  return(methy_vim_out)
 }

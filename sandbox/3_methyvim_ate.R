@@ -18,10 +18,14 @@ if (class(var_of_interest) != "numeric") {
 ## run the ATE procedure
 methy_tmle_ind <- seq_along(methy_tmle_screened@screen_ind)
 sites_rand <- sort(sample(methy_tmle_ind, 50))
+sites <- names(methy_tmle_screened[methy_tmle_screened@screen_ind[sites_rand],])
 
 methy_vim_out <- foreach::foreach(i_site = sites_rand,
                                   .packages = c("tmle", "class", "gtools"),
                                   .combine = rbind) %dopar% {
+
+  ### create message for monitoring
+  message(paste("Beginning estimation for site", i_site))
 
   ### get target site
   target_site <- methy_tmle_screened@screen_ind[i_site]
@@ -68,23 +72,36 @@ methy_vim_out <- foreach::foreach(i_site = sites_rand,
       # if all neighbors are too highly correlated, we'll simply ignore W
       if (length(neighbors_corr_high) == length(only_neighbors)) {
         w_no_corr <- NULL
+        w_in <- as.data.frame(t(rep(1, length(y))))
       } else if (length(neighbors_corr_high) != 0) {
-        w_no_corr <- w[-neighbors_corr_high, ]
-      } else {
-        w_no_corr <- w
+        w_no_corr <- TRUE
+        w_in <- as.data.frame(w[-neighbors_corr_high, ])
       }
-      w <- w_no_corr
+    } else {
+      w_no_corr <- TRUE
+      w_in <- w
     }
 
     # use PAM to reduce W by selecting medoids
-    if (nrow(w) > w_max) {
+    if (!is.null(w_no_corr) & nrow(w_in) > w_max) {
       message("PAM will be used to reduce W but is not yet implemented.")
       # write utility function to perform PAM clustering and select medoids
       # TODO: w <- cluster_w_pam(w)
     }
 
     # strictly enforces the assumption of positivity by discretizing W
-    w_pos <- force_positivity(var_of_interest, t(w), pos_min = 0.15)
+    if (!is.null(w_no_corr)) {
+      w_pos <- force_positivity(var_of_interest, t(w_in), pos_min = 0.15)
+    } else {
+      w_pos <- as.data.frame(t(w_in))
+    }
+
+    # get length of remaining neighbors in the adjustment set
+    if (!is.null(w_no_corr)) {
+      n_neighbors_reduced <- ncol(w_pos)
+    } else {
+      n_neighbors_reduced <- 0
+    }
 
     # maximum correlation among neighbors in the adjustment set
     max_corr_w <- max(cor(y, t(w)))
@@ -132,10 +149,9 @@ methy_vim_out <- foreach::foreach(i_site = sites_rand,
   var_rescaled <- est_raw[4] * ((b - a)^2)
   res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
            n_neighbors_reduced, max_corr_w)
-
-  ### create message for monitoring
-  message(paste("Estimation complete for site", i_site))
-
 }
-colnames(methy_vim_out) <- c("lower_ci", "ATE", "upper_ci", "Var", "pval",
-                             "n_neighbors_all", "n_neighbors_w", "max_corr_w")
+methy_vim_out <- as.data.frame(methy_vim_out)
+colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE", "Var",
+                             "pval", "n_neighbors_all", "n_neighbors_w",
+                             "max_corr_w")
+rownames(methy_vim_out) <- sites

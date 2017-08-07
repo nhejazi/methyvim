@@ -1,6 +1,7 @@
 # needed pkgs
 library(here)
 library(minfi)
+library(foreach)
 library(parallel)
 library(doParallel)
 n_cores <- detectCores()
@@ -30,6 +31,7 @@ family = "binomial"  # for logistic fluctuation model with scaled Y
 g_lib = c("SL.mean", "SL.glm", "SL.randomForest")
 Q_lib = c("SL.mean", "SL.randomForest")
 npvi_cutoff = 0.25
+npvi_conf = 0.95
 npvi_descr = list(f = identity, iter = 10, cvControl = 2, nMax = 30,
                   stoppingCriteria = list(mic = 0.001, div = 0.001,
                                           psi = 0.01)
@@ -50,7 +52,7 @@ catch_inputs_ate <- list(data = grs, var = exp_var_int, vim = "ATE",
                         )
 
 # catch inputs for NPVI procedure
-catch_inputs_npvi <- list(data = grs, var = exp_var_int, vim = "NPVI",
+catch_inputs_npvi <- list(data = grs, var = out_var_int, vim = "NPVI",
                           type = type, window = window_bp, corr = corr_max,
                           obs_per_covar = obs_per_covar, par = parallel,
                           filter = filter, filter_cutoff = cutoff,
@@ -59,6 +61,7 @@ catch_inputs_npvi <- list(data = grs, var = exp_var_int, vim = "NPVI",
                                            g_lib = g_lib,
                                            Q_lib = Q_lib,
                                            npvi_cutoff = npvi_cutoff,
+                                           npvi_conf = npvi_conf,
                                            npvi_descr = npvi_descr
                                           )
                          )

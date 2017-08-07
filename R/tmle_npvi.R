@@ -1,156 +1,202 @@
-methyvim_npvi <- function(sumExp,
-                           clusters,
-                           outcomeVar,
-                           targetSites,
-                           type = "exposure",
-                           confid_level = 0.95,
-                           nullMode = "support",
-                           nullSupport = 0.20,
-                           nullRange = c(-2, 2),
-                           numberSites = NULL,
-                           parallel = TRUE,
-                           cvControl = 2,
-                           nMax = 30,
-                           ...
-                          ) {
+#' Differential Methylation with a Nonparametric Variable Importance Measure
+#'
+#' Computes the Targeted Minimum Loss-Based Estimate of a Nonparametric
+#' Variable Importance Measure (NPVI) of a continous exposure, treating DNA
+#' methylation as said exposure (X) and the indicated variable of interest
+#' as an outcome (Y), using the neighbors of a given CpG site as the adjustment
+#' set (W).
+#'
+#' @param methy_tmle An object of class \code{methytmle}...
+#'        ...
+#' @param catch_inputs_ate List...
+#'        ...
+#'
 
-  # ============================================================================
-  # create TMLE-NPVI description list for convenient input later
-  # ============================================================================
-  descr <- list(f = identity, iter = 10, cvControl = cvControl, nMax = nMax,
-                stoppingCriteria = list(mic = 0.001, div = 0.001, psi = 0.01))
+methyvim_ate <- function(methy_tmle,
+                         catch_inputs_ate) {
 
-  #=============================================================================
-  # heuristics for getting the value of the outcome variable
-  # ============================================================================
-  if (length(outcomeVar) == 1) {
-    # assume referring to column of design matrix if a scalar
-    outcomeValues <- as.data.frame(colData(sumExp))[, outcomeVar]
-  } else if (length(outcomeVar) > 1) {
-    # assume actual outcome data if a vector
-    outcomeValues <- outcomeVar
-    # NOTE: add r2weight here?
-  } else {
-    warning("inappropriate value specified for 'outcomeVar' argument")
+  # extract the variable of interest and ensure numeric
+  var_of_interest <- colData(methy_tmle_screened)[, catch_inputs_npvi$var]
+  if (class(var_of_interest) != "numeric") {
+    var_of_interest <- as.numeric(var_of_interest)
   }
 
-  # make sure that the outcome data is of class numeric
-  if (class(outcomeValues) != "numeric") {
-    warning("outcome not numeric...coercing to numeric, but may cause errors.")
-    outcomeValues <- as.numeric(outcomeValues)
-  }
-
-  # find all cases that have no missing values
-  cases_complete <- complete.cases(colData(sumExp))
-
-  # remove all missing values if necessary
-  if (length(outcomeValues) > sum(cases_complete)) {
-    y <- as.numeric(outcomeValues[cases_complete])
-  } else {
-    y <- as.numeric(outcomeValues)
-  }
-
-  # ============================================================================
-  # get confidence level and sample size
-  # ============================================================================
+  # setup NPVI params
+  confid_level <- catch_inputs_npvi$tmle_args$npvi_conf
+  descr <- catch_inputs_npvi$tmle_args$npvi_descr
   alpha <- (1 - confid_level)
-  sampSize <- length(y)
+  samp_size <- length(var_of_interest)
 
-  #=============================================================================
-  # set number of sites to be tested...(just pick the first n sites)
-  # ============================================================================
-  if (is.null(numberSites)) {
-    numberSites <- length(targetSites)
-  }
+  # get names of sites to be added to output object
+  cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
+
+  # object of screened CpG site indices to loop over in TMLE procedure
+  methy_tmle_ind <- seq_along(methy_tmle_screened@screen_ind)
 
   #=============================================================================
   # perform TMLE estimation of L-ATE for all genomic (CpG) sites individually
   # ============================================================================
-  methyTMLEout <- foreach::foreach(site = 1:numberSites,
-                                   .packages = c("tmle.npvi", "SuperLearner"),
-                                   .combine = rbind) %dopar% {
-     set.seed(64014617)
-     target <- targetSites[site]
-     cluster <- as.numeric(clusters[target])
+  #
+  methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+                                    .packages = c("tmle.npvi", "SuperLearner"),
+                                    .combine = rbind) %dopar% {
 
-     # create vector for target site + matrix for all others WITH cluster ID
-     targetSite <- as.numeric(as.data.frame(assay(sumExp)[target, ]))
-     methData <- as.data.frame(cbind(clusters, as.data.frame(assay(sumExp))))
+    ### create message for monitoring
+    message(paste("Beginning estimation for site", i_site))
 
-     # find neighbors based on clusters and remove target itself from neighbors
-     nearbySites <- subset(methData, methData[, 1] == cluster)
-     nearbySites <- as.data.frame(t(nearbySites[, -1, drop = FALSE]))
-     targetIndex <- as.numeric(which(colSums(nearbySites - targetSite) == 0))
-     nearbySites <- as.data.frame(nearbySites[, -targetIndex, drop = FALSE])
+    ### get target site
+    target_site <- methy_tmle_screened@screen_ind[i_site]
 
-     ## rarely, the only neighbor a target site has is itself. In these cases,
-     ## it is obviously not possible to define a TMLE for the parameter of
-     ## interest (since W = NULL).
-     if (dim(nearbySites)[2] == 0) {
-       res <- rep(NA, 6)
-     } else {
-       # remove subjects for which data is not "complete" (based on design)
-       targetSite <- targetSite[cases_complete]
-       nearbySites <- as.data.frame(nearbySites[cases_complete, ])
+    ### get neighboring site
+    in_cluster <- which(methy_tmle_screened@clusters %in%
+                        methy_tmle_screened@clusters[target_site])
 
-       # set values in the null range to 0 for the target site
-       if (nullMode == "scientific") {
-         nullCount <- sum(targetSite > nullRange[1] & targetSite < nullRange[2])
-         if (nullCount < round(0.2 * length(targetSite))) {
-           warning("fewer than 20% of target sites in the null range.")
-           message(paste("NPVI estimation procedure unstable for site", site))
-           badSite <- TRUE
-         } else {
-           badSite <- FALSE
-         }
-         nullObs <- which(targetSite > nullRange[1] & targetSite < nullRange[2])
-         targetSite[nullObs] <- 0
-       } else if (nullMode == "support") {
-         nullObs <- which(abs(targetSite) < quantile(abs(targetSite),
-                                                         nullSupport))
-         targetSite[nullObs] <- 0
-         badSite <- FALSE
-       }
-     }
+    ### remove target site from the set of neighbors
+    only_neighbors <- in_cluster[in_cluster != target_site]
 
-       # set up CpG-specific matrix for use with TMLE-NPVI
-       #y <- (y - max(y)) / (max(y) - min(y))
-       siteDataIn <- as.data.frame(cbind(y, targetSite, nearbySites))
-       colnames(siteDataIn) <- c("Y", "X",
-                                 paste0("W", 1:(ncol(siteDataIn) - 2)))
+    # get expression measures based on input
+    if (catch_inputs_npvi$type == "Beta") {
+      expr <- minfi::getBeta(methy_tmle_screened)
+    } else if (catch_inputs_npvi$type == "Mval") {
+      expr <- minfi::getM(methy_tmle_screened)
+    }
 
-       # run TMLE-NPVI using the nearly created input data structure
-       npviOut <- tmle.npvi(obs = siteDataIn,
-                            f = descr$f,
-                            flavor = "superLearning",
-                            stoppingCriteria = descr$stoppingCriteria,
-                            cvControl = descr$cvControl,
-                            nMax = descr$nMax,
-                           )
+    ### are there enough neighbors for this estimate to be meaningful
+    if (length(only_neighbors) != 0) {
+      # how many neighbors were there originally?
+      n_neighbors_total <- length(only_neighbors)
 
-       # change confidence level if not default of 95%
-       if (confid_level != 0.95) {
-         setConfLevel(npviOut, confid_level)
-       }
+      # get measures at the target site and cutoff for null value in NPVI
+      x <- as.numeric(as.matrix(expr[target_site, ]))
+      cutoff <- quantile(abs(x),
+                         probs = catch_inputs_npvi$tmle_args$npvi_cutoff)
+      tx_zero <- which(abs(x) < cutoff)
 
-       # extract results from "npviOut" for a SINGLE SITE
-       paramEst <- getPsi(npviOut)
-       paramVar <- (getPsiSd(npviOut)^2)
-       pval <- getPValue(npviOut)
-       names(pval) <- NULL
-       CI = paramEst + c(-1,1)*getSic(npviOut)*qnorm(1-alpha/2)/sqrt(sampSize)
-       res <- c(badSite, CI[1], paramEst, CI[2], paramVar, pval)
-     }
+      # extract measures for neighboring sites
+      w <- as.data.frame(expr[only_neighbors, , drop = FALSE])
+
+      # quick sanity check of the size of w
+      stopifnot(nrow(w) == length(only_neighbors))
+
+      # find maximum number of covariates that can be in W
+      w_max <- round(length(var_of_interest) / catch_inputs_npvi$obs_per_covar)
+
+      # remove neighbors that are highly correlated with target site
+      if (sum(abs(cor(x, t(w))) > catch_inputs_npvi$corr) > 0) {
+        # find neighbors that are highly correlated with the target site
+        neighbors_corr_high <- which(abs(cor(x, t(w))) > catch_inputs_npvi$corr)
+
+        # if all neighbors are too highly correlated, we'll simply ignore W
+        if (length(neighbors_corr_high) == length(only_neighbors)) {
+          w_no_corr <- NULL
+          w_in <- as.data.frame(t(rep(1, length(x))))
+        } else if (length(neighbors_corr_high) != 0) {
+          w_no_corr <- TRUE
+          w_in <- as.data.frame(w[-neighbors_corr_high, ])
+        }
+      } else {
+        w_no_corr <- TRUE
+        w_in <- w
+      }
+
+      # use PAM to reduce W by selecting medoids
+      if (!is.null(w_no_corr) & nrow(w_in) > w_max) {
+        message("PAM will be used to reduce W but is not yet implemented.")
+        # write utility function to perform PAM clustering and select medoids
+        # TODO: w <- cluster_w_pam(w)
+      }
+
+      # maximum correlation among neighbors in the adjustment set
+      max_corr_w <- max(cor(x, t(w)))
+
+      # set the values below the quantile cutoff to zero
+      x[tx_zero] <- 0
+
+      # strictly enforces the assumption of positivity by discretizing W
+      #if (!is.null(w_no_corr)) {
+      #  x_bin <- as.numeric(x != 0)
+      #  w_pos <- force_positivity(x_bin, t(w_in), pos_min = 0.15)
+      #} else {
+      #  w_pos <- as.data.frame(t(w_in))
+      #}
+
+      # get length of remaining neighbors in the adjustment set
+      if (!is.null(w_no_corr)) {
+        n_neighbors_reduced <- nrow(w_in)
+      } else {
+        n_neighbors_reduced <- 0
+      }
+
+      # create observed data matrix for input into tmle.npvi
+      obs_data_in <- as.data.frame(cbind(var_of_interest, x, t(w_in)))
+      colnames(obs_data_in) <- c("Y", "X",
+                                 paste0("W", 1:(ncol(obs_data_in) - 2)))
+
+      # compute the NPVI
+      out <- tmle.npvi(obs = obs_data_in,
+                       f = descr$f,
+                       flavor = "superLearning",
+                       stoppingCriteria = descr$stoppingCriteria,
+                       cvControl = descr$cvControl,
+                       nMax = descr$nMax,
+                      )
+    } else {
+      n_neighbors_total <- 0
+      n_neighbors_reduced <- 0
+      max_corr_w <- NA
+
+      # get measures at the target site and cutoff for null value in NPVI
+      x <- as.numeric(as.matrix(expr[target_site, ]))
+      cutoff <- quantile(abs(x),
+                         probs = catch_inputs_npvi$tmle_args$npvi_cutoff)
+      tx_zero <- which(abs(x) < cutoff)
+      x[tx_zero] <- 0
+
+      # perform estimation with W = 1 if there are no neighbors
+      # NOTE: apparently need at least 2 W columns for NPVI to function
+      w_int <- as.data.frame(replicate(2, rep(1, length(var_of_interest))))
+
+      # create observed data matrix for input into tmle.npvi
+      obs_data_in <- as.data.frame(cbind(var_of_interest, x, w_int))
+      colnames(obs_data_in) <- c("Y", "X",
+                                 paste0("W", 1:(ncol(obs_data_in) - 2)))
+
+      # compute the NPVI
+      out <- tmle.npvi(obs = obs_data_in,
+                       f = descr$f,
+                       flavor = "superLearning",
+                       stoppingCriteria = descr$stoppingCriteria,
+                       cvControl = descr$cvControl,
+                       nMax = descr$nMax,
+                      )
+    }
+
+    # get the influence curve estimates if so requested
+    if (catch_inputs_npvi$return_ic) {
+      npvi_ic <- out$estimates$IC$IC.ATE
+      npvi_g <- out$g$g1W
+      npvi_Q <- out$Qstar
+      ic <- list(npvi_ic, npvi_g, npvi_Q)
+    }
+
+    # change confidence level if not default of 95%
+    if (confid_level != 0.95) {
+      setConfLevel(out, confid_level)
+    }
+
+    # extract results from NPVI for a SINGLE SITE
+    # NOTE: it's unclear how to properly extract the variance from NPVI
+    npvi_est <- getPsi(out)
+    pval <- getPValue(out)
+    names(pval) <- NULL
+    CI = npvi_est + c(-1,1) * getSic(out) * qnorm(1 - alpha/2) / sqrt(samp_size)
+    res <- c(CI[1], npvi_est, CI[2], pval)
+    out <- c(res, n_neighbors_total, n_neighbors_w, max_corr_w)
   }
-  methTMLE <- as.data.frame(methyTMLEout)
-  colnames(methTMLE) <- c("stableNPVI", "lowerCI", "estNPVI", "upperCI",
-                          "Variance", "pvalue")
-  rownames(methTMLE) <- names(rowRanges(sumExp)[targetSites[1:numberSites]])
-
-  # use the FDR-MSA adjustment procedure from Tuglus & van der Laan (2008)
-  totalTests <- nrow(assay(sumExp))
-  tmle_pvals <- methTMLE$pvalue
-  tmle_pvals[which(is.na(tmle_pvals))] <- 1
-  resultsFDR <- FDR_msa(pvals = tmle_pvals, totalTests = totalTests)
-  methTMLE$pvalFDR <- resultsFDR
+  methy_vim_out <- as.data.frame(methy_vim_out)
+  colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE",
+                               "pval", "n_neighbors_all", "n_neighbors_w",
+                               "max_corr_w")
+  rownames(methy_vim_out) <- cpg_screened_names
+  return(methy_vim_out)
 }
