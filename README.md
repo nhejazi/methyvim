@@ -122,6 +122,13 @@ After using the `methyvim` R package, please cite both of the following:
 
 ------------------------------------------------------------------------
 
+Related
+-------
+
+-   [R/`methyvimData`](https://github.com/nhejazi/methyvimData) - R package with sample experimental DNA methylation data for use as an example with this analysis package.
+
+------------------------------------------------------------------------
+
 License
 -------
 
