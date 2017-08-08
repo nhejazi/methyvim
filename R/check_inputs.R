@@ -30,7 +30,7 @@ check_inputs <- function(catch_inputs) {
   }
 
   if (catch_inputs$tmle_type == "glm") {
-    if (catch_inputs$vim == "ATE")
+    if (catch_inputs$vim == "ATE") {
       # set GLM libraries for "tmle" package
       g_lib <- "SL.mean"
       Q_lib <- "SL.glm"

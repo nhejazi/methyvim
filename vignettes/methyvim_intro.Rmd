@@ -1,0 +1,50 @@
+---
+title: "Targeted Learning of Variable Importance in Differential Methylation"
+author: "Nima Hejazi"
+date: "`r Sys.Date()`"
+output:
+  BiocStyle::html_document2
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{Targeted Learning of Variable Importance in Differential Methylation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+...
+
+---
+
+## Preliminaries
+
+...
+
+---
+
+## Quantifying the Effect of an Exposure on DNA Methylation
+
+### The Average Treatment Effect as Variable Importance Measure
+
+...
+
+---
+
+## Quantifying the Effect of DNA Methylation on an Outcome
+
+### A Nonparametric Variable Importance Measure for Continuous Exposures
+
+...[@chambaz2012estimation]...
+
+---
+
+## Session Information
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
+
+---
+
+## References
