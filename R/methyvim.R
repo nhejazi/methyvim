@@ -1,3 +1,7 @@
+#######################---------------------########################
+#### this is how you document R functions #####
+#######################---------------------########################
+
 #' Differential Methylation Statistics with Variable Importance Measures
 #'
 #' Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
@@ -23,22 +27,24 @@
 #'        be used as the observed data in the estimation procedure, either Beta
 #'        values or M-values. The data are accessed via \code{minfi::getBeta} or
 #'        \code{minfi::getM}.
-#' @param filter Character indicating...
-#'        ...
-#' @param filter_cutoff Numeric indicating...
-#'        ...
-#' @param window_bp Numeric indicating...
-#'        ...
-#' @param corr_max Numeric indicating...
-#'        ...
-#' @param obs_per_covar Numeric indicating...
-#'        ...
+#' @param filter Character indicating the model to be implemented when screening
+#'        the \code{data_grs} object for CpG sites. Currently 
+#'        supported options are limma, npvi, and adaptest.  (?)
+#' @param filter_cutoff Numeric indicating the p-value cutoff that defines which
+#'        sites pass through the \code{filter}.
+#' @param window_bp Numeric indicating the maximum distance between two sites
+#'        for them to be considered neighboring sites (?)
+#' @param corr_max Numeric indicating the maximum correlation that a neighboring
+#'        site can have with the target site.
+#' @param obs_per_covar Numeric indicating the number of observations needed for
+#'        for covariate included in (W/downstream analysis). This ensures the
+#'        data is sufficient to control for the covariates.
 #' @param parallel Logical or Numeric indicating...
 #'        ...
-#' @param return_ic Logical indicating...
-#'        ...
-#' @param shrink_ic Logical indicating...
-#'        ...
+#' @param return_ic Logical indicating whether an influence curve estimate
+#'          should be returned for each site that passed through the filter.
+#' @param shrink_ic Logical indicating whether limma should be applied to reduce
+#'        the variance in the ic based estimates in \code{return_ic}.
 #' @param tmle_type Character indicating the general class of regression models
 #'        to be used in fitting the propensity score and outcome regressions.
 #'        This is generally a shorthand and is overridden by \code{tmle_args} if
@@ -83,7 +89,8 @@ methyvim <- function(data_grs,
                                       npvi_cutoff = 0.25,
                                       npvi_descr = NULL)
                     ) {
-
+# if you say glm it will choose mean and glm
+# if you choose super learner it will choose more algorithms
   # ============================================================================
   # catch input and return in output object for user convenience
   # ============================================================================

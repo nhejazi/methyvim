@@ -1,7 +1,7 @@
-# define methytmle class
+# define methytmle class, core class in the package
 .methytmle <- methods::setClass(
        Class = "methytmle",
-       slots = list(call = "call",
+       slots = list(call = "call",  # so the user can remember the args they pass in
                     screen_ind = "numeric",
                     clusters = "numeric",
                     g = "matrix",
@@ -11,10 +11,12 @@
        contains = "GenomicRatioSet"
 )
 
-# set up methyvim object
+# set up methyvim object, hacky to create something of class call
 call <- "testing123"
 class(call) <- "call" # hacking the call object
 methy_tmle <- .methytmle(catch_inputs_ate$data)
+
+#data was originally a genomic ratio set now its a methytmle object
 methy_tmle@call <- call
 
 # using LIMMA for screening
@@ -38,6 +40,8 @@ limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   tt_out <- limma::topTable(mod_fit, coef = 2, num = Inf, sort.by = "none")
   indices_pass <- which(tt_out$P.Value < cutoff)
 
+  #takes in methytmle object and returns same but with screen slot filled
+
   # add to appropriate slot in the methytmle input object
   methytmle@screen_ind <- indices_pass
   return(methytmle)
@@ -54,6 +58,7 @@ cluster_sites <- function(methy_tmle, window_size = 1000) {
   methy_tmle@clusters <- as.numeric(clusters)
   return(methy_tmle)
 }
+# same as above, fills in cluster slot
 
 # force positivity assumption to hold
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
@@ -83,3 +88,19 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   }
   return(out)
 }
+
+# advanced vingette discussing internals of the package
+# not writing about force positivity in the
+# treatment (discrete) and W is a matrix of cont measures assoc w each of the
+# vars in w where vars are columns and rows are observed data
+# posmin tells you the min mass you want thats created when you discretize
+# a given variable of w and discretize a
+# pos min created when we look at the
+# w min tells you the min nuber of obs to match a cont observation to
+# make sure each cell has 10% of the observations
+# if thats not true it will rediscretize to nine levels
+# does this for all variables of w
+# now each of the obs data are now replaced with a level of that obs while
+# maintaining the positivity
+
+# somehow this shit is related to cTMLE
