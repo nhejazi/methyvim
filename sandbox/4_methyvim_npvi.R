@@ -23,7 +23,7 @@ samp_size <- length(var_of_interest)
 
 # run the NPVI procedure
 methy_tmle_ind <- seq_along(methy_tmle_screened@screen_ind)
-sites_rand <- sort(sample(methy_tmle_ind, 50))
+sites_rand <- sort(sample(methy_tmle_ind, 25))
 sites <- names(methy_tmle_screened[methy_tmle_screened@screen_ind[sites_rand],])
 
 methy_vim_out <- foreach::foreach(i_site = sites_rand,
@@ -117,7 +117,13 @@ methy_vim_out <- foreach::foreach(i_site = sites_rand,
 
     # create observed data matrix for input into tmle.npvi
     obs_data_in <- as.data.frame(cbind(var_of_interest, x, t(w_in)))
-    colnames(obs_data_in) <- c("Y", "X", paste0("W", 1:(ncol(obs_data_in) - 2)))
+    if (nrow(w_in) > 1) {
+      colnames(obs_data_in) <- c("Y", "X",
+                                 paste0("W", 1:(ncol(obs_data_in) - 2)))
+    } else {
+      colnames(obs_data_in) <- c("Y", "X", "W")
+    }
+
 
     # compute the NPVI
     out <- tmle.npvi(obs = obs_data_in,
@@ -144,7 +150,7 @@ methy_vim_out <- foreach::foreach(i_site = sites_rand,
 
     # create observed data matrix for input into tmle.npvi
     obs_data_in <- as.data.frame(cbind(var_of_interest, x, w_int))
-    colnames(obs_data_in) <- c("Y", "X", paste0("W", 1:(ncol(obs_data_in) - 2)))
+    colnames(obs_data_in) <- c("Y", "X", "W")
 
     # compute the NPVI
     out <- tmle.npvi(obs = obs_data_in,
@@ -180,5 +186,5 @@ methy_vim_out <- foreach::foreach(i_site = sites_rand,
 }
 methy_vim_out <- as.data.frame(methy_vim_out)
 colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE", "pval",
-                             "n_neighbors_all", "n_neighbors_w", "max_corr_w")
+                             "n_neighbors_all", "n_neighbors_w", "max_corr_all")
 rownames(methy_vim_out) <- sites

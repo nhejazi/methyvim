@@ -28,8 +28,8 @@ parallel = TRUE
 return_ic = FALSE
 shrink_ic = FALSE
 family = "binomial"  # for logistic fluctuation model with scaled Y
-g_lib = c("SL.mean", "SL.glm", "SL.randomForest")
-Q_lib = c("SL.mean", "SL.randomForest")
+g_lib = c("SL.mean", "SL.glm", "SL.glmnet", "SL.polymars", "SL.nnet")
+Q_lib = c("SL.mean", "SL.glm", "SL.nnet")
 npvi_cutoff = 0.25
 npvi_conf = 0.95
 npvi_descr = list(f = identity, iter = 10, cvControl = 2, nMax = 30,

@@ -17,7 +17,7 @@ if (class(var_of_interest) != "numeric") {
 
 ## run the ATE procedure
 methy_tmle_ind <- seq_along(methy_tmle_screened@screen_ind)
-sites_rand <- sort(sample(methy_tmle_ind, 50))
+sites_rand <- sort(sample(methy_tmle_ind, 25))
 sites <- names(methy_tmle_screened[methy_tmle_screened@screen_ind[sites_rand],])
 
 methy_vim_out <- foreach::foreach(i_site = sites_rand,
@@ -153,5 +153,5 @@ methy_vim_out <- foreach::foreach(i_site = sites_rand,
 methy_vim_out <- as.data.frame(methy_vim_out)
 colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE", "Var",
                              "pval", "n_neighbors_all", "n_neighbors_w",
-                             "max_corr_w")
+                             "max_corr_all")
 rownames(methy_vim_out) <- sites

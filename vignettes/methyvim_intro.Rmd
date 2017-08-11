@@ -19,7 +19,16 @@ vignette: >
 
 ## Preliminaries
 
-...
+First, we'll load the `methyvim` package and the example data contained in the
+`methyvimData` package that accompanies it.
+
+```{r load_pkgs}
+if(!("methyvimData" %in% installed.packages())) {
+  devtools::install_github("nhejazi/methyvimData")
+}
+library(methyvimData)
+library(methyvim)
+```
 
 ---
 

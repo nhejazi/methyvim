@@ -129,8 +129,12 @@ methyvim_ate <- function(methy_tmle,
 
       # create observed data matrix for input into tmle.npvi
       obs_data_in <- as.data.frame(cbind(var_of_interest, x, t(w_in)))
-      colnames(obs_data_in) <- c("Y", "X",
-                                 paste0("W", 1:(ncol(obs_data_in) - 2)))
+      if (nrow(w_in) > 1) {
+        colnames(obs_data_in) <- c("Y", "X",
+                                   paste0("W", 1:(ncol(obs_data_in) - 2)))
+      } else {
+        colnames(obs_data_in) <- c("Y", "X", "W")
+      }
 
       # compute the NPVI
       out <- tmle.npvi(obs = obs_data_in,
@@ -158,8 +162,7 @@ methyvim_ate <- function(methy_tmle,
 
       # create observed data matrix for input into tmle.npvi
       obs_data_in <- as.data.frame(cbind(var_of_interest, x, w_int))
-      colnames(obs_data_in) <- c("Y", "X",
-                                 paste0("W", 1:(ncol(obs_data_in) - 2)))
+      colnames(obs_data_in) <- c("Y", "X", "W")
 
       # compute the NPVI
       out <- tmle.npvi(obs = obs_data_in,
