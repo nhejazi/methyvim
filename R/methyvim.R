@@ -37,11 +37,15 @@
 #'        data is sufficient to control for the covariates.
 #' @param parallel Logical indicating whether parallelization ought to be used.
 #'        See the documentation of \code{set_parallel} for more information, as
-#'        this arugment is passed directly to that function.
-#' @param bppar_type Character indicating the type of parallelization to be used
-#'        from the list available via the \code{future} package. See the
+#'        this arugment is passed directly to that internal function.
+#' @param future_param Character indicating the type of parallelization to be
+#'        used from the list available via the \code{future} package. See the
 #'        documentation for \code{set_parallel} for more information, as this
-#'        argument is passed directly to that function.
+#'        argument is passed directly to that internal function.
+#' @param bppar_type Character specifying the type of backend to be used for
+#'        parallelization via \code{BiocParallel}. See the documentation for
+#'        \code{set_parallel} for more information, as this argument is passed
+#'        directly to that internal function.
 #' @param return_ic Logical indicating whether an influence curve estimate
 #'          should be returned for each site that passed through the filter.
 #' @param shrink_ic Logical indicating whether limma should be applied to reduce
@@ -80,6 +84,7 @@ methyvim <- function(data_grs,
                      corr_max = 0.35,
                      obs_per_covar = 15,
                      parallel = TRUE,
+                     future_param = NULL,
                      bppar_type = NULL,
                      return_ic = FALSE,
                      shrink_ic = FALSE,
@@ -114,6 +119,7 @@ methyvim <- function(data_grs,
                        corr = corr_max,
                        obs_per_covar = obs_per_covar,
                        par = parallel,
+                       future = future_param,
                        bppar = bppar_type,
                        return_ic = return_ic,
                        shrink_ic = shrink_ic,
@@ -132,7 +138,9 @@ methyvim <- function(data_grs,
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  set_parallel(parallel = catch_inputs$par, bppar_type = catch_inputs$bppar)
+  set_parallel(parallel = catch_inputs$par,
+               future_param = catch_inputs$future,
+               bppar_type = catch_inputs$bppar)
 
   # ============================================================================
   # operate on the type of data specified

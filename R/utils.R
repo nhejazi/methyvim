@@ -65,6 +65,11 @@ fdr_msa <- function(pvals, total_obs) {
 #'        the documentation for \code{future::plan}. If the previous argument
 #'        (\code{parallel}) is set to \code{FALSE}, this argument is ignored and
 #'        sequential computation is invoked via \code{future::sequential}.
+#' @param bppar_type Character specifying the type of backend to be used with
+#'        the parallelization invoked by \code{BiocParallel}. Consult the manual
+#'        page for \code{BiocParallel::BiocParallelParam} for possible types and
+#'        descriptions on their appropriate uses. The default for this argument
+#'        is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.
 #'
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
@@ -72,8 +77,9 @@ fdr_msa <- function(pvals, total_obs) {
 #'
 #' @export
 #'
-set_parallel <- function(parallel,
-                         future_param = NULL) {
+set_parallel <- function(parallel = c(TRUE, FALSE),
+                         future_param = NULL,
+                         bppar_type = NULL) {
   # invoke a future-based backend
   doFuture::registerDoFuture()
 
