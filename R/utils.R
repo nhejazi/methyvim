@@ -52,32 +52,53 @@ fdr_msa <- function(pvals, total_obs) {
 
 ################################################################################
 
-#' Set up parallelization
+#' Easily set up parallelization
 #'
-#' @param parallel Numeric or Logical indicating either the number of cores to
-#'        use in parallelized computation or whether parallelization ought to be
-#'        used at all. If \code{TRUE}, all available cores are found via a call
-#'        to \code{parallel::detectCores} and used. If \code{FALSE}, computation
-#'        is performed sequentially (with single core) and a warning is issued.
+#' @param parallel Logical indicating whether parallelization ought to be used.
+#'        Parallelization is invoked via a combination of \code{BiocParallel}
+#'        and \code{future}. If \code{TRUE} the default method uses multiprocess
+#'        evaluation, though other \code{future::plan}s may be specified using
+#'        an optional argument. If \code{FALSE}, sequential computation is used
+#'        and a warning message is issued.
+#' @param future_param Character (if not \code{NULL}) specifying a particular
+#'        parallelization approach to be used. For a list of the options, see
+#'        the documentation for \code{future::plan}. If the previous argument
+#'        (\code{parallel}) is set to \code{FALSE}, this argument is ignored and
+#'        sequential computation is invoked via \code{future::sequential}.
 #'
-#' @importFrom parallel detectCores
-#' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach "%dopar%"
+#' @importFrom BiocParallel register bpprogressbar DoparParam
+#' @importFrom future plan multiprocess sequential
+#' @importFrom doFuture registerDoFuture
 #'
-set_parallel <- function(parallel) {
-  if (class(parallel) == "numeric") doParallel::registerDoParallel(parallel)
-  if (class(parallel) == "logical") {
-    nCores <- parallel::detectCores()
-    if (nCores > 1) {
-      doParallel::registerDoParallel(nCores)
+#' @export
+#'
+set_parallel <- function(parallel,
+                         future_param = NULL) {
+  # invoke a future-based backend
+  doFuture::registerDoFuture()
+
+  if (parallel == TRUE) {
+    if (!is.null(future_param)) {
+      set_future_param <- parse(text = paste0("future", "::", future_param))
+      future::plan(eval(set_future_param))
     } else {
-      warning("option 'parallel' is set to TRUE but only 1 core detected.")
+      future::plan(future::multiprocess)
     }
-    if (parallel == FALSE) {
-      warning("parallelization has been set to FALSE: the estimation procedure
-               will likely take on the order of days to run to completion.")
-    }
+  } else if (parallel == FALSE) {
+    warning(paste("Sequential evaluation is strongly discouraged.",
+                  "\n Proceed with caution."))
+    future::plan(future::sequential)
   }
+  if (!is.null(bppar_type)) {
+    bp_type <- eval(parse(text = paste0("BiocParallel", "::",
+                                        bppar_type, "()")))
+  } else {
+    bp_type <- BiocParallel::DoparParam()
+  }
+  # try to use a progress bar is supported in the parallelization plan
+  BiocParallel::bpprogressbar(bp_type) <- TRUE
+  # register the chosen parallelization plan
+  BiocParallel::register(bp_type, default = TRUE)
 }
 
 ################################################################################

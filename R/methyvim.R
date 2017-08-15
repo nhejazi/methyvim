@@ -1,7 +1,3 @@
-#######################---------------------########################
-#### this is how you document R functions #####
-#######################---------------------########################
-
 #' Differential Methylation Statistics with Variable Importance Measures
 #'
 #' Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
@@ -39,8 +35,13 @@
 #' @param obs_per_covar Numeric indicating the number of observations needed for
 #'        for covariate included in (W/downstream analysis). This ensures the
 #'        data is sufficient to control for the covariates.
-#' @param parallel Logical or Numeric indicating...
-#'        ...
+#' @param parallel Logical indicating whether parallelization ought to be used.
+#'        See the documentation of \code{set_parallel} for more information, as
+#'        this arugment is passed directly to that function.
+#' @param bppar_type Character indicating the type of parallelization to be used
+#'        from the list available via the \code{future} package. See the
+#'        documentation for \code{set_parallel} for more information, as this
+#'        argument is passed directly to that function.
 #' @param return_ic Logical indicating whether an influence curve estimate
 #'          should be returned for each site that passed through the filter.
 #' @param shrink_ic Logical indicating whether limma should be applied to reduce
@@ -79,6 +80,7 @@ methyvim <- function(data_grs,
                      corr_max = 0.35,
                      obs_per_covar = 15,
                      parallel = TRUE,
+                     bppar_type = NULL,
                      return_ic = FALSE,
                      shrink_ic = FALSE,
                      tmle_type = c("glm", "super_learning"),
@@ -112,6 +114,7 @@ methyvim <- function(data_grs,
                        corr = corr_max,
                        obs_per_covar = obs_per_covar,
                        par = parallel,
+                       bppar = bppar_type,
                        return_ic = return_ic,
                        shrink_ic = shrink_ic,
                        tmle_type = tmle_type,
@@ -129,9 +132,7 @@ methyvim <- function(data_grs,
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  if (catch_inputs$par) {
-    set_parallel()
-  }
+  set_parallel(parallel = catch_inputs$par, bppar_type = catch_inputs$bppar)
 
   # ============================================================================
   # operate on the type of data specified
