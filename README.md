@@ -11,23 +11,23 @@ R/`methyvim`
 
 ------------------------------------------------------------------------
 
-Description
------------
+What's `methyvim`?
+------------------
 
-`methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistical target parameters that arise in causal inference.
+`methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistical estimable target parameters that arise in causal inference.
 
 The statistical methodology implemented computes targeted minimum loss-based estimates of well-studied variable importance measures:
 
-1.  The average treatment effect (ATE) for discrete exposures/treatments,
-2.  A nonparametric variable importance measure (NPVI) for continuous exposures (Chambaz, Neuvial, and van der Laan 2012).
+1.  The *average treatment effect* (ATE) for discrete exposures/treatments,
+2.  A *nonparametric variable importance measure* (NPVI) for continuous exposures (Chambaz, Neuvial, and van der Laan 2012).
 
 These methods allow differential methylation effects to be quantified in a manner that is largely free of assumptions, especially of the variety exploited in parametric models. **The statistical algorithm consists in several major steps:**
 
-1.  Pre-screening of genomic sites is used to isolate a subset of sites for which there is evidence of differential methylation. Targeted minimum loss-based estimates of VIMs are computed for this subset of sites only (for the sake of computational feasibility). Several screening approaches are available, adapting core routines from the following R packages: [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html), [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi), [`adaptest`](https://github.com/nhejazi/adaptest).
-2.  Nonparametric VIMs are estimated for the specified parameter, currently using routines from the R packages [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) to estimate the NPVI parameter, or [`tmle`](https://CRAN.R-project.org/package=tmle) to estimate the ATE.
-3.  Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings, specifically we use the modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der Laan 2009).
+1.  Pre-screening of genomic sites is used to isolate a subset of sites for which there is cursory evidence of differential methylation. For the sake of computational feasibility, targeted minimum loss-based estimates of VIMs are computed only for this subset of sites. Several screening approaches are available, adapting core routines from the following R packages: [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html), [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi).
+2.  Nonparametric VIMs are estimated for the specified parameter, currently using routines from the R packages [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) (to estimate the NPVI parameter) or [`tmle`](https://CRAN.R-project.org/package=tmle) (to estimate the ATE).
+3.  Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Rather generally, the Benjamini & Hochberg procedure for controlling the False Discovery Rate (FDR) (Benjamini and Hochberg 1995) is applied due to multiple testing issues inherent to the estimation procedure. Specifically, we apply a modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der Laan 2009).
 
-See van der Laan and Rose (2011) for a general description of the framework of targeted minimum loss-based estimation.
+For a general discussion of the framework of targeted minimum loss-based estimation, the many applications of this methodology, and the role the framework plays in statistical causal inference, the recommended references are van der Laan and Rose (2011) and van der Laan and Rose (2017). Hernan and Robins (2018) and Pearl (2009) may be of interest to those desiring a more general introduction to statistical causal inference.
 
 <!--
 Note about shrinkage of influence curves, adapting @smyth2004linear.
@@ -141,8 +141,16 @@ The contents of this repository are distributed under the MIT license. See file 
 References
 ----------
 
+Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” *Journal of the Royal Statistical Society. Series B (Methodological)*. JSTOR, 289–300.
+
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public Access: 1059.
 
-Tuglus, Catherine, and Mark J. van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” *Statistical Applications in Genetics and Molecular Biology* 8 (1). Walter de Gruyter: 1–15. doi:[10.2202/1544-6115.1397](https://doi.org/10.2202/1544-6115.1397).
+Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman & Hall/Crc Texts in Statistical Science. Taylor & Francis.
 
-van der Laan, Mark J., and Sherri Rose. 2011. *Targeted Learning: Causal Inference for Observational and Experimental Data*. Springer Science & Business Media.
+Pearl, Judea. 2009. *Causality: Models, Reasoning, and Inference*. Cambridge University Press.
+
+Tuglus, Catherine, and Mark J van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” *Statistical Applications in Genetics and Molecular Biology* 8 (1). Walter de Gruyter: 1–15. doi:[10.2202/1544-6115.1397](https://doi.org/10.2202/1544-6115.1397).
+
+van der Laan, Mark J, and Sherri Rose. 2011. *Targeted Learning: Causal Inference for Observational and Experimental Data*. Springer Science & Business Media.
+
+———. 2017. *Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies*. Springer Science & Business Media.
