@@ -14,7 +14,7 @@ R/`methyvim`
 What's `methyvim`?
 ------------------
 
-`methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistical estimable target parameters that arise in causal inference.
+`methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistically estimable target parameters that arise in causal inference.
 
 The statistical methodology implemented computes targeted minimum loss-based estimates of well-studied variable importance measures:
 
@@ -25,7 +25,7 @@ These methods allow differential methylation effects to be quantified in a manne
 
 1.  Pre-screening of genomic sites is used to isolate a subset of sites for which there is cursory evidence of differential methylation. For the sake of computational feasibility, targeted minimum loss-based estimates of VIMs are computed only for this subset of sites. Several screening approaches are available, adapting core routines from the following R packages: [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html), [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi).
 2.  Nonparametric VIMs are estimated for the specified parameter, currently using routines from the R packages [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) (to estimate the NPVI parameter) or [`tmle`](https://CRAN.R-project.org/package=tmle) (to estimate the ATE).
-3.  Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Rather generally, the Benjamini & Hochberg procedure for controlling the False Discovery Rate (FDR) (Benjamini and Hochberg 1995) is applied due to multiple testing issues inherent to the estimation procedure. Specifically, we apply a modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der Laan 2009).
+3.  Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Due to the multiple testing nature of the estimation problem, a variant of the Benjamini & Hochberg procedure for controlling the False Discovery Rate (FDR) is applied (Benjamini and Hochberg 1995). Specifically, we apply the modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der Laan 2009).
 
 For a general discussion of the framework of targeted minimum loss-based estimation, the many applications of this methodology, and the role the framework plays in statistical causal inference, the recommended references are van der Laan and Rose (2011) and van der Laan and Rose (2017). Hernan and Robins (2018) and Pearl (2009) may be of interest to those desiring a more general introduction to statistical causal inference.
 
@@ -93,7 +93,7 @@ It is our hope that `methyvim` will grow to be widely adopted as a tool for the 
 Citation
 --------
 
-After using the `methyvim` R package, please cite both of the following:
+After using the `methyvim` R package, please cite the following:
 
         @article{hejazi2017methyvim,
           doi = {},
@@ -102,22 +102,11 @@ After using the `methyvim` R package, please cite both of the following:
           month = {},
           publisher={Faculty of 1000 Ltd},
           volume = {},
-          author = {Hejazi, Nima S. and Hubbard, Alan E. and {van der Laan},
-            Mark J.},
+          author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
+            J},
           title = {methyvim: Differential methylation analysis with targeted
-            nonparametric variable importance measures},
+            esitmates of nonparametric variable importance measures},
           journal = {F1000Research}
-        }
-
-        @misc{hejazi2017methyvim-r,
-          doi = {},
-          url = {},
-          howpublished = {\url{https://github.com/nhejazi/methyvim}},
-          year  = {2017},
-          author = {Hejazi, Nima S. and Hubbard, Alan E. and {van der Laan},
-            Mark J.},
-          title = {methyvim: Differential methylation analysis with targeted
-            minimum loss-based estimates of variable importance measures}
         }
 
 ------------------------------------------------------------------------

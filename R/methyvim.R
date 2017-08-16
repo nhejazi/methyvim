@@ -24,7 +24,7 @@
 #'        values or M-values. The data are accessed via \code{minfi::getBeta} or
 #'        \code{minfi::getM}.
 #' @param filter Character indicating the model to be implemented when screening
-#'        the \code{data_grs} object for CpG sites. Currently 
+#'        the \code{data_grs} object for CpG sites. Currently
 #'        supported options are limma, npvi, and adaptest.  (?)
 #' @param filter_cutoff Numeric indicating the p-value cutoff that defines which
 #'        sites pass through the \code{filter}.
@@ -71,6 +71,8 @@
 #'         regressions, as well as the original data rotated into influence
 #'         curve space may be returned, if so requested.
 #'
+#' @importFrom BiocParallel bplapply
+#'
 #' @export methyvim
 #'
 
@@ -109,25 +111,25 @@ methyvim <- function(data_grs,
   # ============================================================================
   # catch inputs to pass to downstream functions (for estimation and such)
   # ============================================================================
-  catch_inputs <- list(data = data_grs,
-                       var = var_int,
-                       vim = vim,
-                       type = type,
-                       filter = filter,
-                       filter_cutoff = filter_cutoff,
-                       window = window_bp,
-                       corr = corr_max,
-                       obs_per_covar = obs_per_covar,
-                       par = parallel,
-                       future = future_param,
-                       bppar = bppar_type,
-                       return_ic = return_ic,
-                       shrink_ic = shrink_ic,
-                       tmle_type = tmle_type,
-                       tmle_args = tmle_args)
   # check that inputs satisfy expectations
   ## and clean up check_inputs (e.g., rm NPVI stuff if ATE is specified)
-  catch_inputs <- check_inputs(catch_inputs)
+  check_inputs(data = data_grs,
+               var = var_int,
+               vim = vim,
+               type = type,
+               filter = filter,
+               filter_cutoff = filter_cutoff,
+               window = window_bp,
+               corr = corr_max,
+               obs_per_covar = obs_per_covar,
+               parallel = parallel,
+               future = future_param,
+               bppar = bppar_type,
+               return_ic = return_ic,
+               shrink_ic = shrink_ic,
+               tmle_type = tmle_type,
+               tmle_args = tmle_args
+              )
 
   # ============================================================================
   # invoke S4 class constructor for "methadapt" object
@@ -138,9 +140,9 @@ methyvim <- function(data_grs,
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  set_parallel(parallel = catch_inputs$par,
-               future_param = catch_inputs$future,
-               bppar_type = catch_inputs$bppar)
+  #set_parallel(parallel = parallel,
+  #             future_param = future_param,
+  #             bppar_type = bppar_type)
 
   # ============================================================================
   # operate on the type of data specified
@@ -167,8 +169,8 @@ methyvim <- function(data_grs,
   # ============================================================================
   if (catch_inputs$filter == "limma") {
     methy_tmle <- limma_screen(methytmle = methy_tmle,
-                               var_int = catch_inputs$var,
-                               type = catch_inputs$type)
+                               var_int = var_int,
+                               type = type)
   } else {
     stop("The designated filtering method has not yet been implemented.")
   }
@@ -179,14 +181,68 @@ methyvim <- function(data_grs,
   methy_tmle <- cluster_sites(methy_tmle = methy_tmle)
 
   #=============================================================================
-  # TMLE procedure for targeted differential methylation analysis
+  # ATE TMLE procedure for targeted differential methylation analysis
   # ============================================================================
   if (catch_inputs$vim == "ATE") {
-    methy_tmle@vim <- methyvim_ate(methy_tmle = methy_tmle,
-                                   catch_inputs_ate = catch_inputs)
+
+    # make sure that the outcome data is of class numeric
+    var_of_interest <- as.numeric(colData(methy_tmle)[, var_int])
+    if (class(var_of_interest) != "numeric") {
+      var_of_interest <- as.numeric(var_of_interest)
+    }
+
+    # get names of sites to be added to output object
+    cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
+
+    # object of screened CpG site indices to loop over in TMLE procedure
+    methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
+    #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
+    #                                        FUN = methyvim_ate,
+    #                                        methy_tmle_screened = methy_tmle,
+    #                                        var_of_interest = var_of_interest,
+    #                                        type = "Mval",
+    #                                        corr = 0.80,
+    #                                        obs_per_covar = 20,
+    #                                        family = "gaussian",
+    #                                        g_lib = c("SL.mean", "SL.glm"),
+    #                                        Q_lib = c("SL.mean", "SL.glm"),
+    #                                        return_ic = FALSE
+    #                                       )
+    methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+                                      .packages = c("tmle"),
+                                      .combine = rbind.data.frame) %dopar% {
+
+      message(paste("Computing targeted estimate for site", i_site, "of",
+                    length(methy_tmle_ind)))
+
+      out <- methyvim_ate(target_site = i_site,
+                          methy_tmle_screened = methy_tmle,
+                          var_of_interest = var_of_interest,
+                          type = "Mval",
+                          corr = 0.80,
+                          obs_per_covar = 20,
+                          g_lib = c("SL.mean", "SL.glm"),
+                          Q_lib = c("SL.mean", "SL.glm"),
+                          family = "gaussian",
+                          return_ic = FALSE
+                         )
+    }
+
+    # TMLE procedure is now done, so let's just make the output object pretty...
+    #methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
+    colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE",
+                                 "Var", "pval", "n_neighbors_all",
+                                 "n_neighbors_w", "max_corr_w")
+    rownames(methy_vim_out) <- cpg_screened_names
+    methy_tmle@vim <- methy_vim_out
+
+  #=============================================================================
+  # NPVI TMLE procedure for targeted differential methylation analysis
+  # ============================================================================
   } else if (catch_inputs$vim == "NPVI") {
-    methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle,
-                                    catch_inputs_npvi = catch_inputs)
+    stop("Support for TMLE-NPVI is planned but not yet implemented.")
+    #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle,
+    #                                catch_inputs_npvi = catch_inputs)
   } else {
     stop("The specified variable importance parameter is not available.")
   }

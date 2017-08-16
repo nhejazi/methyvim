@@ -89,6 +89,36 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   return(out)
 }
 
+set_parallel <- function(parallel = c(TRUE, FALSE),
+                         future_param = NULL,
+                         bppar_type = NULL) {
+  # invoke a future-based backend
+  doFuture::registerDoFuture()
+
+  if (parallel == TRUE) {
+    if (!is.null(future_param)) {
+      set_future_param <- parse(text = paste0("future", "::", future_param))
+      future::plan(eval(set_future_param))
+    } else {
+      future::plan(future::multiprocess)
+    }
+  } else if (parallel == FALSE) {
+    warning(paste("Sequential evaluation is strongly discouraged.",
+                  "\n Proceed with caution."))
+    future::plan(future::sequential)
+  }
+  if (!is.null(bppar_type)) {
+    bp_type <- eval(parse(text = paste0("BiocParallel", "::",
+                                        bppar_type, "()")))
+  } else {
+    bp_type <- BiocParallel::DoparParam()
+  }
+  # try to use a progress bar is supported in the parallelization plan
+  BiocParallel::bpprogressbar(bp_type) <- TRUE
+  # register the chosen parallelization plan
+  BiocParallel::register(bp_type, default = TRUE)
+}
+
 # advanced vingette discussing internals of the package
 # not writing about force positivity in the
 # treatment (discrete) and W is a matrix of cont measures assoc w each of the
@@ -103,4 +133,4 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
 # now each of the obs data are now replaced with a level of that obs while
 # maintaining the positivity
 
-# somehow this shit is related to cTMLE
+# somehow this is related to cTMLE

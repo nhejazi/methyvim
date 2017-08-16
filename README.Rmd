@@ -31,8 +31,8 @@ __Author:__ [Nima Hejazi](http://nimahejazi.org)
 ## What's `methyvim`?
 
 `methyvim` is an R package that provides facilities for differential methylation
-analysis based on _variable importance measures_ (VIMs), a class of statistical
-estimable target parameters that arise in causal inference.
+analysis based on _variable importance measures_ (VIMs), a class of
+statistically estimable target parameters that arise in causal inference.
 
 The statistical methodology implemented computes targeted minimum loss-based
 estimates of well-studied variable importance measures:
@@ -59,10 +59,10 @@ routines from the R packages
 NPVI parameter) or [`tmle`](https://CRAN.R-project.org/package=tmle) (to
 estimate the ATE).
 3. Since pre-screening is performed prior to estimating VIMs, we make use of a
-multiple testing correction uniquely suited to such settings. Rather generally,
-the Benjamini & Hochberg procedure for controlling the False Discovery Rate
-(FDR) [@benjamini1995controlling] is applied due to multiple testing issues
-inherent to the estimation procedure. Specifically, we apply a modified marginal
+multiple testing correction uniquely suited to such settings. Due to the
+multiple testing nature of the estimation problem, a variant of the Benjamini &
+Hochberg procedure for controlling the False Discovery Rate (FDR) is applied
+[@benjamini1995controlling]. Specifically, we apply the modified marginal
 Benjamini & Hochberg step-up False Discovery Rate controlling procedure for
 multi-stage analyses (FDR-MSA) [@tuglus2009modified].
 
@@ -139,7 +139,7 @@ prior to submitting a pull request.
 
 ## Citation
 
-After using the `methyvim` R package, please cite both of the following:
+After using the `methyvim` R package, please cite the following:
 
         @article{hejazi2017methyvim,
           doi = {},
@@ -148,22 +148,11 @@ After using the `methyvim` R package, please cite both of the following:
           month = {},
           publisher={Faculty of 1000 Ltd},
           volume = {},
-          author = {Hejazi, Nima S. and Hubbard, Alan E. and {van der Laan},
-            Mark J.},
+          author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
+            J},
           title = {methyvim: Differential methylation analysis with targeted
-            nonparametric variable importance measures},
+            esitmates of nonparametric variable importance measures},
           journal = {F1000Research}
-        }
-
-        @misc{hejazi2017methyvim-r,
-          doi = {},
-          url = {},
-          howpublished = {\url{https://github.com/nhejazi/methyvim}},
-          year  = {2017},
-          author = {Hejazi, Nima S. and Hubbard, Alan E. and {van der Laan},
-            Mark J.},
-          title = {methyvim: Differential methylation analysis with targeted
-            minimum loss-based estimates of variable importance measures}
         }
 
 ---
