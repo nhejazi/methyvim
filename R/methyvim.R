@@ -116,23 +116,23 @@ methyvim <- function(data_grs,
   # ============================================================================
   # check that inputs satisfy expectations
   ## and clean up check_inputs (e.g., rm NPVI stuff if ATE is specified)
-  check_inputs(data = data_grs,
-               var = var_int,
-               vim = vim,
-               type = type,
-               filter = filter,
-               filter_cutoff = filter_cutoff,
-               window = window_bp,
-               corr = corr_max,
-               obs_per_covar = obs_per_covar,
-               parallel = parallel,
-               future = future_param,
-               bppar = bppar_type,
-               return_ic = return_ic,
-               shrink_ic = shrink_ic,
-               tmle_type = tmle_type,
-               tmle_args = tmle_args
-              )
+  #check_inputs(data = data_grs,
+  #             var = var_int,
+  #             vim = vim,
+  #             type = type,
+  #             filter = filter,
+  #             filter_cutoff = filter_cutoff,
+  #             window = window_bp,
+  #             corr = corr_max,
+  #             obs_per_covar = obs_per_covar,
+  #             parallel = parallel,
+  #             future = future_param,
+  #             bppar = bppar_type,
+  #             return_ic = return_ic,
+  #             shrink_ic = shrink_ic,
+  #             tmle_type = tmle_type,
+  #             tmle_args = tmle_args
+  #            )
 
   # ============================================================================
   # invoke S4 class constructor for "methadapt" object
@@ -174,7 +174,7 @@ methyvim <- function(data_grs,
   #=============================================================================
   # cluster sites based on genomic windows
   #=============================================================================
-  methy_tmle <- cluster_sites(methy_tmle = methy_tmle)
+  methy_tmle <- cluster_sites(methytmle = methy_tmle)
 
   #=============================================================================
   # ATE TMLE procedure for targeted differential methylation analysis

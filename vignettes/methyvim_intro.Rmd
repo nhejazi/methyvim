@@ -20,15 +20,29 @@ vignette: >
 ## Preliminaries
 
 First, we'll load the `methyvim` package and the example data contained in the
-`methyvimData` package that accompanies it.
+`methyvimData` package that accompanies it:
 
 ```{r load_pkgs}
-if(!("methyvimData" %in% installed.packages())) {
-  devtools::install_github("nhejazi/methyvimData")
-}
-library(methyvimData)
+devtools::install_github(paste("nhejazi", c("methyvim", "methyvimData"),
+                               sep = "/"))
 library(methyvim)
+suppressMessages(library(minfi))
+suppressMessages(library(SummarizedExperiment))
+suppressMessages(library(tmle.npvi))
+suppressMessages(library(tmle))
+```
+
+```{r prelims}
 #options(future.globals.maxSize = 1e12)
+set.seed(479253)
+```
+
+Now, let's load the data:
+
+```{r}
+library(methyvimData)
+data(grsExample)
+grsExample
 ```
 
 ---
@@ -39,13 +53,37 @@ library(methyvim)
 
 ...
 
+```{r methyvim-ate}
+methyvim_out <- methyvim(data_grs = grsExample, var_int = 1, vim = "ATE",
+                         type = "Mval", filter = "limma", filter_cutoff = 0.05,
+                         window_bp = 1e3, corr_max = 0.35, obs_per_covar = 15,
+                         parallel = T, future_param = NULL, bppar_type = NULL,
+                         return_ic = FALSE, shrink_ic = FALSE,
+                         tmle_type = "super_learning",
+                         tmle_args = list(family = "binomial",
+                                          g_lib = c("SL.mean", "SL.glm",
+                                                    "SL.randomForest"),
+                                          Q_lib = c("SL.mean", "SL.glm"),
+                                          npvi_cutoff = 0.25,
+                                          npvi_descr = NULL)
+                        )
+```
+
+...
+
 ---
 
 ## Quantifying the Effect of DNA Methylation on an Outcome
 
 ### A Nonparametric Variable Importance Measure for Continuous Exposures
 
-...[@chambaz2012estimation]...
+@chambaz2012estimation proposed a nonparametric variable importance measure that
+is statistically estimatble via targeted minimum loss-based estimation...
+
+```{r methyvim-npvi}
+```
+
+...
 
 ---
 

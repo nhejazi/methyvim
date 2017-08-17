@@ -16,7 +16,7 @@
 #' @importFrom BiocGenerics start
 #' @importFrom IRanges ranges
 #'
-cluster_sites <- function(methy_tmle, window_size = 1000) {
+cluster_sites <- function(methytmle, window_size = 1000) {
   gr <- SummarizedExperiment::rowRanges(methy_tmle)
   pos <- BiocGenerics::start(IRanges::ranges(gr))
   clusters <- bumphunter::clusterMaker(chr = GenomeInfoDb::seqnames(gr),
