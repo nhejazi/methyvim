@@ -15,6 +15,11 @@
 #' @param family Character ...
 #' @param return_ic Logical ...
 #'
+#' @importFrom minfi getBeta getM
+#' @importFrom tmle tmle
+#'
+#' @export
+#'
 methyvim_ate <- function(target_site,
                          methytmle_screened,
                          var_of_interest,
@@ -107,14 +112,14 @@ methyvim_ate <- function(target_site,
     max_corr_w <- max(cor(y, t(w)))
 
     # compute the ATE
-    out <- tmle(Y = as.numeric(y_star),
-                A = as.numeric(var_of_interest),
-                W = as.data.frame(w_pos),
-                Q.SL.library = Q_lib,
-                g.SL.library = g_lib,
-                family = family,
-                verbose = FALSE
-               )
+    out <- tmle::tmle(Y = as.numeric(y_star),
+                      A = as.numeric(var_of_interest),
+                      W = as.data.frame(w_pos),
+                      Q.SL.library = Q_lib,
+                      g.SL.library = g_lib,
+                      family = family,
+                      verbose = FALSE
+                     )
   } else {
     n_neighbors_total <- 0
     n_neighbors_reduced <- 0
@@ -124,14 +129,14 @@ methyvim_ate <- function(target_site,
     w_int <- as.data.frame(rep(1, length(var_of_interest)))
 
     # compute the ATE
-    out <- tmle(Y = as.numeric(y_star),
-                A = as.numeric(var_of_interest),
-                W = as.data.frame(w_int),
-                Q.SL.library = Q_lib,
-                g.SL.library = g_lib,
-                family = family,
-                verbose = FALSE
-               )
+    out <- tmle::tmle(Y = as.numeric(y_star),
+                      A = as.numeric(var_of_interest),
+                      W = as.data.frame(w_int),
+                      Q.SL.library = Q_lib,
+                      g.SL.library = g_lib,
+                      family = family,
+                      verbose = FALSE
+                     )
   }
 
   # get the influence curve estimates if so requested

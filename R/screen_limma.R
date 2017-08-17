@@ -4,12 +4,10 @@
 #' @importFrom minfi getBeta getM
 #' @importFrom SummarizedExperiment colData
 #'
-#' @export limma_screen
-#'
 
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   # setup design matrix
-  design <- as.numeric(colData(methytmle)[, var_int])
+  design <- as.numeric(SummarizedExperiment::colData(methytmle)[, var_int])
   design <- as.matrix(cbind(rep(1, times = length(design)), design))
 
   # create expression object for modeling

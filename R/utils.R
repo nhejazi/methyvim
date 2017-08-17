@@ -45,7 +45,7 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
-  fdr_adj <- p.adjust(pvals_all, method = "fdr")
+  fdr_adj <- stats::p.adjust(pvals_all, method = "fdr")
   fdr_out <- fdr_adj[seq_len(pvals)]
   return(fdr_out)
 }
