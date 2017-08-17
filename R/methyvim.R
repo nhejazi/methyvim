@@ -83,7 +83,7 @@
 #'
 
 methyvim <- function(data_grs,
-                     sites_comp = 100,
+                     sites_comp = 10,
                      var_int = 1,
                      vim = c("ATE", "NPVI"),
                      type = c("Beta", "Mval"),
@@ -215,7 +215,7 @@ methyvim <- function(data_grs,
     #                                        return_ic = FALSE
     #                                       )
     methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
-                                      .packages = c("tmle"),
+                                      .packages = c("tmle", "SuperLearner"),
                                       .combine = rbind) %dopar% {
 
       message(paste("Computing targeted estimate for site", i_site, "of",
