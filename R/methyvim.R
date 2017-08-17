@@ -137,7 +137,7 @@ methyvim <- function(data_grs,
   # ============================================================================
   # invoke S4 class constructor for "methadapt" object
   # ============================================================================
-  methy_tmle <- .methytmle(data)
+  methy_tmle <- .methytmle(data_grs)
   methy_tmle@call <- call
 
   #=============================================================================
