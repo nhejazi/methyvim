@@ -37,7 +37,7 @@ suppressMessages(library(tmle))
 set.seed(479253)
 ```
 
-Now, let's load the data:
+Now, let's load the data set:
 
 ```{r}
 library(methyvimData)
@@ -59,13 +59,7 @@ methyvim_out <- methyvim(data_grs = grsExample, var_int = 1, vim = "ATE",
                          window_bp = 1e3, corr_max = 0.35, obs_per_covar = 15,
                          parallel = T, future_param = NULL, bppar_type = NULL,
                          return_ic = FALSE, shrink_ic = FALSE,
-                         tmle_type = "super_learning",
-                         tmle_args = list(family = "binomial",
-                                          g_lib = c("SL.mean", "SL.glm",
-                                                    "SL.randomForest"),
-                                          Q_lib = c("SL.mean", "SL.glm"),
-                                          npvi_cutoff = 0.25,
-                                          npvi_descr = NULL)
+                         tmle_type = "super_learning"
                         )
 ```
 
