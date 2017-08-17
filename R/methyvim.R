@@ -9,6 +9,9 @@
 #' @param data_grs An object of class \code{minfi::GenomicRatioSet}, containing
 #'        standard data structures associated with DNA Methylation experiments.
 #'        Consult the documentation for \code{minfi} to construct such objects.
+#' @param sites_comp Numeric indicating the number of sites for which a variable
+#'        importance measure is to be estimated post-screening. This arugment is
+#'        TEMPORARY, USED ONLY FOR TESTING PURPOSES currently.
 #' @param var_int Numeric indicating the column index of the variable of
 #'        interest, whether exposure or outcome. If argument \code{vim} is set
 #'        to the ATE, then the variable of interest is treated as an exposure;
@@ -80,14 +83,15 @@
 #'
 
 methyvim <- function(data_grs,
+                     sites_comp = 100,
                      var_int = 1,
                      vim = c("ATE", "NPVI"),
                      type = c("Beta", "Mval"),
                      filter = c("limma", "npvi", "adaptest"),
                      filter_cutoff = 0.05,
                      window_bp = 1e3,
-                     corr_max = 0.35,
-                     obs_per_covar = 15,
+                     corr_max = 0.70,
+                     obs_per_covar = 20,
                      parallel = TRUE,
                      future_param = NULL,
                      bppar_type = NULL,
@@ -95,8 +99,7 @@ methyvim <- function(data_grs,
                      shrink_ic = FALSE,
                      tmle_type = c("glm", "super_learning"),
                      tmle_args = list(family = "binomial",
-                                      g_lib = c("SL.mean", "SL.glm",
-                                                "SL.randomForest"),
+                                      g_lib = c("SL.mean", "SL.glm"),
                                       Q_lib = c("SL.mean", "SL.glm"),
                                       npvi_cutoff = 0.25,
                                       npvi_descr = NULL)
@@ -189,11 +192,16 @@ methyvim <- function(data_grs,
 
     # get names of sites to be added to output object
     cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
-    cpg_screened_names <- cpg_screened_names[seq_len(100)] ## TODO: REMOVE, FOR TESTING ONLY
+
+    ## TODO: THIS IS FOR TESTING ONLY
+    cpg_screened_names <- cpg_screened_names[seq_len(sites_comp)]
 
     # object of screened CpG site indices to loop over in TMLE procedure
     methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
-    methy_tmle_ind <- methy_tmle_ind[seq_len(100)] ## TODO: REMOVE, FOR TESTING
+
+    ## TODO: THIS IS FOR TESTING ONLY
+    methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
+
     #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
     #                                        FUN = methyvim_ate,
     #                                        methytmle_screened = methy_tmle,
@@ -216,13 +224,13 @@ methyvim <- function(data_grs,
       out <- methyvim_ate(target_site = i_site,
                           methytmle_screened = methy_tmle,
                           var_of_interest = var_of_interest,
-                          type = "Mval",
-                          corr = 0.80,
-                          obs_per_covar = 20,
-                          g_lib = c("SL.mean", "SL.glm"),
-                          Q_lib = c("SL.mean", "SL.glm"),
-                          family = "gaussian",
-                          return_ic = FALSE
+                          type = type,
+                          corr = corr_max,
+                          obs_per_covar = obs_per_covar,
+                          g_lib = tmle_args$g_lib,
+                          Q_lib = tmle_args$Q_lib,
+                          family = tmle_args$family,
+                          return_ic = return_ic
                          )
     }
     methy_vim_out <- as.data.frame(methy_vim_out)
