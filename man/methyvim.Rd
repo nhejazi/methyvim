@@ -7,10 +7,11 @@
 methyvim(data_grs, var_int = 1, vim = c("ATE", "NPVI"), type = c("Beta",
   "Mval"), filter = c("limma", "npvi", "adaptest"), filter_cutoff = 0.05,
   window_bp = 1000, corr_max = 0.35, obs_per_covar = 15,
-  parallel = TRUE, return_ic = FALSE, shrink_ic = FALSE,
-  tmle_type = c("glm", "super_learning"), tmle_args = list(family =
-  "binomial", g_lib = c("SL.mean", "SL.glm", "SL.randomForest"), Q_lib =
-  c("SL.mean", "SL.glm"), npvi_cutoff = 0.25, npvi_descr = NULL))
+  parallel = TRUE, future_param = NULL, bppar_type = NULL,
+  return_ic = FALSE, shrink_ic = FALSE, tmle_type = c("glm",
+  "super_learning"), tmle_args = list(family = "binomial", g_lib =
+  c("SL.mean", "SL.glm", "SL.randomForest"), Q_lib = c("SL.mean", "SL.glm"),
+  npvi_cutoff = 0.25, npvi_descr = NULL))
 }
 \arguments{
 \item{data_grs}{An object of class \code{minfi::GenomicRatioSet}, containing
@@ -34,29 +35,42 @@ be used as the observed data in the estimation procedure, either Beta
 values or M-values. The data are accessed via \code{minfi::getBeta} or
 \code{minfi::getM}.}
 
-\item{filter}{Character indicating...
-...}
+\item{filter}{Character indicating the model to be implemented when screening
+the \code{data_grs} object for CpG sites. Currently
+supported options are limma, npvi, and adaptest.  (?)}
 
-\item{filter_cutoff}{Numeric indicating...
-...}
+\item{filter_cutoff}{Numeric indicating the p-value cutoff that defines which
+sites pass through the \code{filter}.}
 
-\item{window_bp}{Numeric indicating...
-...}
+\item{window_bp}{Numeric indicating the maximum distance between two sites
+for them to be considered neighboring sites (?)}
 
-\item{corr_max}{Numeric indicating...
-...}
+\item{corr_max}{Numeric indicating the maximum correlation that a neighboring
+site can have with the target site.}
 
-\item{obs_per_covar}{Numeric indicating...
-...}
+\item{obs_per_covar}{Numeric indicating the number of observations needed for
+for covariate included in (W/downstream analysis). This ensures the
+data is sufficient to control for the covariates.}
 
-\item{parallel}{Logical or Numeric indicating...
-...}
+\item{parallel}{Logical indicating whether parallelization ought to be used.
+See the documentation of \code{set_parallel} for more information, as
+this arugment is passed directly to that internal function.}
 
-\item{return_ic}{Logical indicating...
-...}
+\item{future_param}{Character indicating the type of parallelization to be
+used from the list available via the \code{future} package. See the
+documentation for \code{set_parallel} for more information, as this
+argument is passed directly to that internal function.}
 
-\item{shrink_ic}{Logical indicating...
-...}
+\item{bppar_type}{Character specifying the type of backend to be used for
+parallelization via \code{BiocParallel}. See the documentation for
+\code{set_parallel} for more information, as this argument is passed
+directly to that internal function.}
+
+\item{return_ic}{Logical indicating whether an influence curve estimate
+should be returned for each site that passed through the filter.}
+
+\item{shrink_ic}{Logical indicating whether limma should be applied to reduce
+the variance in the ic based estimates in \code{return_ic}.}
 
 \item{tmle_type}{Character indicating the general class of regression models
 to be used in fitting the propensity score and outcome regressions.

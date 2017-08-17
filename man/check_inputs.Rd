@@ -4,7 +4,11 @@
 \alias{check_inputs}
 \title{Check Function Inputs}
 \usage{
-check_inputs(catch_inputs)
+check_inputs(data = data_grs, var = var_int, vim = vim, type = type,
+  filter = filter, filter_cutoff = filter_cutoff, window = window_bp,
+  corr = corr_max, obs_per_covar = obs_per_covar, parallel = parallel,
+  future = future_param, bppar = bppar_type, return_ic = return_ic,
+  shrink_ic = shrink_ic, tmle_type = tmle_type, tmle_args = tmle_args)
 }
 \value{
 Options to be passed to various \code{tmle_*} functions.

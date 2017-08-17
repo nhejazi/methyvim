@@ -2,17 +2,31 @@
 % Please edit documentation in R/utils.R
 \name{set_parallel}
 \alias{set_parallel}
-\title{Set up parallelization}
+\title{Easily set up parallelization}
 \usage{
-set_parallel(parallel)
+set_parallel(parallel = c(TRUE, FALSE), future_param = NULL,
+  bppar_type = NULL)
 }
 \arguments{
-\item{parallel}{Numeric or Logical indicating either the number of cores to
-use in parallelized computation or whether parallelization ought to be
-used at all. If \code{TRUE}, all available cores are found via a call
-to \code{parallel::detectCores} and used. If \code{FALSE}, computation
-is performed sequentially (with single core) and a warning is issued.}
+\item{parallel}{Logical indicating whether parallelization ought to be used.
+Parallelization is invoked via a combination of \code{BiocParallel}
+and \code{future}. If \code{TRUE} the default method uses multiprocess
+evaluation, though other \code{future::plan}s may be specified using
+an optional argument. If \code{FALSE}, sequential computation is used
+and a warning message is issued.}
+
+\item{future_param}{Character (if not \code{NULL}) specifying a particular
+parallelization approach to be used. For a list of the options, see
+the documentation for \code{future::plan}. If the previous argument
+(\code{parallel}) is set to \code{FALSE}, this argument is ignored and
+sequential computation is invoked via \code{future::sequential}.}
+
+\item{bppar_type}{Character specifying the type of backend to be used with
+the parallelization invoked by \code{BiocParallel}. Consult the manual
+page for \code{BiocParallel::BiocParallelParam} for possible types and
+descriptions on their appropriate uses. The default for this argument
+is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.}
 }
 \description{
-Set up parallelization
+Easily set up parallelization
 }

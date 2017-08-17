@@ -16,11 +16,25 @@ methyvim_ate(methy_tmle, catch_inputs_ate)
 \item{catch_inputs_ate}{List...
 ...}
 
-\item{methy_tmle}{An object of class \code{methytmle}...
-...}
+\item{target_site}{Numeric ...}
 
-\item{catch_inputs_ate}{List...
-...}
+\item{methy_tmle_screened}{An object of class \code{methytmle}...}
+
+\item{i_site}{Numeric ...}
+
+\item{type}{Character ...}
+
+\item{corr}{Numeric ...}
+
+\item{obs_per_covar}{Numeric ...}
+
+\item{g_lib}{Character or vector of characters...}
+
+\item{Q_lib}{Character or vector of characters...}
+
+\item{family}{Character ...}
+
+\item{return_ic}{Logical ...}
 }
 \description{
 Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
