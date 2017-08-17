@@ -17,14 +17,14 @@
 #' @importFrom IRanges ranges
 #'
 cluster_sites <- function(methytmle, window_size = 1000) {
-  gr <- SummarizedExperiment::rowRanges(methy_tmle)
+  gr <- SummarizedExperiment::rowRanges(methytmle)
   pos <- BiocGenerics::start(IRanges::ranges(gr))
   clusters <- bumphunter::clusterMaker(chr = GenomeInfoDb::seqnames(gr),
                                        pos = pos,
                                        assumeSorted = FALSE,
                                        maxGap = window_size)
-  methy_tmle@clusters <- as.numeric(clusters)
-  return(methy_tmle)
+  methytmle@clusters <- as.numeric(clusters)
+  return(methytmle)
 }
 
 ################################################################################

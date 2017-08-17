@@ -196,7 +196,7 @@ methyvim <- function(data_grs,
     methy_tmle_ind <- methy_tmle_ind[seq_len(100)] ## TODO: REMOVE, FOR TESTING
     #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
     #                                        FUN = methyvim_ate,
-    #                                        methy_tmle_screened = methy_tmle,
+    #                                        methytmle_screened = methy_tmle,
     #                                        var_of_interest = var_of_interest,
     #                                        type = "Mval",
     #                                        corr = 0.80,
@@ -214,7 +214,7 @@ methyvim <- function(data_grs,
                     length(methy_tmle_ind)))
 
       out <- methyvim_ate(target_site = i_site,
-                          methy_tmle_screened = methy_tmle,
+                          methytmle_screened = methy_tmle,
                           var_of_interest = var_of_interest,
                           type = "Mval",
                           corr = 0.80,

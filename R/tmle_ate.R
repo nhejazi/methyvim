@@ -17,7 +17,7 @@
 #' @param return_ic Logical ...
 #'
 methyvim_ate <- function(target_site,
-                         methy_tmle_screened,
+                         methytmle_screened,
                          var_of_interest,
                          type = c("Beta", "Mval"),
                          corr = 0.80,
@@ -32,17 +32,17 @@ methyvim_ate <- function(target_site,
   #family <- match.arg(family)
 
   ### get neighboring site
-  in_cluster <- which(methy_tmle_screened@clusters %in%
-                      methy_tmle_screened@clusters[target_site])
+  in_cluster <- which(methytmle_screened@clusters %in%
+                      methytmle_screened@clusters[target_site])
 
   ### remove target site from the set of neighbors
   only_neighbors <- in_cluster[in_cluster != target_site]
 
   # get expression measures based on input
   if (type == "Beta") {
-    expr <- minfi::getBeta(methy_tmle_screened)
+    expr <- minfi::getBeta(methytmle_screened)
   } else if (type == "Mval") {
-    expr <- minfi::getM(methy_tmle_screened)
+    expr <- minfi::getM(methytmle_screened)
   }
 
   # get measures at the target site and perform scaling
