@@ -18,9 +18,7 @@ methyvim_ate(methy_tmle, catch_inputs_ate)
 
 \item{target_site}{Numeric ...}
 
-\item{methy_tmle_screened}{An object of class \code{methytmle}...}
-
-\item{i_site}{Numeric ...}
+\item{methytmle_screened}{An object of class \code{methytmle}...}
 
 \item{type}{Character ...}
 

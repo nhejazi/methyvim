@@ -4,19 +4,23 @@
 \alias{methyvim}
 \title{Differential Methylation Statistics with Variable Importance Measures}
 \usage{
-methyvim(data_grs, var_int = 1, vim = c("ATE", "NPVI"), type = c("Beta",
-  "Mval"), filter = c("limma", "npvi", "adaptest"), filter_cutoff = 0.05,
-  window_bp = 1000, corr_max = 0.35, obs_per_covar = 15,
-  parallel = TRUE, future_param = NULL, bppar_type = NULL,
-  return_ic = FALSE, shrink_ic = FALSE, tmle_type = c("glm",
-  "super_learning"), tmle_args = list(family = "binomial", g_lib =
-  c("SL.mean", "SL.glm", "SL.randomForest"), Q_lib = c("SL.mean", "SL.glm"),
+methyvim(data_grs, sites_comp = 10, var_int = 1, vim = c("ATE", "NPVI"),
+  type = c("Beta", "Mval"), filter = c("limma", "npvi", "adaptest"),
+  filter_cutoff = 0.05, window_bp = 1000, corr_max = 0.7,
+  obs_per_covar = 20, parallel = TRUE, future_param = NULL,
+  bppar_type = NULL, return_ic = FALSE, shrink_ic = FALSE,
+  tmle_type = c("glm", "super_learning"), tmle_args = list(family =
+  "binomial", g_lib = c("SL.mean", "SL.glm"), Q_lib = c("SL.mean", "SL.glm"),
   npvi_cutoff = 0.25, npvi_descr = NULL))
 }
 \arguments{
 \item{data_grs}{An object of class \code{minfi::GenomicRatioSet}, containing
 standard data structures associated with DNA Methylation experiments.
 Consult the documentation for \code{minfi} to construct such objects.}
+
+\item{sites_comp}{Numeric indicating the number of sites for which a variable
+importance measure is to be estimated post-screening. This arugment is
+TEMPORARY, USED ONLY FOR TESTING PURPOSES currently.}
 
 \item{var_int}{Numeric indicating the column index of the variable of
 interest, whether exposure or outcome. If argument \code{vim} is set
