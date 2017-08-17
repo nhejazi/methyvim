@@ -8,8 +8,24 @@
 #' @return Options to be passed to various \code{tmle_*} functions.
 #'
 
-check_inputs <- function(catch_inputs) {
-  message("check_inputs is only partially implemented currently.")
+check_inputs <- function(data = data_grs,
+                         var = var_int,
+                         vim = vim,
+                         type = type,
+                         filter = filter,
+                         filter_cutoff = filter_cutoff,
+                         window = window_bp,
+                         corr = corr_max,
+                         obs_per_covar = obs_per_covar,
+                         parallel = parallel,
+                         future = future_param,
+                         bppar = bppar_type,
+                         return_ic = return_ic,
+                         shrink_ic = shrink_ic,
+                         tmle_type = tmle_type,
+                         tmle_args = tmle_args) {
+
+  message("This function is only partially implemented currently.")
   # NOTE: make sure to check combinations of the variable of interest and the
   # stated parameter of interest (i.e., VIM). In particular, we will use the
   # following heuristic to decide between NPVI and ATE: if the variable of
@@ -19,24 +35,24 @@ check_inputs <- function(catch_inputs) {
   # heuristic, but use it to check that the user has specified the ATE vs. NPVI
   # parameters correctly.
 
-  if (catch_inputs$vim == "NPVI" & is.null(catch_inputs$tmle_args$npvi_descr)) {
+  if (vim == "NPVI" & is.null(tmle_args$npvi_descr)) {
     npvi_descr_defaults <- list(f = identity, iter = 10, cvControl = 2,
                                 nMax = 30,
                                 stoppingCriteria = list(mic = 0.001,
                                                         div = 0.001,
                                                         psi = 0.01)
                                )
-    catch_inputs$tmle_args$npvi_descr <- npvi_descr_defaults
+    tmle_args$npvi_descr <- npvi_descr_defaults
   }
 
-  if (catch_inputs$tmle_type == "glm") {
-    if (catch_inputs$vim == "ATE") {
+  if (tmle_type == "glm") {
+    if (vim == "ATE") {
       # set GLM libraries for "tmle" package
       g_lib <- "SL.mean"
       Q_lib <- "SL.glm"
-      catch_inputs$tmle_args$g_lib <- g_lib
-      catch_inputs$tmle_args$Q_lib <- Q_lib
-    } else if (catch_inputs$vim == "NPVI") {
+      tmle_args$g_lib <- g_lib
+      tmle_args$Q_lib <- Q_lib
+    } else if (vim == "NPVI") {
       message("finding a way to select GLM flavor for tmle.npvi")
     }
   }

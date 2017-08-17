@@ -28,7 +28,7 @@ if(!("methyvimData" %in% installed.packages())) {
 }
 library(methyvimData)
 library(methyvim)
-options(future.globals.maxSize = 1e12)
+#options(future.globals.maxSize = 1e12)
 ```
 
 ---

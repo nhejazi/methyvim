@@ -72,6 +72,9 @@
 #'         curve space may be returned, if so requested.
 #'
 #' @importFrom BiocParallel bplapply
+#' @importFrom parallel detectCores
+#' @importFrom doParallel registerDoParallel
+#' @importFrom foreach foreach "%dopar%"
 #'
 #' @export methyvim
 #'
@@ -134,7 +137,7 @@ methyvim <- function(data_grs,
   # ============================================================================
   # invoke S4 class constructor for "methadapt" object
   # ============================================================================
-  methy_tmle <- .methytmle(catch_inputs$data)
+  methy_tmle <- .methytmle(data)
   methy_tmle@call <- call
 
   #=============================================================================
@@ -143,15 +146,8 @@ methyvim <- function(data_grs,
   #set_parallel(parallel = parallel,
   #             future_param = future_param,
   #             bppar_type = bppar_type)
-
-  # ============================================================================
-  # operate on the type of data specified
-  # ============================================================================
-  #if (catch_inputs$type == "Beta") {
-  #  extract_measures <- parse(text = "getBeta(methy_tmle)")
-  #} else if (catch_inputs$type == "Mval") {
-  #  extract_measures <- parse(text = "getM(methy_tmle)")
-  #}
+  n_cores <- parallel::detectCores()
+  doParallel::registerDoParallel(n_cores)
 
   #=============================================================================
   # check if there is missing data in the phenotype-level matrix and drop if so
@@ -167,7 +163,7 @@ methyvim <- function(data_grs,
   #=============================================================================
   # screen sites to produce a subset on which to estimate VIMs
   # ============================================================================
-  if (catch_inputs$filter == "limma") {
+  if (filter == "limma") {
     methy_tmle <- limma_screen(methytmle = methy_tmle,
                                var_int = var_int,
                                type = type)
@@ -183,7 +179,7 @@ methyvim <- function(data_grs,
   #=============================================================================
   # ATE TMLE procedure for targeted differential methylation analysis
   # ============================================================================
-  if (catch_inputs$vim == "ATE") {
+  if (vim == "ATE") {
 
     # make sure that the outcome data is of class numeric
     var_of_interest <- as.numeric(colData(methy_tmle)[, var_int])
@@ -193,9 +189,11 @@ methyvim <- function(data_grs,
 
     # get names of sites to be added to output object
     cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
+    cpg_screened_names <- cpg_screened_names[seq_len(100)] ## TODO: REMOVE, FOR TESTING ONLY
 
     # object of screened CpG site indices to loop over in TMLE procedure
     methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
+    methy_tmle_ind <- methy_tmle_ind[seq_len(100)] ## TODO: REMOVE, FOR TESTING
     #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
     #                                        FUN = methyvim_ate,
     #                                        methy_tmle_screened = methy_tmle,
@@ -210,7 +208,7 @@ methyvim <- function(data_grs,
     #                                       )
     methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
                                       .packages = c("tmle"),
-                                      .combine = rbind.data.frame) %dopar% {
+                                      .combine = rbind) %dopar% {
 
       message(paste("Computing targeted estimate for site", i_site, "of",
                     length(methy_tmle_ind)))
@@ -227,6 +225,7 @@ methyvim <- function(data_grs,
                           return_ic = FALSE
                          )
     }
+    methy_vim_out <- as.data.frame(methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
     #methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
@@ -239,7 +238,7 @@ methyvim <- function(data_grs,
   #=============================================================================
   # NPVI TMLE procedure for targeted differential methylation analysis
   # ============================================================================
-  } else if (catch_inputs$vim == "NPVI") {
+  } else if (vim == "NPVI") {
     stop("Support for TMLE-NPVI is planned but not yet implemented.")
     #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle,
     #                                catch_inputs_npvi = catch_inputs)
