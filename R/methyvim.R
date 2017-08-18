@@ -215,6 +215,7 @@ methyvim <- function(data_grs,
     #                                        return_ic = FALSE
     #                                       )
     methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+                                      .export = ls(envir = globalenv()),
                                       .packages = c("tmle", "SuperLearner"),
                                       .combine = rbind) %dopar% {
 
