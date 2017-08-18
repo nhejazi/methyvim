@@ -8,16 +8,17 @@
 #'
 #' @param methy_tmle An object of class \code{methytmle}...
 #'        ...
-#' @param catch_inputs_ate List...
+#' @param catch_inputs_npvi List...
 #'        ...
 #'
 #' @importFrom minfi getBeta getM
 #' @importFrom stats cor quantile qnorm
 #' @importFrom tmle.npvi tmle.npvi setConfLevel getPsi getSic getPValue
 #'
-
-methyvim_ate <- function(methy_tmle,
-                         catch_inputs_ate) {
+#' @export
+#'
+methyvim_npvi <- function(methy_tmle,
+                         catch_inputs_npvi) {
 
   # extract the variable of interest and ensure numeric
   var_of_interest <- colData(methy_tmle_screened)[, catch_inputs_npvi$var]
