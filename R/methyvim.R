@@ -149,8 +149,10 @@ methyvim <- function(data_grs,
   #set_parallel(parallel = parallel,
   #             future_param = future_param,
   #             bppar_type = bppar_type)
-  n_cores <- parallel::detectCores()
-  doParallel::registerDoParallel(n_cores)
+  if (parallel == TRUE) {
+    n_cores <- parallel::detectCores()
+    doParallel::registerDoParallel(n_cores)
+  }
 
   #=============================================================================
   # check if there is missing data in the phenotype-level matrix and drop if so

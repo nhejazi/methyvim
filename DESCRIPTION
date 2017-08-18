@@ -38,6 +38,7 @@ Imports:
   BiocGenerics,
   SummarizedExperiment,
   GenomeInfoDb,
+  methyvimData,
   bumphunter,
   IRanges,
   limma,

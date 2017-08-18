@@ -1,12 +1,12 @@
 ---
-title: "Targeted Learning of Variable Importance in Differential Methylation"
+title: "Targeted Learning of Differential Methylation from an Outcome"
 author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document2
 bibliography: refs.bib
 vignette: >
-  %\VignetteIndexEntry{Targeted Learning of Variable Importance in Differential Methylation}
+  %\VignetteIndexEntry{Targeted Learning of Differential Methylation from an Outcome}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,8 +23,6 @@ First, we'll load the `methyvim` package and the example data contained in the
 `methyvimData` package that accompanies it:
 
 ```{r load_pkgs}
-devtools::install_github(paste("nhejazi", c("methyvim", "methyvimData"),
-                               sep = "/"))
 library(methyvim)
 suppressMessages(library(minfi))
 suppressMessages(library(SummarizedExperiment))
@@ -34,6 +32,7 @@ suppressMessages(library(tmle))
 
 ```{r prelims}
 #options(future.globals.maxSize = 1e12)
+options(mc.cores = 2)
 set.seed(479253)
 ```
 
@@ -44,27 +43,6 @@ library(methyvimData)
 data(grsExample)
 grsExample
 ```
-
----
-
-## Quantifying the Effect of an Exposure on DNA Methylation
-
-### The Average Treatment Effect as Variable Importance Measure
-
-...
-
-```{r methyvim-ate}
-methyvim_out <- methyvim(data_grs = grsExample, sites_comp = 10,
-                         var_int = 1, vim = "ATE", type = "Mval",
-                         filter = "limma", filter_cutoff = 0.05,
-                         window_bp = 1e3, corr_max = 0.80, obs_per_covar = 20,
-                         parallel = T, future_param = NULL, bppar_type = NULL,
-                         return_ic = FALSE, shrink_ic = FALSE,
-                         tmle_type = "super_learning"
-                        )
-```
-
-...
 
 ---
 
@@ -91,3 +69,4 @@ sessionInfo()
 ---
 
 ## References
+
