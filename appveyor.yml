@@ -17,18 +17,19 @@ branches:
   only:
     - master
     - develop
+    - /*/-dev
 
 environment:
   global:
     WARNINGS_ARE_ERRORS: 0
     USE_RTOOLS: true
-    GITHUB_PAT:
-      secure: NOkWY7zLKevHO11BcijFIDC95MS6o0J+Oh1rCsnUFEmjIR26uW9JKy/HMwasCi7x
 
 build_script:
   - travis-tool.sh install_deps
-  - travis-tool.sh install_bioc SummarizedExperiment
-  - travis-tool.sh install_bioc limma
+  - travis-tool.sh install_github nhejazi/methyvimData
+  - travis-tool.sh install_bioc BiocStyle BiocCheck BiocParallel BiocGenerics
+  - travis-tool.sh install_bioc IRanges GenomeInfoDb SummarizedExperiment
+  - travis-tool.sh install_bioc limma bumphunter minfi
   - travis-tool.sh install_bioc_deps
 
 test_script:

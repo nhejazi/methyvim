@@ -32,7 +32,6 @@ suppressMessages(library(tmle))
 
 ```{r prelims}
 #options(future.globals.maxSize = 1e12)
-options(mc.cores = 2)
 set.seed(479253)
 ```
 

@@ -2,6 +2,7 @@ branches:
   only:
   - master
   - develop
+  - /.*/-dev
 
 env:
   global:
@@ -19,10 +20,19 @@ r:
 
 r_github_packages:
   - jimhester/covr
+  - nhejazi/methyvimData
 
 bioc_packages:
-  - limma
+  - BiocStyle
   - BiocCheck
+  - BiocParallel
+  - BiocGenerics
+  - SummarizedExperiment
+  - GenomeInfoDb
+  - bumphunter
+  - IRanges
+  - limma
+  - minfi
 
 ## coverage
 after_success:

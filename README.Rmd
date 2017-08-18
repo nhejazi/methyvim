@@ -146,13 +146,13 @@ After using the `methyvim` R package, please cite the following:
           url = {},
           year  = {2017},
           month = {},
-          publisher={Faculty of 1000 Ltd},
+          publisher = {},
           volume = {},
           author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
             J},
-          title = {methyvim: Differential methylation analysis with targeted
-            esitmates of nonparametric variable importance measures},
-          journal = {F1000Research}
+          title = {methyvim: Nonparametric differential methylation analysis
+            with targeted estimates of variable importance measures},
+          journal = {}
         }
 
 ---
