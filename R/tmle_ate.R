@@ -17,8 +17,7 @@
 #'
 #' @importFrom minfi getBeta getM
 #' @importFrom tmle tmle
-#'
-#' @export
+#' @importFrom stats cor
 #'
 methyvim_ate <- function(target_site,
                          methytmle_screened,
@@ -70,9 +69,9 @@ methyvim_ate <- function(target_site,
     w_max <- round(length(y_star) / obs_per_covar)
 
     # remove neighbors that are highly correlated with target site
-    if (sum(abs(cor(y, t(w))) > corr) > 0) {
+    if (sum(abs(stats::cor(y, t(w))) > corr) > 0) {
       # find neighbors that are highly correlated with the target site
-      neighbors_corr_high <- which(abs(cor(y, t(w))) > corr)
+      neighbors_corr_high <- which(abs(stats::cor(y, t(w))) > corr)
 
       # if all neighbors are too highly correlated, we'll simply ignore W
       if (length(neighbors_corr_high) == length(only_neighbors)) {
@@ -154,4 +153,5 @@ methyvim_ate <- function(target_site,
   var_rescaled <- est_raw[4] * ((b - a)^2)
   res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
            n_neighbors_reduced, max_corr_w)
+  return(res)
 }

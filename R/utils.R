@@ -2,7 +2,7 @@
 #'
 #' Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
 #'
-#' @param methy_tmle Object of class \code{methytmle} produced from an object of
+#' @param methytmle Object of class \code{methytmle} produced from an object of
 #'        class \code{GenomicRatioSet}, but containing extra slots.
 #' @param window_size Numeric giving the number of base pairs used to define
 #'        neighborhoods along the genome. CpG sites within this distance (bp) of
@@ -42,6 +42,8 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #'
 #' @importFrom stats p.adjust
 #'
+#' @export
+#'
 fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
@@ -74,8 +76,6 @@ fdr_msa <- function(pvals, total_obs) {
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
-#'
-#' @export
 #'
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,

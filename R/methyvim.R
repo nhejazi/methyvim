@@ -74,14 +74,14 @@
 #'         regressions, as well as the original data rotated into influence
 #'         curve space may be returned, if so requested.
 #'
+#' @importFrom SummarizedExperiment colData
 #' @importFrom BiocParallel bplapply
 #' @importFrom parallel detectCores
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%dopar%"
 #'
-#' @export methyvim
+#' @export
 #'
-
 methyvim <- function(data_grs,
                      sites_comp = 10,
                      var_int = 1,
@@ -146,16 +146,16 @@ methyvim <- function(data_grs,
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  #set_parallel(parallel = parallel,
-  #             future_param = future_param,
-  #             bppar_type = bppar_type)
-  n_cores <- parallel::detectCores()
-  doParallel::registerDoParallel(n_cores)
+  set_parallel(parallel = parallel,
+               future_param = future_param,
+               bppar_type = bppar_type)
+  #n_cores <- parallel::detectCores()
+  #doParallel::registerDoParallel(n_cores)
 
   #=============================================================================
   # check if there is missing data in the phenotype-level matrix and drop if so
   # ============================================================================
-  cols_na <- colSums(sapply(colData(methy_tmle), is.na))
+  cols_na <- colSums(sapply(SummarizedExperiment::colData(methy_tmle), is.na))
   na_var_id <- names(which(cols_na != 0))
   if (length(na_var_id) != 0) {
     message(paste("Missing data detected: Dropping variable(s)", na_var_id,
@@ -185,7 +185,7 @@ methyvim <- function(data_grs,
   if (vim == "ATE") {
 
     # make sure that the outcome data is of class numeric
-    var_of_interest <- as.numeric(colData(methy_tmle)[, var_int])
+    var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
     if (class(var_of_interest) != "numeric") {
       var_of_interest <- as.numeric(var_of_interest)
     }
@@ -202,42 +202,43 @@ methyvim <- function(data_grs,
     ## TODO: THIS IS FOR TESTING ONLY
     methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
 
-    #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
-    #                                        FUN = methyvim_ate,
-    #                                        methytmle_screened = methy_tmle,
-    #                                        var_of_interest = var_of_interest,
-    #                                        type = type,
-    #                                        corr = corr_max,
-    #                                        obs_per_covar = obs_per_covar,
-    #                                        family = tmle_args$family,
-    #                                        g_lib = tmle_args$g_lib,
-    #                                        Q_lib = tmle_args$Q_lib,
-    #                                        return_ic = FALSE
-    #                                       )
-    methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
-                                      .export = ls(envir = globalenv()),
-                                      .packages = c("tmle", "SuperLearner"),
-                                      .combine = rbind) %dopar% {
+    methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
+                                            FUN = methyvim_ate,
+                                            methytmle_screened = methy_tmle,
+                                            var_of_interest = var_of_interest,
+                                            type = type,
+                                            corr = corr_max,
+                                            obs_per_covar = obs_per_covar,
+                                            family = tmle_args$family,
+                                            g_lib = tmle_args$g_lib,
+                                            Q_lib = tmle_args$Q_lib,
+                                            return_ic = FALSE
+                                           )
+    methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
 
-      message(paste("Computing targeted estimate for site", i_site, "of",
-                    length(methy_tmle_ind)))
-
-      out <- methyvim_ate(target_site = i_site,
-                          methytmle_screened = methy_tmle,
-                          var_of_interest = var_of_interest,
-                          type = type,
-                          corr = corr_max,
-                          obs_per_covar = obs_per_covar,
-                          g_lib = tmle_args$g_lib,
-                          Q_lib = tmle_args$Q_lib,
-                          family = tmle_args$family,
-                          return_ic = return_ic
-                         )
-    }
-    methy_vim_out <- as.data.frame(methy_vim_out)
+    #methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+    #                                  .export = ls(envir = globalenv()),
+    #                                  .packages = c("tmle", "SuperLearner"),
+    #                                  .combine = rbind) %dopar% {
+    #
+    #  message(paste("Computing targeted estimate for site", i_site, "of",
+    #                length(methy_tmle_ind)))
+    #
+    #  out <- methyvim_ate(target_site = i_site,
+    #                      methytmle_screened = methy_tmle,
+    #                      var_of_interest = var_of_interest,
+    #                      type = type,
+    #                      corr = corr_max,
+    #                      obs_per_covar = obs_per_covar,
+    #                      g_lib = tmle_args$g_lib,
+    #                      Q_lib = tmle_args$Q_lib,
+    #                      family = tmle_args$family,
+    #                      return_ic = return_ic
+    #                     )
+    #}
+    #methy_vim_out <- as.data.frame(methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
-    #methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
     colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE",
                                  "Var", "pval", "n_neighbors_all",
                                  "n_neighbors_w", "max_corr_w")
@@ -249,11 +250,9 @@ methyvim <- function(data_grs,
   # ============================================================================
   } else if (vim == "NPVI") {
     stop("Support for TMLE-NPVI is planned but not yet implemented.")
-    #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle,
-    #                                catch_inputs_npvi = catch_inputs)
+    #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle)
   } else {
     stop("The specified variable importance parameter is not available.")
   }
-
   # NOTE: what else do we do before returning output...
 }

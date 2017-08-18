@@ -1,10 +1,16 @@
 #' Screening procedure based on LIMMA
 #'
+#' Description here
+#'
+#' @param methytmle ...
+#' @param var_int ...
+#' @param type ...
+#' @param cutoff ...
+#'
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom minfi getBeta getM
 #' @importFrom SummarizedExperiment colData
 #'
-
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   # setup design matrix
   design <- as.numeric(SummarizedExperiment::colData(methytmle)[, var_int])

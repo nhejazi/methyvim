@@ -11,6 +11,10 @@
 #' @param catch_inputs_ate List...
 #'        ...
 #'
+#' @importFrom minfi getBeta getM
+#' @importFrom stats cor quantile qnorm
+#' @importFrom tmle.npvi tmle.npvi setConfLevel getPsi getSic getPValue
+#'
 
 methyvim_ate <- function(methy_tmle,
                          catch_inputs_ate) {
@@ -68,8 +72,8 @@ methyvim_ate <- function(methy_tmle,
 
       # get measures at the target site and cutoff for null value in NPVI
       x <- as.numeric(as.matrix(expr[target_site, ]))
-      cutoff <- quantile(abs(x),
-                         probs = catch_inputs_npvi$tmle_args$npvi_cutoff)
+      cutoff <- stats::quantile(abs(x),
+                                probs = catch_inputs_npvi$tmle_args$npvi_cutoff)
       tx_zero <- which(abs(x) < cutoff)
 
       # extract measures for neighboring sites
@@ -82,9 +86,10 @@ methyvim_ate <- function(methy_tmle,
       w_max <- round(length(var_of_interest) / catch_inputs_npvi$obs_per_covar)
 
       # remove neighbors that are highly correlated with target site
-      if (sum(abs(cor(x, t(w))) > catch_inputs_npvi$corr) > 0) {
+      if (sum(abs(stats::cor(x, t(w))) > catch_inputs_npvi$corr) > 0) {
         # find neighbors that are highly correlated with the target site
-        neighbors_corr_high <- which(abs(cor(x, t(w))) > catch_inputs_npvi$corr)
+        neighbors_corr_high <- which(abs(stats::cor(x, t(w))) >
+                                     catch_inputs_npvi$corr)
 
         # if all neighbors are too highly correlated, we'll simply ignore W
         if (length(neighbors_corr_high) == length(only_neighbors)) {
@@ -107,7 +112,7 @@ methyvim_ate <- function(methy_tmle,
       }
 
       # maximum correlation among neighbors in the adjustment set
-      max_corr_w <- max(cor(x, t(w)))
+      max_corr_w <- max(stats::cor(x, t(w)))
 
       # set the values below the quantile cutoff to zero
       x[tx_zero] <- 0
@@ -137,13 +142,13 @@ methyvim_ate <- function(methy_tmle,
       }
 
       # compute the NPVI
-      out <- tmle.npvi(obs = obs_data_in,
-                       f = descr$f,
-                       flavor = "superLearning",
-                       stoppingCriteria = descr$stoppingCriteria,
-                       cvControl = descr$cvControl,
-                       nMax = descr$nMax,
-                      )
+      out <- tmle.npvi::tmle.npvi(obs = obs_data_in,
+                                  f = descr$f,
+                                  flavor = "superLearning",
+                                  stoppingCriteria = descr$stoppingCriteria,
+                                  cvControl = descr$cvControl,
+                                  nMax = descr$nMax,
+                                 )
     } else {
       n_neighbors_total <- 0
       n_neighbors_reduced <- 0
@@ -151,8 +156,8 @@ methyvim_ate <- function(methy_tmle,
 
       # get measures at the target site and cutoff for null value in NPVI
       x <- as.numeric(as.matrix(expr[target_site, ]))
-      cutoff <- quantile(abs(x),
-                         probs = catch_inputs_npvi$tmle_args$npvi_cutoff)
+      cutoff <- stats::quantile(abs(x),
+                                probs = catch_inputs_npvi$tmle_args$npvi_cutoff)
       tx_zero <- which(abs(x) < cutoff)
       x[tx_zero] <- 0
 
@@ -165,13 +170,13 @@ methyvim_ate <- function(methy_tmle,
       colnames(obs_data_in) <- c("Y", "X", "W")
 
       # compute the NPVI
-      out <- tmle.npvi(obs = obs_data_in,
-                       f = descr$f,
-                       flavor = "superLearning",
-                       stoppingCriteria = descr$stoppingCriteria,
-                       cvControl = descr$cvControl,
-                       nMax = descr$nMax,
-                      )
+      out <- tmle.npvi::tmle.npvi(obs = obs_data_in,
+                                  f = descr$f,
+                                  flavor = "superLearning",
+                                  stoppingCriteria = descr$stoppingCriteria,
+                                  cvControl = descr$cvControl,
+                                  nMax = descr$nMax,
+                                 )
     }
 
     # get the influence curve estimates if so requested
@@ -184,15 +189,16 @@ methyvim_ate <- function(methy_tmle,
 
     # change confidence level if not default of 95%
     if (confid_level != 0.95) {
-      setConfLevel(out, confid_level)
+      tmle.npvi::setConfLevel(out, confid_level)
     }
 
     # extract results from NPVI for a SINGLE SITE
     # NOTE: it's unclear how to properly extract the variance from NPVI
-    npvi_est <- getPsi(out)
-    pval <- getPValue(out)
+    npvi_est <- tmle.npvi::getPsi(out)
+    pval <- tmle.npvi::getPValue(out)
     names(pval) <- NULL
-    CI = npvi_est + c(-1,1) * getSic(out) * qnorm(1 - alpha/2) / sqrt(samp_size)
+    CI = npvi_est + c(-1,1) * tmle.npvi::getSic(out) *
+         stats::qnorm(1 - alpha/2) / sqrt(samp_size)
     res <- c(CI[1], npvi_est, CI[2], pval)
     out <- c(res, n_neighbors_total, n_neighbors_w, max_corr_w)
   }

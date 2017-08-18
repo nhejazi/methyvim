@@ -2,9 +2,6 @@
 #'
 #' @importFrom tmle.npvi tmle.npvi
 #'
-#' @export npvi_screen
-#'
-
 npvi_screen <- function() {
   message("This method has not yet been implemented.")
 }

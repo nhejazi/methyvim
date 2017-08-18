@@ -7,14 +7,14 @@
 cluster_sites(methytmle, window_size = 1000)
 }
 \arguments{
+\item{methytmle}{Object of class \code{methytmle} produced from an object of
+class \code{GenomicRatioSet}, but containing extra slots.}
+
 \item{window_size}{Numeric giving the number of base pairs used to define
 neighborhoods along the genome. CpG sites within this distance (bp) of
 one another are denoted as neighbors. Chromosome boundaries and other
 biological constraints are respected (see the documentation available
 for \code{bumphunter::clusterMaker} for details).}
-
-\item{methy_tmle}{Object of class \code{methytmle} produced from an object of
-class \code{GenomicRatioSet}, but containing extra slots.}
 }
 \description{
 Clustering of CpG sites to define CpG neighborhoods based on distance (bp).

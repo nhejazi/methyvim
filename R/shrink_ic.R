@@ -5,8 +5,6 @@
 #'
 #'
 #'
-#'
-
 shrink_ic <- function() {
   message("This method has not yet been implemented.")
 }

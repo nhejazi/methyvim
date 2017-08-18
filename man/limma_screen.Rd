@@ -6,6 +6,15 @@
 \usage{
 limma_screen(methytmle, var_int, type, cutoff = 0.05)
 }
+\arguments{
+\item{methytmle}{...}
+
+\item{var_int}{...}
+
+\item{type}{...}
+
+\item{cutoff}{...}
+}
 \description{
-Screening procedure based on LIMMA
+Description here
 }

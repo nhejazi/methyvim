@@ -10,13 +10,42 @@ check_inputs(data = data_grs, var = var_int, vim = vim, type = type,
   future = future_param, bppar = bppar_type, return_ic = return_ic,
   shrink_ic = shrink_ic, tmle_type = tmle_type, tmle_args = tmle_args)
 }
+\arguments{
+\item{data}{...}
+
+\item{var}{...}
+
+\item{vim}{...}
+
+\item{type}{..}
+
+\item{filter}{...}
+
+\item{filter_cutoff}{...}
+
+\item{window}{...}
+
+\item{corr}{...}
+
+\item{obs_per_covar}{...}
+
+\item{parallel}{...}
+
+\item{future}{...}
+
+\item{bppar}{...}
+
+\item{return_ic}{...}
+
+\item{shrink_ic}{..}
+
+\item{tmle_type}{...}
+
+\item{tmle_args}{...}
+}
 \value{
 Options to be passed to various \code{tmle_*} functions.
 }
 \description{
 Check the input values of function parameters for errors.
-}
-\details{
-...
-...
 }
