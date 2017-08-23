@@ -26,7 +26,6 @@ First, we'll load the `methyvim` package and the example data contained in the
 library(methyvim)
 suppressMessages(library(minfi))
 suppressMessages(library(SummarizedExperiment))
-suppressMessages(library(tmle.npvi))
 suppressMessages(library(tmle))
 ```
 
