@@ -1,0 +1,19 @@
+citHeader("To cite 'methyvim' in publications, please use:")
+
+citEntry(
+    entry        = "Article",
+    doi          = "",
+    url          = "",
+    year         = "",
+    month        = "",
+    publisher    = "",
+    volume       = "X",
+    number       = "Y",
+    author       = "Nima S. Hejazi, Alan E. Hubbard, Mark J. van der Laan",
+    title        = "methyvim: ...",
+    journal      = "",
+    textVersion  = paste("Hejazi, NS, Hubbard, AE, and van der Laan, MJ (2017).",
+                         "methyvim: ...",
+                         "journal, X(Y).",
+                         "")
+)
