@@ -14,7 +14,7 @@ Description: This package provides facilities for differential methylation
   interest. These tools can be applied to differential methylation at the level
   of CpG sites, with valid inference after multiple hypothesis testing.
 Depends:
-  R (>= 3.3.1)
+  R (>= 3.4.0)
 License: file LICENSE
 URL: https://github.com/nhejazi/methyvim
 BugReports: https://github.com/nhejazi/methyvim/issues
@@ -22,7 +22,6 @@ Encoding: UTF-8
 LazyData: true
 Imports:
   tmle,
-  tmle.npvi,
   methods,
   foreach,
   parallel,
