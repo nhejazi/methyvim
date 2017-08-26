@@ -27,9 +27,17 @@ environment:
 build_script:
   - travis-tool.sh install_deps
   - travis-tool.sh install_github nhejazi/methyvimData
-  - travis-tool.sh install_bioc BiocStyle BiocCheck BiocParallel BiocGenerics
-  - travis-tool.sh install_bioc IRanges GenomeInfoDb SummarizedExperiment
-  - travis-tool.sh install_bioc limma bumphunter minfi
+  - travis-tool.sh install_github achambaz/tmle.npvi
+  - travis-tool.sh install_bioc BiocGenerics
+  - travis-tool.sh install_bioc IRanges
+  - travis-tool.sh install_bioc GenomeInfoDb
+  - travis-tool.sh install_bioc SummarizedExperiment
+  - travis-tool.sh install_bioc BiocParallel
+  - travis-tool.sh install_bioc BiocCheck
+  - travis-tool.sh install_bioc BiocStyle
+  - travis-tool.sh install_bioc limma
+  - travis-tool.sh install_bioc bumphunter
+  - travis-tool.sh install_bioc minfi
   - travis-tool.sh install_bioc_deps
 
 test_script:

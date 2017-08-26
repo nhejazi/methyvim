@@ -21,6 +21,7 @@ r:
 r_github_packages:
   - jimhester/covr
   - nhejazi/methyvimData
+  - achambaz/tmle.npvi
 
 bioc_packages:
   - BiocStyle
