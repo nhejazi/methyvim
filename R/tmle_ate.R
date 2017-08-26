@@ -5,16 +5,32 @@
 #' variable of interest (which ought to be binarized) as a treatment/exposure
 #' (A), using the neighbors of a given CpG site as the adjustment set (W).
 #'
-#' @param target_site Numeric ...
-#' @param methytmle_screened An object of class \code{methytmle}...
-#' @param var_of_interest ...
-#' @param type Character ...
-#' @param corr Numeric ...
-#' @param obs_per_covar Numeric ...
-#' @param g_lib Character or vector of characters...
-#' @param Q_lib Character or vector of characters...
-#' @param family Character ...
-#' @param return_ic Logical ...
+#' @param target_site Numeric indicating the column containing the screened
+#'        CpG site indices that will be looped over in TMLE procedure.
+#' @param methytmle_screened An object of class \code{methytmle} with clustered
+#'        sites based on genomic windows containing the screened CpG site
+#'        indices column.
+#' @param var_of_interest Numeric indicating the column index of the binarized
+#'        variable of interest, treated as an exposure.
+#' @param type Character indicating the particular measure of DNA methylation to
+#'        be used as the observed data in the estimation procedure, either Beta
+#'        values or M-values. The data are accessed via \code{minfi::getBeta} or
+#'        \code{minfi::getM}.
+#' @param corr Numeric indicating the maximum correlation that a neighboring
+#'        site can have with the target site.
+#' @param obs_per_covar Numeric indicating the number of observations needed for
+#'        for covariate included in W for downstream analysis. This ensures the
+#'        data is sufficient to control for the covariates.
+#' @param g_lib Character or vector of characters indicating the algorithms to
+#'        be implemented in SuperLearner if \code{tmle_type} is set to "glm".
+#' @param Q_lib Character or vector of characters indicating the algorithms to
+#'        be implemented in SuperLearner if \code{tmle_type} is set to
+#'        "super_learning".
+#' @param family Character indicating the distribution to be implemented to
+#'        describe the error distribution for regressions, generally "gaussian"
+#'        for a continuous outcome and "binomial" for a binary outcome.
+#' @param return_ic Logical indicating whether an influence curve estimate
+#'        should be returned for each site that passed through the filter.
 #'
 #' @importFrom minfi getBeta getM
 #' @importFrom tmle tmle
@@ -26,7 +42,7 @@ methyvim_ate <- function(target_site,
                          methytmle_screened,
                          var_of_interest,
                          type = c("Beta", "Mval"),
-                         corr = 0.70,
+                         corr = 0.75,
                          obs_per_covar = 20,
                          g_lib = c("SL.mean", "SL.glm"),
                          Q_lib = c("SL.mean", "SL.glm"),
@@ -93,7 +109,7 @@ methyvim_ate <- function(target_site,
     if (!is.null(w_no_corr) & nrow(w_in) > w_max) {
       message("Implementing PAM to reduce W")
       w_in <- cluster::pam(x = t(w_in), k = w_max, diss = FALSE)
-    } 
+    }
 
     # strictly enforces the assumption of positivity by discretizing W
     if (!is.null(w_no_corr)) {
