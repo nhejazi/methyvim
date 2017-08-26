@@ -26,7 +26,7 @@ methyvim_ate <- function(target_site,
                          methytmle_screened,
                          var_of_interest,
                          type = c("Beta", "Mval"),
-                         corr = 0.80,
+                         corr = 0.70,
                          obs_per_covar = 20,
                          g_lib = c("SL.mean", "SL.glm"),
                          Q_lib = c("SL.mean", "SL.glm"),
@@ -91,10 +91,9 @@ methyvim_ate <- function(target_site,
 
     # use PAM to reduce W by selecting medoids
     if (!is.null(w_no_corr) & nrow(w_in) > w_max) {
-      message("PAM will be used to reduce W but is not yet implemented.")
-      # write utility function to perform PAM clustering and select medoids
-      # TODO: w <- cluster_w_pam(w)
-    }
+      message("Implementing PAM to reduce W")
+      w_in <- cluster::pam(x = t(w_in), k = w_max, diss = FALSE)
+    } 
 
     # strictly enforces the assumption of positivity by discretizing W
     if (!is.null(w_no_corr)) {

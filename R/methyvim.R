@@ -36,7 +36,7 @@
 #' @param corr_max Numeric indicating the maximum correlation that a neighboring
 #'        site can have with the target site.
 #' @param obs_per_covar Numeric indicating the number of observations needed for
-#'        for covariate included in (W/downstream analysis). This ensures the
+#'        for covariate included in W for downstream analysis. This ensures the
 #'        data is sufficient to control for the covariates.
 #' @param parallel Logical indicating whether parallelization ought to be used.
 #'        See the documentation of \code{set_parallel} for more information, as
@@ -90,7 +90,7 @@ methyvim <- function(data_grs,
                      filter = c("limma", "npvi", "adaptest"),
                      filter_cutoff = 0.05,
                      window_bp = 1e3,
-                     corr_max = 0.70,
+                     corr_max = 0.75,
                      obs_per_covar = 20,
                      parallel = TRUE,
                      future_param = NULL,
