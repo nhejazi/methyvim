@@ -226,17 +226,18 @@ methyvim <- function(data_grs,
       message(paste("Computing targeted estimate for site", i_site, "of",
                     length(methy_tmle_ind)))
 
-      out <- methyvim_ate(target_site = i_site,
-                          methytmle_screened = methy_tmle,
-                          var_of_interest = var_of_interest,
-                          type = type,
-                          corr = corr_max,
-                          obs_per_covar = obs_per_covar,
-                          g_lib = tmle_args$g_lib,
-                          Q_lib = tmle_args$Q_lib,
-                          family = tmle_args$family,
-                          return_ic = return_ic
-                         )
+      out <- methyvim_tmle(target_site = i_site,
+                           methytmle_screened = methy_tmle,
+                           var_of_interest = var_of_interest,
+                           type = type,
+                           corr = corr_max,
+                           obs_per_covar = obs_per_covar,
+                           target_param = "ate",
+                           g_lib = tmle_args$g_lib,
+                           Q_lib = tmle_args$Q_lib,
+                           family = tmle_args$family,
+                           return_ic = return_ic
+                          )
     }
     methy_vim_out <- as.data.frame(methy_vim_out)
 
@@ -251,7 +252,55 @@ methyvim <- function(data_grs,
   # TMLE procedure for the Risk Ratio (RR) parameter
   # ============================================================================
   } else if (vim == "rr") {
-    stop("Support for TMLE-RR is planned but not yet implemented.")
+
+    # make sure that the outcome data is of class numeric
+    var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
+    if (class(var_of_interest) != "numeric") {
+      var_of_interest <- as.numeric(var_of_interest)
+    }
+
+    # get names of sites to be added to output object
+    cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
+
+    ## TODO: THIS IS FOR TESTING ONLY
+    cpg_screened_names <- cpg_screened_names[seq_len(sites_comp)]
+
+    # object of screened CpG site indices to loop over in TMLE procedure
+    methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
+
+    ## TODO: THIS IS FOR TESTING ONLY
+    methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
+
+    methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+                                      .export = ls(envir = globalenv()),
+                                      .packages = c("tmle", "SuperLearner"),
+                                      .combine = rbind) %dopar% {
+
+      message(paste("Computing targeted estimate for site", i_site, "of",
+                    length(methy_tmle_ind)))
+
+      out <- methyvim_tmle(target_site = i_site,
+                           methytmle_screened = methy_tmle,
+                           var_of_interest = var_of_interest,
+                           type = type,
+                           corr = corr_max,
+                           obs_per_covar = obs_per_covar,
+                           target_param = "rr",
+                           g_lib = tmle_args$g_lib,
+                           Q_lib = tmle_args$Q_lib,
+                           family = tmle_args$family,
+                           return_ic = return_ic
+                          )
+    }
+    methy_vim_out <- as.data.frame(methy_vim_out)
+
+    # TMLE procedure is now done, so let's just make the output object pretty...
+    colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE",
+                                 "Var", "pval", "n_neighbors_all",
+                                 "n_neighbors_w", "max_corr_w")
+    rownames(methy_vim_out) <- cpg_screened_names
+    methy_tmle@vim <- methy_vim_out
+
   #=============================================================================
   # TMLE procedure for a Nonparametric Variable Importance (NPVI) parameter
   # ============================================================================

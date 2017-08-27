@@ -1,9 +1,10 @@
-#' Differential Methylation with the Average Treatment Effect
+#' Differential Methylation with Classical Target Parameters
 #'
 #' Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
-#' Effect (ATE), treating DNA methylation as an outcome (Y) and the indicated
-#' variable of interest (which ought to be binarized) as a treatment/exposure
-#' (A), using the neighbors of a given CpG site as the adjustment set (W).
+#' Effect (ATE) or the Risk Ratio, treating DNA methylation as an outcome (Y)
+#' and the indicated variable of interest (which ought to be binarized) as a
+#' treatment/exposure (A), using the neighbors of a given CpG site as the
+#' adjustment set (W).
 #'
 #' @param target_site Numeric ...
 #' @param methytmle_screened An object of class \code{methytmle}...
@@ -11,6 +12,7 @@
 #' @param type Character ...
 #' @param corr Numeric ...
 #' @param obs_per_covar Numeric ...
+#' @param target_param Character ...'
 #' @param g_lib Character or vector of characters...
 #' @param Q_lib Character or vector of characters...
 #' @param family Character ...
@@ -22,16 +24,17 @@
 #'
 #' @export
 #'
-methyvim_ate <- function(target_site,
-                         methytmle_screened,
-                         var_of_interest,
-                         type = c("Beta", "Mval"),
-                         corr = 0.80,
-                         obs_per_covar = 20,
-                         g_lib = c("SL.mean", "SL.glm"),
-                         Q_lib = c("SL.mean", "SL.glm"),
-                         family = c("gaussian", "binomial"),
-                         return_ic = FALSE
+methyvim_tmle <- function(target_site,
+                          methytmle_screened,
+                          var_of_interest,
+                          type = c("Beta", "Mval"),
+                          corr,
+                          obs_per_covar,
+                          target_param = c("ate", "rr"),
+                          g_lib = c("SL.mean", "SL.glm"),
+                          Q_lib = c("SL.mean", "SL.glm"),
+                          family = c("gaussian", "binomial"),
+                          return_ic = FALSE
                          ) {
   ### check arguments where possible
   #type <- match.arg(type)
@@ -51,11 +54,17 @@ methyvim_ate <- function(target_site,
     expr <- minfi::getM(methytmle_screened)
   }
 
-  # get measures at the target site and perform scaling
+  # get measures at the target site
   y <- as.numeric(as.matrix(expr[target_site, , drop = FALSE]))
-  a <- min(y, na.rm = TRUE)
-  b <- max(y, na.rm = TRUE)
-  y_star <- (y - a) / (b - a)
+
+  # perform scaling of outcome if using binomial error family
+  if (family == "binomial") {
+    a <- min(y, na.rm = TRUE)
+    b <- max(y, na.rm = TRUE)
+    y_star <- (y - a) / (b - a)
+  } else {
+    y_star <- y
+  }
 
   ### are there enough neighbors for this estimate to be meaningful
   if (length(only_neighbors) != 0) {
@@ -150,11 +159,19 @@ methyvim_ate <- function(target_site,
   }
 
   # extract and rescale estimates
-  est <- out$estimates$ATE
-  est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
-  est_rescaled <- est_raw[1:3] * (b - a)
-  var_rescaled <- est_raw[4] * ((b - a)^2)
-  res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
-           n_neighbors_reduced, max_corr_w)
+  if (target_param == "ate") {
+    est <- out$estimates$ATE
+    est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
+    est_rescaled <- est_raw[1:3] * (b - a)
+    var_rescaled <- est_raw[4] * ((b - a)^2)
+    res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
+             n_neighbors_reduced, max_corr_w)
+  } else if (target_param == "rr" & family != "binomial") {
+    est <- out$estimates$RR
+    est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
+    res <- c(est_raw, n_neighbors_total, n_neighbors_reduced, max_corr_w)
+  } else if (target_param == "rr" & family == "gaussian") {
+    stop("The Relative Risk is not estimable with a gaussian error family.")
+  }
   return(res)
 }
