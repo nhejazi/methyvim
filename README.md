@@ -18,15 +18,19 @@ What's `methyvim`?
 
 The statistical methodology implemented computes targeted minimum loss-based estimates of several well-characterized variable importance measures:
 
-For discrete-valued treatments or exposures: \* The *average treatment effect* (ATE):
-*Ψ*<sub>*A**T**E*</sub> = *E*\[*E*\[*Y*<sub>*j*</sub> ∣ *A* = 1, *W*<sub>−*j*</sub>\]−*E*\[*Y*<sub>*j*</sub> ∣ *A* = 0, *W*<sub>−*j*</sub>\]\], 
- where *j* indexes a target CpG site of interest and −*j* gives all CpG sites in the same neighborhood as the target site except the target site itself (i.e., the neighboring sites).
+For discrete-valued treatments or exposures:
+
+-   The *average treatment effect* (ATE):
+    *Ψ*<sub>*A**T**E*</sub> = *E*\[*E*\[*Y*<sub>*j*</sub> ∣ *A* = 1, *W*<sub>−*j*</sub>\]−*E*\[*Y*<sub>*j*</sub> ∣ *A* = 0, *W*<sub>−*j*</sub>\]\], 
+     where *j* indexes a target CpG site of interest and −*j* gives all CpG sites in the same neighborhood as the target site except the target site itself (i.e., the neighboring sites).
 
 -   The *relative risk* (RR), where
     …, 
      where...
 
-For continous-valued treatments or exposures: \* A *nonparametric variable importance measure* (NPVI) (Chambaz, Neuvial, and van der Laan 2012).
+For continous-valued treatments or exposures:
+
+-   A *nonparametric variable importance measure* (NPVI) (Chambaz, Neuvial, and van der Laan 2012).
 
 These methods allow differential methylation effects to be quantified in a manner that is largely free of assumptions, especially of the variety exploited in parametric models. **The statistical algorithm consists in several major steps:**
 

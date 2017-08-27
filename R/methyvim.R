@@ -100,7 +100,8 @@ methyvim <- function(data_grs,
                      tmle_type = c("glm", "sl"),
                      tmle_args = list(family = "binomial",
                                       g_lib = c("SL.mean", "SL.glm"),
-                                      Q_lib = c("SL.mean", "SL.glm", "SL.gam"),
+                                      Q_lib = c("SL.mean", "SL.glm", "SL.gam",
+                                                "SL.earth"),
                                       npvi_cutoff = 0.25,
                                       npvi_descr = NULL)
                     ) {

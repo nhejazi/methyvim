@@ -38,6 +38,7 @@ The statistical methodology implemented computes targeted minimum loss-based
 estimates of several well-characterized variable importance measures:
 
 For discrete-valued treatments or exposures:
+
 * The _average treatment effect_ (ATE):
   $$ \Psi_{ATE} = E[E[Y_j \mid A = 1, W_{-j}] - E[Y_j \mid A = 0, W_{-j}]],$$
   where $j$ indexes a target CpG site of interest and $-j$ gives all CpG sites
@@ -49,6 +50,7 @@ For discrete-valued treatments or exposures:
   where...
 
 For continous-valued treatments or exposures:
+
 * A _nonparametric variable importance measure_ (NPVI) [@chambaz2012estimation].
 
 These methods allow differential methylation effects to be quantified in a

@@ -46,7 +46,9 @@ Suggests:
   testthat,
   BiocStyle,
   knitr,
-  rmarkdown
+  rmarkdown,
+  gam,
+  earth
 Remotes:
   nhejazi/methyvimData
 VignetteBuilder: knitr
