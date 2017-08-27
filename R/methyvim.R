@@ -85,7 +85,7 @@
 methyvim <- function(data_grs,
                      sites_comp = 10,
                      var_int = 1,
-                     vim = c("ATE"),
+                     vim = c("ate"),
                      type = c("Beta", "Mval"),
                      filter = c("limma"),
                      filter_cutoff = 0.05,
@@ -97,10 +97,10 @@ methyvim <- function(data_grs,
                      bppar_type = NULL,
                      return_ic = FALSE,
                      shrink_ic = FALSE,
-                     tmle_type = c("glm", "super_learning"),
+                     tmle_type = c("glm", "sl"),
                      tmle_args = list(family = "binomial",
                                       g_lib = c("SL.mean", "SL.glm"),
-                                      Q_lib = c("SL.mean", "SL.glm"),
+                                      Q_lib = c("SL.mean", "SL.glm", "SL.gam"),
                                       npvi_cutoff = 0.25,
                                       npvi_descr = NULL)
                     ) {
@@ -182,9 +182,9 @@ methyvim <- function(data_grs,
   methy_tmle <- cluster_sites(methytmle = methy_tmle)
 
   #=============================================================================
-  # ATE TMLE procedure for targeted differential methylation analysis
+  # TMLE procedure for the Average Treatment Effect (ATE) parameter
   # ============================================================================
-  if (vim == "ATE") {
+  if (vim == "ate") {
 
     # make sure that the outcome data is of class numeric
     var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
@@ -248,13 +248,19 @@ methyvim <- function(data_grs,
     methy_tmle@vim <- methy_vim_out
 
   #=============================================================================
-  # NPVI TMLE procedure for targeted differential methylation analysis
+  # TMLE procedure for the Risk Ratio (RR) parameter
   # ============================================================================
-  } else if (vim == "NPVI") {
+  } else if (vim == "rr") {
+    stop("Support for TMLE-RR is planned but not yet implemented.")
+  #=============================================================================
+  # TMLE procedure for a Nonparametric Variable Importance (NPVI) parameter
+  # ============================================================================
+  } else if (vim == "npvi") {
     stop("Support for TMLE-NPVI is planned but not yet implemented.")
     #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle)
   } else {
     stop("The specified variable importance parameter is not available.")
   }
+  return(methy_tmle)
   # NOTE: what else do we do before returning output...
 }

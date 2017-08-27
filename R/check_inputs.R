@@ -21,22 +21,11 @@
 #'
 #' @return Options to be passed to various \code{tmle_*} functions.
 #'
-check_inputs <- function(data = data_grs,
-                         var = var_int,
-                         vim = vim,
-                         type = type,
-                         filter = filter,
-                         filter_cutoff = filter_cutoff,
-                         window = window_bp,
-                         corr = corr_max,
-                         obs_per_covar = obs_per_covar,
-                         parallel = parallel,
-                         future = future_param,
-                         bppar = bppar_type,
-                         return_ic = return_ic,
-                         shrink_ic = shrink_ic,
-                         tmle_type = tmle_type,
-                         tmle_args = tmle_args) {
+check_inputs <- function(data, var, vim, type,
+                         filter, filter_cutoff, window, corr, obs_per_covar,
+                         parallel, future, bppar,
+                         return_ic, shrink_ic,
+                         tmle_type, tmle_args) {
 
   message("This function is only partially implemented currently.")
   # NOTE: make sure to check combinations of the variable of interest and the
@@ -48,7 +37,7 @@ check_inputs <- function(data = data_grs,
   # heuristic, but use it to check that the user has specified the ATE vs. NPVI
   # parameters correctly.
 
-  if (vim == "NPVI" & is.null(tmle_args$npvi_descr)) {
+  if (vim == "npvi" & is.null(tmle_args$npvi_descr)) {
     npvi_descr_defaults <- list(f = identity, iter = 10, cvControl = 2,
                                 nMax = 30,
                                 stoppingCriteria = list(mic = 0.001,
@@ -59,13 +48,13 @@ check_inputs <- function(data = data_grs,
   }
 
   if (tmle_type == "glm") {
-    if (vim == "ATE") {
+    if (vim == "ate") {
       # set GLM libraries for "tmle" package
       g_lib <- "SL.mean"
       Q_lib <- "SL.glm"
       tmle_args$g_lib <- g_lib
       tmle_args$Q_lib <- Q_lib
-    } else if (vim == "NPVI") {
+    } else if (vim == "npvi") {
       message("finding a way to select GLM flavor for tmle.npvi")
     }
   }
