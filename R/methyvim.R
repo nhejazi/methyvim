@@ -85,7 +85,7 @@
 methyvim <- function(data_grs,
                      sites_comp = 10,
                      var_int = 1,
-                     vim = c("ate"),
+                     vim = c("ate", "rr", "npvi"),
                      type = c("Beta", "Mval"),
                      filter = c("limma"),
                      filter_cutoff = 0.05,
@@ -242,8 +242,8 @@ methyvim <- function(data_grs,
     methy_vim_out <- as.data.frame(methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
-    colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE",
-                                 "Var", "pval", "n_neighbors_all",
+    colnames(methy_vim_out) <- c("lowerCI_ATE", "est_ATE", "upperCI_ATE",
+                                 "Var_ATE", "pval", "n_neighbors_all",
                                  "n_neighbors_w", "max_corr_w")
     rownames(methy_vim_out) <- cpg_screened_names
     methy_tmle@vim <- methy_vim_out
@@ -295,8 +295,8 @@ methyvim <- function(data_grs,
     methy_vim_out <- as.data.frame(methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
-    colnames(methy_vim_out) <- c("lower_CI_ATE", "est_ATE", "upper_CI_ATE",
-                                 "Var", "pval", "n_neighbors_all",
+    colnames(methy_vim_out) <- c("lowerCI_logRR", "est_logRR", "upperCI_logRR",
+                                 "Var_logRR", "pval", "n_neighbors_all",
                                  "n_neighbors_w", "max_corr_w")
     rownames(methy_vim_out) <- cpg_screened_names
     methy_tmle@vim <- methy_vim_out
@@ -307,8 +307,6 @@ methyvim <- function(data_grs,
   } else if (vim == "npvi") {
     stop("Support for TMLE-NPVI is planned but not yet implemented.")
     #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle)
-  } else {
-    stop("The specified variable importance parameter is not available.")
   }
   return(methy_tmle)
   # NOTE: what else do we do before returning output...

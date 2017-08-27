@@ -166,10 +166,12 @@ methyvim_tmle <- function(target_site,
     var_rescaled <- est_raw[4] * ((b - a)^2)
     res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
              n_neighbors_reduced, max_corr_w)
-  } else if (target_param == "rr" & family != "binomial") {
+  } else if (target_param == "rr" & family == "binomial") {
     est <- out$estimates$RR
-    est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
-    res <- c(est_raw, n_neighbors_total, n_neighbors_reduced, max_corr_w)
+    est_ci_log <- log(est$CI)
+    est_out <- c(est_ci_log[1], est$log.psi, est_ci_log[2], est$var.log.psi,
+                 est$pvalue)
+    res <- c(est_out, n_neighbors_total, n_neighbors_reduced, max_corr_w)
   } else if (target_param == "rr" & family == "gaussian") {
     stop("The Relative Risk is not estimable with a gaussian error family.")
   }

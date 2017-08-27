@@ -35,11 +35,21 @@ analysis based on _variable importance measures_ (VIMs), a class of
 statistically estimable target parameters that arise in causal inference.
 
 The statistical methodology implemented computes targeted minimum loss-based
-estimates of well-studied variable importance measures:
+estimates of several well-characterized variable importance measures:
 
-1. The _average treatment effect_ (ATE) for discrete exposures/treatments,
-2. A _nonparametric variable importance measure_ (NPVI) for continuous exposures
-[@chambaz2012estimation].
+For discrete-valued treatments or exposures:
+* The _average treatment effect_ (ATE):
+  $$ \Psi_{ATE} = E[E[Y_j \mid A = 1, W_{-j}] - E[Y_j \mid A = 0, W_{-j}]],$$
+  where $j$ indexes a target CpG site of interest and $-j$ gives all CpG sites
+  in the same neighborhood as the target site except the target site itself
+  (i.e., the neighboring sites).
+
+* The _relative risk_ (RR), where
+  $$ \dots,$$
+  where...
+
+For continous-valued treatments or exposures:
+* A _nonparametric variable importance measure_ (NPVI) [@chambaz2012estimation].
 
 These methods allow differential methylation effects to be quantified in a
 manner that is largely free of assumptions, especially of the variety exploited
@@ -53,11 +63,10 @@ computed only for this subset of sites. Several screening approaches are
 available, adapting core routines from the following R packages:
 [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html),
 [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi).
-2. Nonparametric VIMs are estimated for the specified parameter, currently using
-routines from the R packages
-[`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) (to estimate the
-NPVI parameter) or [`tmle`](https://CRAN.R-project.org/package=tmle) (to
-estimate the ATE).
+2. Nonparametric VIMs are estimated for the specified parameter, currently
+adapting routines from the
+[`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) and
+[`tmle`](https://CRAN.R-project.org/package=tmle) R packages.
 3. Since pre-screening is performed prior to estimating VIMs, we make use of a
 multiple testing correction uniquely suited to such settings. Due to the
 multiple testing nature of the estimation problem, a variant of the Benjamini &
@@ -75,6 +84,7 @@ causal inference.
 
 <!--
 Note about shrinkage of influence curves, adapting @smyth2004linear.
+Specifically, this is meant to reference my working paper with Alan.
 
 More exposition here....
 -->

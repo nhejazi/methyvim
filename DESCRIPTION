@@ -1,7 +1,7 @@
 Package: methyvim
 Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
   Estimates of Variable Importance Measures
-Version: 0.0.1
+Version: 0.2.0
 Authors@R: as.person(c(
   "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre, cph]",
   "Alan Hubbard <hubbard@berkeley.edu> [ctb]",
