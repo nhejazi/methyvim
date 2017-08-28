@@ -21,7 +21,7 @@ branches:
 
 environment:
   global:
-    WARNINGS_ARE_ERRORS: 0
+    WARNINGS_ARE_ERRORS: 1
     USE_RTOOLS: true
 
 build_script:
@@ -35,9 +35,9 @@ build_script:
   - travis-tool.sh install_bioc BiocParallel
   - travis-tool.sh install_bioc BiocCheck
   - travis-tool.sh install_bioc BiocStyle
-  - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc bumphunter
   - travis-tool.sh install_bioc minfi
+  - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc_deps
 
 test_script:

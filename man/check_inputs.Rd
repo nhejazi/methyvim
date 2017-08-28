@@ -4,20 +4,13 @@
 \alias{check_inputs}
 \title{Check Function Inputs}
 \usage{
-check_inputs(data, var, vim, type, filter, filter_cutoff, window, corr,
-  obs_per_covar, parallel, future, bppar, return_ic, shrink_ic, tmle_type,
-  tmle_args)
+check_inputs(data, var, filter_cutoff, window, corr, obs_per_covar, parallel,
+  future, bppar, tmle_type, tmle_args)
 }
 \arguments{
 \item{data}{...}
 
 \item{var}{...}
-
-\item{vim}{...}
-
-\item{type}{..}
-
-\item{filter}{...}
 
 \item{filter_cutoff}{...}
 
@@ -32,10 +25,6 @@ check_inputs(data, var, vim, type, filter, filter_cutoff, window, corr,
 \item{future}{...}
 
 \item{bppar}{...}
-
-\item{return_ic}{...}
-
-\item{shrink_ic}{..}
 
 \item{tmle_type}{...}
 

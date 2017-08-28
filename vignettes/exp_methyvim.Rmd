@@ -33,7 +33,7 @@ set.seed(479253)
 
 Now, let's load the data set:
 
-```{r get-data}
+```{r load-data}
 library(methyvimData)
 data(grsExample)
 grsExample
@@ -48,37 +48,29 @@ grsExample
 ...
 
 ```{r methyvim-ate}
-methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
-                             var_int = 1, vim = "ate", type = "Mval",
-                             filter = "limma", filter_cutoff = 0.05,
-                             window_bp = 1e3, corr_max = 0.80,
-                             obs_per_covar = 20, parallel = FALSE,
-                             future_param = NULL, bppar_type = NULL,
-                             return_ic = FALSE, shrink_ic = FALSE,
-                             tmle_type = "sl"
-                            )
-methyvim_out_ate
-head(methyvim_out_ate@vim)
+methyvim_out <- methyvim(data_grs = grsExample, sites_comp = 10,
+                         var_int = 1, vim = "ate", type = "Mval",
+                         filter = "limma", filter_cutoff = 0.05,
+                         parallel = FALSE, tmle_type = "sl"
+                        )
+methyvim_out
+head(methyvim_out@vim)
 ```
 
 ...
 
-### The Relative Risk as Variable Importance Measure
+### The Average Treatment Effect as Variable Importance Measure
 
 ...
 
 ```{r methyvim-rr}
-methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
-                            var_int = 1, vim = "rr", type = "Mval",
-                            filter = "limma", filter_cutoff = 0.05,
-                            window_bp = 1e3, corr_max = 0.80,
-                            obs_per_covar = 20, parallel = FALSE,
-                            future_param = NULL, bppar_type = NULL,
-                            return_ic = FALSE, shrink_ic = FALSE,
-                            tmle_type = "sl"
-                           )
-methyvim_out_rr
-head(methyvim_out_rr@vim)
+methyvim_out <- methyvim(data_grs = grsExample, sites_comp = 10,
+                         var_int = 1, vim = "rr", type = "Mval",
+                         filter = "limma", filter_cutoff = 0.05,
+                         parallel = FALSE, tmle_type = "sl"
+                        )
+methyvim_out
+head(methyvim_out@vim)
 ```
 
 ...

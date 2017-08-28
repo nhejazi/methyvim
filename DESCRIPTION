@@ -2,10 +2,15 @@ Package: methyvim
 Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
   Estimates of Variable Importance Measures
 Version: 0.2.0
-Authors@R: as.person(c(
-  "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre, cph]",
-  "Alan Hubbard <hubbard@berkeley.edu> [ctb]",
-  "Mark van der Laan <laan@stat.berkeley.edu> [aut]"))
+Authors@R: c(
+  person("Nima", "Hejazi", email = "nhejazi@berkeley.edu",
+    role = c("aut", "cre", "cph")),
+  person("Alan", "Hubbard", email = "hubbard@berkeley.edu", role = "ctb"),
+  person("Mark", "van der Laan", email = "laan@stat.berkeley.edu",
+    role = "aut")
+  )
+Author: Nima Hejazi [aut, cre, cph], Alan Hubbard [ctb], Mark van der Laan [aut]
+Maintainer: Nima Hejazi <nhejazi@berkeley.edu>
 Description: This package provides facilities for differential methylation
   analysis based on variable importance measures (VIMs), a class of statistical
   target parameters that arise in causal inference. The estimation and inference
@@ -54,7 +59,7 @@ Remotes:
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 biocViews:
-    DNAMethylation,
-    DifferentialMethylation,
-    MethylSeq,
-    MethylationArray
+  DNAMethylation,
+  DifferentialMethylation,
+  MethylSeq,
+  MethylationArray

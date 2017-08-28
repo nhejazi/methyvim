@@ -1,3 +1,5 @@
+utils::globalVariables(c("colData<-"))
+
 #' Differential Methylation Statistics with Variable Importance Measures
 #'
 #' Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
@@ -79,6 +81,9 @@
 #' @importFrom parallel detectCores
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%dopar%"
+#' @importFrom BiocParallel register bpprogressbar DoparParam
+#' @importFrom future plan multiprocess sequential
+#' @importFrom doFuture registerDoFuture
 #'
 #' @export
 #'
@@ -117,23 +122,52 @@ methyvim <- function(data_grs,
   # ============================================================================
   # check that inputs satisfy expectations
   ## and clean up check_inputs (e.g., rm NPVI stuff if ATE is specified)
-  #check_inputs(data = data_grs,
-  #             var = var_int,
-  #             vim = vim,
-  #             type = type,
-  #             filter = filter,
-  #             filter_cutoff = filter_cutoff,
-  #             window = window_bp,
-  #             corr = corr_max,
-  #             obs_per_covar = obs_per_covar,
-  #             parallel = parallel,
-  #             future = future_param,
-  #             bppar = bppar_type,
-  #             return_ic = return_ic,
-  #             shrink_ic = shrink_ic,
-  #             tmle_type = tmle_type,
-  #             tmle_args = tmle_args
-  #            )
+  check_inputs(data = data_grs,
+               var = var_int,
+               filter_cutoff = filter_cutoff,
+               window = window_bp,
+               corr = corr_max,
+               obs_per_covar = obs_per_covar,
+               parallel = parallel,
+               future = future_param,
+               bppar = bppar_type,
+               tmle_type = tmle_type,
+               tmle_args = tmle_args
+              )
+
+  # ============================================================================
+  # set treatment mechanism and outcome regression libraries
+  # ============================================================================
+  if(is.null(tmle_args$g_lib)) {
+    tmle_args$g_lib <- c("SL.mean", "SL.glm", "SL.glm.interaction")
+  }
+  if(is.null(tmle_args$Q_lib)) {
+    tmle_args$Q_lib <- c("SL.mean", "SL.glm", "SL.gam", "SL.earth")
+  }
+
+  # ============================================================================
+  # modify arguments to TMLE functions based on type of type requested
+  # ============================================================================
+  if (tmle_type == "glm") {
+    if (vim %in% c("ate", "rr")) {
+      # set GLM libraries for "tmle" package
+      tmle_args$g_lib <- c("SL.mean", "SL.glm")
+      tmle_args$Q_lib <- "SL.glm"
+    }
+  }
+
+  # ============================================================================
+  # if NPVI parameter requested, set sensible defaults
+  # ============================================================================
+  if (vim == "npvi" & is.null(tmle_args$npvi_descr)) {
+    npvi_descr_defaults <- list(f = identity, iter = 10, cvControl = 2,
+                                nMax = 30,
+                                stoppingCriteria = list(mic = 0.001,
+                                                        div = 0.001,
+                                                        psi = 0.01)
+                               )
+    tmle_args$npvi_descr <- npvi_descr_defaults
+  }
 
   # ============================================================================
   # invoke S4 class constructor for "methadapt" object
@@ -144,13 +178,13 @@ methyvim <- function(data_grs,
   #=============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  #set_parallel(parallel = parallel,
-  #             future_param = future_param,
-  #             bppar_type = bppar_type)
-  if (parallel == TRUE) {
-    n_cores <- parallel::detectCores()
-    doParallel::registerDoParallel(n_cores)
-  }
+  set_parallel(parallel = parallel,
+               future_param = future_param,
+               bppar_type = bppar_type)
+  #if (parallel == TRUE) {
+  #  n_cores <- parallel::detectCores()
+  #  doParallel::registerDoParallel(n_cores)
+  #}
 
   #=============================================================================
   # check if there is missing data in the phenotype-level matrix and drop if so
@@ -178,11 +212,12 @@ methyvim <- function(data_grs,
   methy_tmle <- cluster_sites(methytmle = methy_tmle)
 
   #=============================================================================
-  # TMLE procedure for the Average Treatment Effect (ATE) parameter
+  # TMLEs for the Average Treatment Effect (ATE) and Riks Ratio (RR) parameters
   # ============================================================================
-  if (vim == "ate") {
+  if (vim %in% c("ate", "rr")) {
     # make sure that the outcome data is of class numeric
-    var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
+    var_of_interest <- SummarizedExperiment::colData(methy_tmle)[, var_int]
+    var_of_interest <- as.numeric(var_of_interest)
     if (class(var_of_interest) != "numeric") {
       var_of_interest <- as.numeric(var_of_interest)
     }
@@ -199,100 +234,56 @@ methyvim <- function(data_grs,
     ## TODO: THIS IS FOR TESTING ONLY
     methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
 
-    #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
-    #                                        FUN = methyvim_tmle,
-    #                                        methytmle_screened = methy_tmle,
-    #                                        var_of_interest = var_of_interest,
-    #                                        type = type,
-    #                                        corr = corr_max,
-    #                                        obs_per_covar = obs_per_covar,
-    #                                        target_param = "ate",
-    #                                        family = tmle_args$family,
-    #                                        g_lib = tmle_args$g_lib,
-    #                                        Q_lib = tmle_args$Q_lib,
-    #                                        return_ic = return_ic
-    #                                       )
-    #methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
+    methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind,
+                                            methyvim_tmle,
+                                            methytmle_screened = methy_tmle,
+                                            var_of_interest = var_of_interest,
+                                            type = type,
+                                            corr = corr_max,
+                                            obs_per_covar = obs_per_covar,
+                                            target_param = vim,
+                                            g_lib = tmle_args$g_lib,
+                                            Q_lib = tmle_args$Q_lib,
+                                            family = tmle_args$family,
+                                            return_ic = return_ic
+                                           )
+    methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
 
-    methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
-                                      .export = ls(envir = globalenv()),
-                                      .packages = c("tmle", "SuperLearner"),
-                                      .combine = rbind) %dopar% {
-
-      message(paste("Computing targeted estimate for site", i_site, "of",
-                    length(methy_tmle_ind)))
-
-      out <- methyvim_tmle(target_site = i_site,
-                           methytmle_screened = methy_tmle,
-                           var_of_interest = var_of_interest,
-                           type = type,
-                           corr = corr_max,
-                           obs_per_covar = obs_per_covar,
-                           target_param = "ate",
-                           g_lib = tmle_args$g_lib,
-                           Q_lib = tmle_args$Q_lib,
-                           family = tmle_args$family,
-                           return_ic = return_ic
-                          )
-    }
-    methy_vim_out <- as.data.frame(methy_vim_out)
-
-    # TMLE procedure is now done, so let's just make the output object pretty...
-    colnames(methy_vim_out) <- c("lowerCI_ATE", "est_ATE", "upperCI_ATE",
-                                 "Var_ATE", "pval", "n_neighbors_all",
-                                 "n_neighbors_w", "max_corr_w")
-    rownames(methy_vim_out) <- cpg_screened_names
-    methy_tmle@vim <- methy_vim_out
-
-  #=============================================================================
-  # TMLE procedure for the Risk Ratio (RR) parameter
-  # ============================================================================
-  } else if (vim == "rr") {
-    # make sure that the outcome data is of class numeric
-    var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
-    if (class(var_of_interest) != "numeric") {
-      var_of_interest <- as.numeric(var_of_interest)
-    }
-
-    # get names of sites to be added to output object
-    cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
-
-    ## TODO: THIS IS FOR TESTING ONLY
-    cpg_screened_names <- cpg_screened_names[seq_len(sites_comp)]
-
-    # object of screened CpG site indices to loop over in TMLE procedure
-    methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
-
-    ## TODO: THIS IS FOR TESTING ONLY
-    methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
-
-    methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
-                                      .export = ls(envir = globalenv()),
-                                      .packages = c("tmle", "SuperLearner"),
-                                      .combine = rbind) %dopar% {
-
-      message(paste("Computing targeted estimate for site", i_site, "of",
-                    length(methy_tmle_ind)))
-
-      out <- methyvim_tmle(target_site = i_site,
-                           methytmle_screened = methy_tmle,
-                           var_of_interest = var_of_interest,
-                           type = type,
-                           corr = corr_max,
-                           obs_per_covar = obs_per_covar,
-                           target_param = "rr",
-                           g_lib = tmle_args$g_lib,
-                           Q_lib = tmle_args$Q_lib,
-                           family = tmle_args$family,
-                           return_ic = return_ic
-                          )
-    }
-    methy_vim_out <- as.data.frame(methy_vim_out)
+    #methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
+    #                                  .export = ls(envir = globalenv()),
+    #                                  .packages = c("tmle", "SuperLearner"),
+    #                                  .combine = rbind) %dopar% {
+    #
+    #  message(paste("Computing targeted estimate for site", i_site, "of",
+    #                length(methy_tmle_ind)))
+    #
+    #  out <- methyvim_tmle(target_site = i_site,
+    #                       methytmle_screened = methy_tmle,
+    #                       var_of_interest = var_of_interest,
+    #                       type = type,
+    #                       corr = corr_max,
+    #                       obs_per_covar = obs_per_covar,
+    #                       target_param = "ate",
+    #                       g_lib = tmle_args$g_lib,
+    #                       Q_lib = tmle_args$Q_lib,
+    #                       family = tmle_args$family,
+    #                       return_ic = return_ic
+    #                      )
+    #}
+    #methy_vim_out <- as.data.frame(methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
-    colnames(methy_vim_out) <- c("lowerCI_logRR", "est_logRR", "upperCI_logRR",
-                                 "Var_logRR", "pval", "n_neighbors_all",
-                                 "n_neighbors_w", "max_corr_w")
+    if (vim == "ate") {
+      colnames(methy_vim_out) <- c("lowerCI_ATE", "est_ATE", "upperCI_ATE",
+                                   "Var_ATE", "pval", "n_neighbors_all",
+                                   "n_neighbors_w", "max_corr_w")
+    } else {
+      colnames(methy_vim_out) <- c("lowerCI_logRR", "est_logRR",
+                                   "upperCI_logRR", "Var_logRR", "pval",
+                                   "n_neighbors_all", "n_neighbors_w",
+                                   "max_corr_w")
+    }
+
     rownames(methy_vim_out) <- cpg_screened_names
     methy_tmle@vim <- methy_vim_out
 
