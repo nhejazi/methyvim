@@ -6,12 +6,11 @@
 \usage{
 methyvim(data_grs, sites_comp = 10, var_int = 1, vim = c("ate", "rr",
   "npvi"), type = c("Beta", "Mval"), filter = c("limma"),
-  filter_cutoff = 0.05, window_bp = 1000, corr_max = 0.7,
+  filter_cutoff = 0.05, window_bp = 1000, corr_max = 0.75,
   obs_per_covar = 20, parallel = TRUE, future_param = NULL,
   bppar_type = NULL, return_ic = FALSE, shrink_ic = FALSE,
   tmle_type = c("glm", "sl"), tmle_args = list(family = "binomial", g_lib =
-  c("SL.mean", "SL.glm"), Q_lib = c("SL.mean", "SL.glm", "SL.gam"), npvi_cutoff
-  = 0.25, npvi_descr = NULL))
+  NULL, Q_lib = NULL, npvi_cutoff = 0.25, npvi_descr = NULL))
 }
 \arguments{
 \item{data_grs}{An object of class \code{minfi::GenomicRatioSet}, containing
