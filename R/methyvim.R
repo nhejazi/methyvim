@@ -78,9 +78,6 @@ utils::globalVariables(c("colData<-"))
 #'
 #' @importFrom SummarizedExperiment colData
 #' @importFrom BiocParallel bplapply
-#' @importFrom parallel detectCores
-#' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach "%dopar%"
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
@@ -181,10 +178,6 @@ methyvim <- function(data_grs,
   set_parallel(parallel = parallel,
                future_param = future_param,
                bppar_type = bppar_type)
-  #if (parallel == TRUE) {
-  #  n_cores <- parallel::detectCores()
-  #  doParallel::registerDoParallel(n_cores)
-  #}
 
   #=============================================================================
   # check if there is missing data in the phenotype-level matrix and drop if so
@@ -231,11 +224,8 @@ methyvim <- function(data_grs,
     # object of screened CpG site indices to loop over in TMLE procedure
     methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
 
-    ## TODO: THIS IS FOR TESTING ONLY
-    methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
-
-    methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind,
-                                            methyvim_tmle,
+    methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind[seq_len(sites_comp)],
+                                            FUN = methyvim_tmle,
                                             methytmle_screened = methy_tmle,
                                             var_of_interest = var_of_interest,
                                             type = type,
@@ -248,29 +238,6 @@ methyvim <- function(data_grs,
                                             return_ic = return_ic
                                            )
     methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
-
-    #methy_vim_out <- foreach::foreach(i_site = methy_tmle_ind,
-    #                                  .export = ls(envir = globalenv()),
-    #                                  .packages = c("tmle", "SuperLearner"),
-    #                                  .combine = rbind) %dopar% {
-    #
-    #  message(paste("Computing targeted estimate for site", i_site, "of",
-    #                length(methy_tmle_ind)))
-    #
-    #  out <- methyvim_tmle(target_site = i_site,
-    #                       methytmle_screened = methy_tmle,
-    #                       var_of_interest = var_of_interest,
-    #                       type = type,
-    #                       corr = corr_max,
-    #                       obs_per_covar = obs_per_covar,
-    #                       target_param = "ate",
-    #                       g_lib = tmle_args$g_lib,
-    #                       Q_lib = tmle_args$Q_lib,
-    #                       family = tmle_args$family,
-    #                       return_ic = return_ic
-    #                      )
-    #}
-    #methy_vim_out <- as.data.frame(methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
     if (vim == "ate") {
