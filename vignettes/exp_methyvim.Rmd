@@ -55,7 +55,7 @@ methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
                              obs_per_covar = 20, parallel = FALSE,
                              future_param = NULL, bppar_type = NULL,
                              return_ic = FALSE, shrink_ic = FALSE,
-                             tmle_type = "super_learning"
+                             tmle_type = "sl"
                             )
 methyvim_out_ate
 head(methyvim_out_ate@vim)
@@ -75,7 +75,7 @@ methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
                             obs_per_covar = 20, parallel = FALSE,
                             future_param = NULL, bppar_type = NULL,
                             return_ic = FALSE, shrink_ic = FALSE,
-                            tmle_type = "super_learning"
+                            tmle_type = "sl"
                            )
 methyvim_out_rr
 head(methyvim_out_rr@vim)

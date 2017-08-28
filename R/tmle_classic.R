@@ -31,15 +31,24 @@ methyvim_tmle <- function(target_site,
                           corr,
                           obs_per_covar,
                           target_param = c("ate", "rr"),
-                          g_lib = c("SL.mean", "SL.glm"),
-                          Q_lib = c("SL.mean", "SL.glm"),
+                          g_lib = c("SL.mean", "SL.glm", "SL.glm.interaction"),
+                          Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
                           family = c("gaussian", "binomial"),
                           return_ic = FALSE
                          ) {
-  ### check arguments where possible
-  #type <- match.arg(type)
-  #family <- match.arg(family)
+  ### set treatment mechanism and outcome regression libraries
+  if(is.null(g_lib)) {
+    g_lib <- c("SL.mean", "SL.glm", "SL.glm.interaction")
+  }
+  if(is.null(Q_lib)) {
+    Q_lib <- c("SL.mean", "SL.glm", "SL.gam", "SL.earth")
+  }
 
+  ### check arguments where possible
+  type <- match.arg(type)
+  target_param <- match.arg(target_param)
+  family <- match.arg(family)
+  
   ### get neighboring site
   in_cluster <- which(methytmle_screened@clusters %in%
                       methytmle_screened@clusters[target_site])

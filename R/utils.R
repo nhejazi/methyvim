@@ -77,6 +77,8 @@ fdr_msa <- function(pvals, total_obs) {
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
 #'
+#' @export
+#'
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,
                          bppar_type = NULL) {

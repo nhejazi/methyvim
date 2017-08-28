@@ -90,7 +90,7 @@ methyvim <- function(data_grs,
                      filter = c("limma"),
                      filter_cutoff = 0.05,
                      window_bp = 1e3,
-                     corr_max = 0.70,
+                     corr_max = 0.75,
                      obs_per_covar = 20,
                      parallel = TRUE,
                      future_param = NULL,
@@ -99,11 +99,8 @@ methyvim <- function(data_grs,
                      shrink_ic = FALSE,
                      tmle_type = c("glm", "sl"),
                      tmle_args = list(family = "binomial",
-                                      g_lib = c("SL.mean", "SL.glm"),
-                                      Q_lib = c("SL.mean", "SL.glm", "SL.gam",
-                                                "SL.earth"),
-                                      npvi_cutoff = 0.25,
-                                      npvi_descr = NULL)
+                                      g_lib = NULL, Q_lib = NULL,
+                                      npvi_cutoff = 0.25, npvi_descr = NULL)
                     ) {
 # if you say glm it will choose mean and glm
 # if you choose super learner it will choose more algorithms
@@ -173,8 +170,6 @@ methyvim <- function(data_grs,
     methy_tmle <- limma_screen(methytmle = methy_tmle,
                                var_int = var_int,
                                type = type)
-  } else {
-    stop("The designated filtering method has not yet been implemented.")
   }
 
   #=============================================================================
@@ -186,7 +181,6 @@ methyvim <- function(data_grs,
   # TMLE procedure for the Average Treatment Effect (ATE) parameter
   # ============================================================================
   if (vim == "ate") {
-
     # make sure that the outcome data is of class numeric
     var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
     if (class(var_of_interest) != "numeric") {
@@ -206,16 +200,17 @@ methyvim <- function(data_grs,
     methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
 
     #methy_vim_out <- BiocParallel::bplapply(X = methy_tmle_ind,
-    #                                        FUN = methyvim_ate,
+    #                                        FUN = methyvim_tmle,
     #                                        methytmle_screened = methy_tmle,
     #                                        var_of_interest = var_of_interest,
     #                                        type = type,
     #                                        corr = corr_max,
     #                                        obs_per_covar = obs_per_covar,
+    #                                        target_param = "ate",
     #                                        family = tmle_args$family,
     #                                        g_lib = tmle_args$g_lib,
     #                                        Q_lib = tmle_args$Q_lib,
-    #                                        return_ic = FALSE
+    #                                        return_ic = return_ic
     #                                       )
     #methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
 
@@ -253,7 +248,6 @@ methyvim <- function(data_grs,
   # TMLE procedure for the Risk Ratio (RR) parameter
   # ============================================================================
   } else if (vim == "rr") {
-
     # make sure that the outcome data is of class numeric
     var_of_interest <- as.numeric(SummarizedExperiment::colData(methy_tmle)[, var_int])
     if (class(var_of_interest) != "numeric") {
@@ -310,5 +304,5 @@ methyvim <- function(data_grs,
     #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle)
   }
   return(methy_tmle)
-  # NOTE: what else do we do before returning output...
+  # NOTE: what else do we do before returning output? ideas?
 }
