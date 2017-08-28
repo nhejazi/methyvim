@@ -170,7 +170,7 @@ methyvim <- function(data_grs,
   }
 
   # ============================================================================
-  # invoke S4 class constructor for "methadapt" object
+  # invoke S4 class constructor for object
   # ============================================================================
   methy_tmle <- .methytmle(data_grs)
   methy_tmle@call <- call
@@ -212,7 +212,7 @@ methyvim <- function(data_grs,
   methy_tmle <- cluster_sites(methytmle = methy_tmle)
 
   #=============================================================================
-  # TMLEs for the Average Treatment Effect (ATE) and Riks Ratio (RR) parameters
+  # TMLEs for the Average Treatment Effect (ATE) and Risk Ratio (RR) parameters
   # ============================================================================
   if (vim %in% c("ate", "rr")) {
     # make sure that the outcome data is of class numeric
@@ -277,11 +277,13 @@ methyvim <- function(data_grs,
       colnames(methy_vim_out) <- c("lowerCI_ATE", "est_ATE", "upperCI_ATE",
                                    "Var_ATE", "pval", "n_neighbors_all",
                                    "n_neighbors_w", "max_corr_w")
+      methy_tmle@param <- "Average Treatment Effect"
     } else {
       colnames(methy_vim_out) <- c("lowerCI_logRR", "est_logRR",
                                    "upperCI_logRR", "Var_logRR", "pval",
                                    "n_neighbors_all", "n_neighbors_w",
                                    "max_corr_w")
+      methy_tmle@param <- "Risk Ratio"
     }
 
     rownames(methy_vim_out) <- cpg_screened_names

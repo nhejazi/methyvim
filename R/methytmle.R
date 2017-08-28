@@ -13,6 +13,7 @@
        slots = list(call = "call",
                     screen_ind = "numeric",
                     clusters = "numeric",
+                    param = "character",
                     vim = "data.frame",
                     ic = "matrix"),
        contains = "GenomicRatioSet"

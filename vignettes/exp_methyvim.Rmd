@@ -3,7 +3,7 @@ title: "Targeted Learning of Differential Methylation from Exposures"
 author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document2
+  BiocStyle::html_document
 bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{Targeted Learning of Differential Methylation from Exposures}
@@ -33,7 +33,7 @@ set.seed(479253)
 
 Now, let's load the data set:
 
-```{r load-data}
+```{r get-data}
 library(methyvimData)
 data(grsExample)
 grsExample
@@ -48,29 +48,29 @@ grsExample
 ...
 
 ```{r methyvim-ate}
-methyvim_out <- methyvim(data_grs = grsExample, sites_comp = 10,
-                         var_int = 1, vim = "ate", type = "Mval",
-                         filter = "limma", filter_cutoff = 0.05,
-                         parallel = FALSE, tmle_type = "sl"
-                        )
-methyvim_out
-head(methyvim_out@vim)
+methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
+                             var_int = 1, vim = "ate", type = "Mval",
+                             filter = "limma", filter_cutoff = 0.05,
+                             parallel = FALSE, tmle_type = "sl"
+                            )
+methyvim_out_ate
+head(methyvim_out_ate@vim)
 ```
 
 ...
 
-### The Average Treatment Effect as Variable Importance Measure
+### The Risk Ratio as Variable Importance Measure
 
 ...
 
 ```{r methyvim-rr}
-methyvim_out <- methyvim(data_grs = grsExample, sites_comp = 10,
-                         var_int = 1, vim = "rr", type = "Mval",
-                         filter = "limma", filter_cutoff = 0.05,
-                         parallel = FALSE, tmle_type = "sl"
-                        )
-methyvim_out
-head(methyvim_out@vim)
+methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
+                            var_int = 1, vim = "rr", type = "Mval",
+                            filter = "limma", filter_cutoff = 0.05,
+                            parallel = FALSE, tmle_type = "sl"
+                           )
+methyvim_out_rr
+head(methyvim_out_rr@vim)
 ```
 
 ...
@@ -86,3 +86,4 @@ sessionInfo()
 ---
 
 ## References
+
