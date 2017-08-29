@@ -10,24 +10,22 @@ install:
   ps: Bootstrap
 
 cache:
-  - C:\RLibrary
+  - C:\RLibrary -> appveyor.yml
 
 # Adapt as necessary starting from here
 branches:
   only:
     - master
-    - develop
     - /*/-dev
 
 environment:
   global:
-    WARNINGS_ARE_ERRORS: 1
+    WARNINGS_ARE_ERRORS: 0
     USE_RTOOLS: true
 
 build_script:
   - travis-tool.sh install_deps
   - travis-tool.sh install_github nhejazi/methyvimData
-  - travis-tool.sh install_github achambaz/tmle.npvi
   - travis-tool.sh install_bioc BiocGenerics
   - travis-tool.sh install_bioc IRanges
   - travis-tool.sh install_bioc GenomeInfoDb
