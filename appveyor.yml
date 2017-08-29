@@ -42,6 +42,7 @@ build_script:
   - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc_deps
   - Rscript -e "source('http://bioconductor.org/biocLite.R'); biocLite(ask = FALSE)"
+  - travis-tool.sh install_github jimhester/covr
   - travis-tool.sh install_github nhejazi/methyvimData
 
 test_script:
