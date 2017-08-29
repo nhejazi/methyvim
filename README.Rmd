@@ -202,3 +202,7 @@ After using the `methyvim` R package, please cite the following:
 The contents of this repository are distributed under the MIT license. See file
 `LICENSE` for details.
 
+---
+
+## References
+

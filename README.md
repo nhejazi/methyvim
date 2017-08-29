@@ -135,6 +135,11 @@ License
 
 The contents of this repository are distributed under the MIT license. See file `LICENSE` for details.
 
+------------------------------------------------------------------------
+
+References
+----------
+
 Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” *Journal of the Royal Statistical Society. Series B (Methodological)*. JSTOR, 289–300.
 
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public Access: 1059.
