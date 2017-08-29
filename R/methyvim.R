@@ -115,24 +115,6 @@ methyvim <- function(data_grs,
   vim <- match.arg(vim)
 
   # ============================================================================
-  # catch inputs to pass to downstream functions (for estimation and such)
-  # ============================================================================
-  # check that inputs satisfy expectations
-  ## and clean up check_inputs (e.g., rm NPVI stuff if ATE is specified)
-  check_inputs(data = data_grs,
-               var = var_int,
-               filter_cutoff = filter_cutoff,
-               window = window_bp,
-               corr = corr_max,
-               obs_per_covar = obs_per_covar,
-               parallel = parallel,
-               future = future_param,
-               bppar = bppar_type,
-               tmle_type = tmle_type,
-               tmle_args = tmle_args
-              )
-
-  # ============================================================================
   # set treatment mechanism and outcome regression libraries
   # ============================================================================
   if(is.null(tmle_args$g_lib)) {
@@ -255,14 +237,7 @@ methyvim <- function(data_grs,
 
     rownames(methy_vim_out) <- cpg_screened_names
     methy_tmle@vim <- methy_vim_out
-
-  #=============================================================================
-  # TMLE procedure for a Nonparametric Variable Importance (NPVI) parameter
-  # ============================================================================
-  } else if (vim == "npvi") {
-    stop("Support for TMLE-NPVI is planned but not yet implemented.")
-    #methy_tmle@vim <- methyvim_npvi(methy_tmle = methy_tmle)
   }
+  # Let's give 'em some output
   return(methy_tmle)
-  # NOTE: what else do we do before returning output? ideas?
 }
