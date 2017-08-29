@@ -16,16 +16,21 @@ cache:
 branches:
   only:
     - master
-    - /*/-dev
+    - develop
+  - /*-dev$/
 
 environment:
   global:
     WARNINGS_ARE_ERRORS: 0
+    R_ARCH: x64
     USE_RTOOLS: true
 
+  matrix:
+    - R_VERSION: release
+
 build_script:
+  - Rscript -e "source('http://bioconductor.org/biocLite.R')"
   - travis-tool.sh install_deps
-  - travis-tool.sh install_github nhejazi/methyvimData
   - travis-tool.sh install_bioc BiocGenerics
   - travis-tool.sh install_bioc IRanges
   - travis-tool.sh install_bioc GenomeInfoDb
@@ -37,6 +42,7 @@ build_script:
   - travis-tool.sh install_bioc minfi
   - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc_deps
+  - travis-tool.sh install_github nhejazi/methyvimData
 
 test_script:
   - travis-tool.sh run_tests
@@ -44,6 +50,9 @@ test_script:
 on_failure:
   - 7z a failure.zip *.Rcheck\*
   - appveyor PushArtifact failure.zip
+
+on_success:
+  - Rscript -e "covr::codecov()"
 
 artifacts:
   - path: '*.Rcheck\**\*.log'

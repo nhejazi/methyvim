@@ -22,8 +22,6 @@
 #' @importFrom tmle tmle
 #' @importFrom stats cor
 #'
-#' @export
-#'
 methyvim_tmle <- function(target_site,
                           methytmle_screened,
                           var_of_interest,

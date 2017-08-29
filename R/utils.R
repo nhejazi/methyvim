@@ -77,8 +77,6 @@ fdr_msa <- function(pvals, total_obs) {
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
 #'
-#' @export
-#'
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,
                          bppar_type = NULL) {
@@ -133,8 +131,6 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #'         levels of the treatment against levels of an adjustment covariate.
 #'
 #' @importFrom gtools quantcut
-#'
-#' @export
 #'
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
