@@ -12,8 +12,7 @@ utils::globalVariables(c("colData<-"))
 #'        standard data structures associated with DNA Methylation experiments.
 #'        Consult the documentation for \code{minfi} to construct such objects.
 #' @param sites_comp Numeric indicating the number of sites for which a variable
-#'        importance measure is to be estimated post-screening. This arugment is
-#'        TEMPORARY, USED ONLY FOR TESTING PURPOSES currently.
+#'        importance measure is to be estimated post-screening.
 #' @param var_int Numeric indicating the column index of the variable of
 #'        interest, whether exposure or outcome. If argument \code{vim} is set
 #'        to the ATE, then the variable of interest is treated as an exposure;
@@ -76,7 +75,7 @@ utils::globalVariables(c("colData<-"))
 #'         regressions, as well as the original data rotated into influence
 #'         curve space may be returned, if so requested.
 #'
-#' @importFrom SummarizedExperiment colData RangedSummarizedExperiment
+#' @importFrom SummarizedExperiment colData
 #' @importFrom BiocParallel bplapply
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
@@ -104,15 +103,16 @@ methyvim <- function(data_grs,
                                       g_lib = NULL, Q_lib = NULL,
                                       npvi_cutoff = 0.25, npvi_descr = NULL)
                     ) {
-# if you say glm it will choose mean and glm
-# if you choose super learner it will choose more algorithms
   # ============================================================================
-  # catch input and return in output object for user convenience
+  # catch input for user convenience and check input types where possible
   # ============================================================================
+  # catch function call
   call <- match.call(expand.dots = TRUE)
-  filter <- match.arg(filter)
-  type <- match.arg(type)
+  # type checking (in same order the arguments appear)
   vim <- match.arg(vim)
+  type <- match.arg(type)
+  filter <- match.arg(filter)
+  tmle_type <- match.arg(tmle_type)
 
   # ============================================================================
   # set treatment mechanism and outcome regression libraries
@@ -153,6 +153,7 @@ methyvim <- function(data_grs,
   # ============================================================================
   methy_tmle <- .methytmle(data_grs)
   methy_tmle@call <- call
+  methy_tmle@var_int <- var_int
 
   #=============================================================================
   # set up parallelization if so desired

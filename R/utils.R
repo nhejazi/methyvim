@@ -48,7 +48,7 @@ fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
   fdr_adj <- stats::p.adjust(pvals_all, method = "fdr")
-  fdr_out <- fdr_adj[seq_len(pvals)]
+  fdr_out <- fdr_adj[seq_along(pvals)]
   return(fdr_out)
 }
 

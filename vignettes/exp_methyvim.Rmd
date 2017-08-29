@@ -20,9 +20,9 @@ vignette: >
 ## Preliminaries
 
 ```{r reqs, echo=FALSE}
+suppressMessages(library(tmle))
 suppressMessages(library(minfi))
 suppressMessages(library(SummarizedExperiment))
-suppressMessages(library(tmle))
 ```
 
 First, we'll load the `methyvim` package and the example data contained in the
@@ -41,6 +41,12 @@ set.seed(479253)
 grsExample
 ```
 
+The example data object is of class `GenomicRatioSet` from the `minfi` package.
+The summary provided by the `print` method gives a wealth of information on the
+experiment that generated the data. While most slots of objects of this S4 class
+have descriptive names, the interested analyst might consider consulting the
+documentation of the `minfi` package for an in-depth description _(cite minfi)_.
+
 ---
 
 ## Quantifying the Effect of an Exposure on DNA Methylation
@@ -57,28 +63,31 @@ methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
                             )
 methyvim_out_ate
 ```
-...
+
+As is clear from examining the object `methyvim_out_ate`, the output resembles
+exactly that returned when examining objects of class `GenomicRatioSet` from the
+`minfi` R package. In particular, the object returned is merely a modified form
+of the input `GenomicRatioSet` object -- thus, it contains all of the original
+slots, with all data intact. Several extra pieces of information are contained
+within the output object as well _(cite minfi)_.
+
+We can take a look at the results produced from the estimation procedure by
+examining the `"vim"` `slot` of the `methytmle` object:
 
 ```{r methyvim-ate-print}
-#head(methyvim_out_ate)
+head(slot(methyvim_out_ate, "vim"))
 ```
 
 ...
 
 ```{r methyvim-ate-plot-volcano}
-#plot(methyvim_out_ate, type = "volcano")
-```
-
-...
-
-```{r methyvim-ate-plot-heatmap}
-#plot(methyvim_out_ate, type = "heatmap")
+plot(methyvim_out_ate, type = "volcano")
 ```
 
 ...
 
 ```{r methyvim-ate-plot-pvals}
-#plot(methyvim_out_ate, type = "pvals")
+plot(methyvim_out_ate, type = "pvals")
 ```
 
 ...
@@ -98,24 +107,19 @@ methyvim_out_rr
 ...
 
 ```{r methyvim-rr-print}
-#head(methyvim_out_rr)
+head(slot(methyvim_out_rr, "vim"))
 ```
 ...
 
-```{r methyvim-rr-plot-volcano}
-#plot(methyvim_out_rr, type = "volcano")
-```
-
-...
-
-```{r methyvim-rr-plot-heatmap}
-#plot(methyvim_out_rr, type = "heatmap")
+```{r methyvim-rr-plot-volcano, eval=FALSE}
+plot(methyvim_out_rr, type = "volcano")
 ```
 
 ...
 
-```{r methyvim-rr-plot-pvals}
-#plot(methyvim_out_rr, type = "pvals")
+
+```{r methyvim-rr-plot-pvals, eval=FALSE}
+plot(methyvim_out_rr, type = "pvals")
 ```
 
 ...
@@ -131,4 +135,3 @@ sessionInfo()
 ---
 
 ## References
-

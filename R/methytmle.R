@@ -13,6 +13,7 @@
        slots = list(call = "call",
                     screen_ind = "numeric",
                     clusters = "numeric",
+                    var_int = "numeric",
                     param = "character",
                     vim = "data.frame",
                     ic = "matrix"),

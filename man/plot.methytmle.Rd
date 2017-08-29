@@ -2,24 +2,39 @@
 % Please edit documentation in R/plots.R
 \name{plot.methytmle}
 \alias{plot.methytmle}
-\title{Common plots for methytmle objects}
+\title{Plot utility for methytmle objects}
 \usage{
-\method{plot}{methytmle}(x, ..., type = c("heat", "volcano", "pvals"))
+\method{plot}{methytmle}(x, ..., type = c("heatmap", "volcano", "pvals"),
+  num_sites = 25, param_bound = 2, pval_bound = 0.2)
 }
 \arguments{
-\item{x}{object of class \code{biotmle} as produced by an appropriate call to
-\code{biomarkertmle}}
+\item{x}{Object of class \code{methytmle} as produced by an appropriate call
+to \code{methyvim}.}
 
-\item{...}{additional arguments passed \code{plot} as necessary}
+\item{...}{additional arguments passed \code{superheat}. This argument is
+used only if \code{type} below is set to the heatmap option. Please
+consult the documentation of the \code{superheat} package for options
+that may be appropriately set.}
 
-\item{type}{character describing whether to provide a plot of unadjusted or
-adjusted p-values (adjustment performed via Benjamini-Hochberg)}
-}
-\value{
-object of class \code{ggplot} containing one of several types of
-        plots: a heatmap of the top 50 CpG sites, a volcano plot displaying
-        the parameter estimate against the log-transformed raw p-values, or
-        side-by-side histograms of the raw and corrected p-values.
+\item{type}{Character describing the type of plot to be generated: one among
+the following collection: heatmap, volcano plot, or histograms of
+raw and FDR-corrected p-values.}
+
+\item{num_sites}{Numeric indcating the number of CpG sites to be shown in the
+plot. This argument is only used if \code{type} is set to the heatmap
+option. If the number of sites analyzed is greater than this cutoff,
+sites to be displayed are chosen by ranking sites based on the raw
+(marginal) p-values.}
+
+\item{param_bound}{Numeric for a threshold indicating the magnitude of the
+size of the effect considered to be interesting. This is used to
+assign groupings and colors to individual CpG sites. This argument is
+only used when \code{type} is set to the volcano plot option.}
+
+\item{pval_bound}{Numeric for a threshold indicating the magnitude of
+p-values deemed to be interesting. This is used to assign groupings
+and colors to individual CpG sites. This argument is only used when
+\code{type} is set to the volcano plot option.}
 }
 \description{
 Several types of plots providing...

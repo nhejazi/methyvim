@@ -18,8 +18,7 @@ standard data structures associated with DNA Methylation experiments.
 Consult the documentation for \code{minfi} to construct such objects.}
 
 \item{sites_comp}{Numeric indicating the number of sites for which a variable
-importance measure is to be estimated post-screening. This arugment is
-TEMPORARY, USED ONLY FOR TESTING PURPOSES currently.}
+importance measure is to be estimated post-screening.}
 
 \item{var_int}{Numeric indicating the column index of the variable of
 interest, whether exposure or outcome. If argument \code{vim} is set

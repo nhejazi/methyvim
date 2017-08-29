@@ -1,12 +1,64 @@
 ---
-title: "Advanced and internal functionality of the `methyvim` package"
+title: "Anatomy of the `methyvim` package"
 author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document2
-bibliography: refs.bib
+  BiocStyle::html_document
+bibliography: vignette-refs.bib
 vignette: >
-  %\VignetteIndexEntry{Advanced and internal functionality of the `methyvim` package}
+  %\VignetteIndexEntry{Anatomy of the `methyvim` package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+## Introduction
+
+```{r, echo=FALSE}
+set.seed(479253)
+suppressMessages(library(tmle))
+suppressMessages(library(minfi))
+suppressMessages(library(SummarizedExperiment))
+```
+
+```{r}
+library(methyvim)
+```
+
+```{r}
+getSlots(getClass("methytmle"))
+```
+
+...
+
+---
+
+## Example Analysis
+
+```{r}
+library(methyvimData)
+data(grsExample)
+grsExample
+```
+
+```{r}
+methyvim_eg <- methyvim(data_grs = grsExample, sites_comp = 10,
+                        var_int = 1, vim = "ate", type = "Mval",
+                        filter = "limma", filter_cutoff = 0.05,
+                        parallel = FALSE, tmle_type = "sl"
+                       )
+methyvim_eg
+```
+
+...
+
+In order to properly use all of the features of objects of class `methytmle`,
+we'll have to fill in the `ic` slot artificially:
+
+```{r}
+ic <- t(replicate(nrow(slot(methyvim_eg, "vim")), rnorm(ncol(methyvim_eg))))
+slot(methyvim_eg, "ic") <- as.matrix(ic)
+```
+
+```{r}
+plot(methyvim_eg, type = "heatmap")
+```
