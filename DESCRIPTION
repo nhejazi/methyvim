@@ -29,16 +29,15 @@ BugReports: https://github.com/nhejazi/methyvim/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
+  stats,
   methods,
   ggplot2,
   gridExtra,
   superheat,
   wesanderson,
   magrittr,
-  tibble,
   dplyr,
   gtools,
-  SuperLearner,
   tmle,
   future,
   doFuture,
@@ -53,9 +52,10 @@ Imports:
   methyvimData
 Suggests:
   testthat,
-  BiocStyle,
   knitr,
   rmarkdown,
+  BiocStyle,
+  SuperLearner,
   randomForest,
   earth,
   gam
