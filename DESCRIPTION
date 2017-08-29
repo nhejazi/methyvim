@@ -48,8 +48,7 @@ Imports:
   bumphunter,
   IRanges,
   limma,
-  minfi,
-  methyvimData
+  minfi
 Suggests:
   testthat,
   knitr,
@@ -59,11 +58,10 @@ Suggests:
   randomForest,
   earth,
   gam
-Remotes:
-  github::nhejazi/methyvimData
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 biocViews:
+  Clustering,
   DNAMethylation,
   DifferentialMethylation,
   MethylationArray,
