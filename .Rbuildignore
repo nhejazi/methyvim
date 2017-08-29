@@ -8,9 +8,10 @@
 ^README\.Rmd$
 ^README\.html$
 ^README-.*\.png$
+^README-refs\.bib$
 ^Makefile$
-^refs\.bib$
 ^\.gitignore$
 ^docs$
 ^paper$
 ^sandbox$
+

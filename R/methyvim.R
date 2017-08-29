@@ -76,7 +76,7 @@ utils::globalVariables(c("colData<-"))
 #'         regressions, as well as the original data rotated into influence
 #'         curve space may be returned, if so requested.
 #'
-#' @importFrom SummarizedExperiment colData
+#' @importFrom SummarizedExperiment colData RangedSummarizedExperiment
 #' @importFrom BiocParallel bplapply
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential

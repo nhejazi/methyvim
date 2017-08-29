@@ -4,7 +4,7 @@ author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document
-bibliography: refs.bib
+bibliography: vignette-refs.bib
 vignette: >
   %\VignetteIndexEntry{Targeted Learning of Differential Methylation from Exposures}
   %\VignetteEngine{knitr::rmarkdown}
@@ -19,23 +19,25 @@ vignette: >
 
 ## Preliminaries
 
+```{r reqs, echo=FALSE}
+suppressMessages(library(minfi))
+suppressMessages(library(SummarizedExperiment))
+suppressMessages(library(tmle))
+```
+
 First, we'll load the `methyvim` package and the example data contained in the
 `methyvimData` package that accompanies it:
 
 ```{r prelims}
 library(methyvim)
-suppressMessages(library(minfi))
-suppressMessages(library(SummarizedExperiment))
-suppressMessages(library(tmle))
-#options(future.globals.maxSize = 1e12)
-set.seed(479253)
+library(methyvimData)
 ```
 
-Now, let's load the data set:
+Now, let's load the data set and seed the RNG:
 
 ```{r get-data}
-library(methyvimData)
 data(grsExample)
+set.seed(479253)
 grsExample
 ```
 
@@ -54,7 +56,29 @@ methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
                              parallel = FALSE, tmle_type = "sl"
                             )
 methyvim_out_ate
-head(methyvim_out_ate@vim)
+```
+...
+
+```{r methyvim-ate-print}
+#head(methyvim_out_ate)
+```
+
+...
+
+```{r methyvim-ate-plot-volcano}
+#plot(methyvim_out_ate, type = "volcano")
+```
+
+...
+
+```{r methyvim-ate-plot-heatmap}
+#plot(methyvim_out_ate, type = "heatmap")
+```
+
+...
+
+```{r methyvim-ate-plot-pvals}
+#plot(methyvim_out_ate, type = "pvals")
 ```
 
 ...
@@ -70,7 +94,28 @@ methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
                             parallel = FALSE, tmle_type = "sl"
                            )
 methyvim_out_rr
-head(methyvim_out_rr@vim)
+```
+...
+
+```{r methyvim-rr-print}
+#head(methyvim_out_rr)
+```
+...
+
+```{r methyvim-rr-plot-volcano}
+#plot(methyvim_out_rr, type = "volcano")
+```
+
+...
+
+```{r methyvim-rr-plot-heatmap}
+#plot(methyvim_out_rr, type = "heatmap")
+```
+
+...
+
+```{r methyvim-rr-plot-pvals}
+#plot(methyvim_out_rr, type = "pvals")
 ```
 
 ...
