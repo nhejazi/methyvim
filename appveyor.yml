@@ -17,7 +17,7 @@ branches:
   only:
     - master
     - develop
-  - /*-dev$/
+  - /-dev/
 
 environment:
   global:
