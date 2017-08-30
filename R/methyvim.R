@@ -37,7 +37,7 @@ utils::globalVariables(c("colData<-"))
 #' @param corr_max Numeric indicating the maximum correlation that a neighboring
 #'        site can have with the target site.
 #' @param obs_per_covar Numeric indicating the number of observations needed for
-#'        for covariate included in (W/downstream analysis). This ensures the
+#'        for covariate included in W for downstream analysis. This ensures the
 #'        data is sufficient to control for the covariates.
 #' @param parallel Logical indicating whether parallelization ought to be used.
 #'        See the documentation of \code{set_parallel} for more information, as
