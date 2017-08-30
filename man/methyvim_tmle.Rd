@@ -11,27 +11,46 @@ methyvim_tmle(target_site, methytmle_screened, var_of_interest,
   family = c("gaussian", "binomial"), return_ic = FALSE)
 }
 \arguments{
-\item{target_site}{Numeric ...}
+\item{target_site}{Numeric indicating the column containing the screened
+CpG site indices that will be looped over in TMLE procedure.}
 
-\item{methytmle_screened}{An object of class \code{methytmle}...}
+\item{methytmle_screened}{An object of class \code{methytmle} with clustered
+sites based on genomic windows containing the screened CpG site
+indices column.}
 
-\item{var_of_interest}{...}
+\item{var_of_interest}{Numeric indicating the column index of the binarized
+variable of interest, treated as an exposure.}
 
-\item{type}{Character ...}
+\item{type}{Character indicating the particular measure of DNA methylation to
+be used as the observed data in the estimation procedure, either Beta
+values or M-values. The data are accessed via \code{minfi::getBeta} or
+\code{minfi::getM}.}
 
-\item{corr}{Numeric ...}
+\item{corr}{Numeric indicating the maximum correlation that a neighboring
+site can have with the target site.}
 
-\item{obs_per_covar}{Numeric ...}
+\item{obs_per_covar}{Numeric indicating the number of observations needed for
+for covariate included in W for downstream analysis. This ensures the
+data is sufficient to control for the covariates.}
 
-\item{target_param}{Character ...'}
+\item{target_param}{Character indicating the target causal parameter for
+which an estimator will be constructed and computed via targeted
+minimum loss-based estimation. Currently, this is limited to the
+Average Treatment Effect (ATE) and the Risk Ratio (RR), with routines
+from the \code{tmle} package being used for the computation.}
 
-\item{g_lib}{Character or vector of characters...}
+\item{g_lib}{Character or vector of characters indicating the algorithms to
+be implemented in SuperLearner if \code{tmle_type} is set to "glm".}
 
-\item{Q_lib}{Character or vector of characters...}
+\item{Q_lib}{Character or vector of characters indicating the algorithms to
+be implemented in SuperLearner if \code{tmle_type} is set to "sl".}
 
-\item{family}{Character ...}
+\item{family}{Character indicating the distribution to be implemented to
+describe the error distribution for regressions, generally "gaussian"
+for a continuous outcome and "binomial" for a binary outcome.}
 
-\item{return_ic}{Logical ...}
+\item{return_ic}{Logical indicating whether an influence curve estimate
+should be returned for each site that passed through the filter.}
 }
 \description{
 Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment

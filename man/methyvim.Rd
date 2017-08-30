@@ -51,7 +51,7 @@ for them to be considered neighboring sites (?)}
 site can have with the target site.}
 
 \item{obs_per_covar}{Numeric indicating the number of observations needed for
-for covariate included in (W/downstream analysis). This ensures the
+for covariate included in W for downstream analysis. This ensures the
 data is sufficient to control for the covariates.}
 
 \item{parallel}{Logical indicating whether parallelization ought to be used.

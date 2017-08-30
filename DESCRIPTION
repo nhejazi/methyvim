@@ -30,6 +30,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
   stats,
+  cluster,
   methods,
   ggplot2,
   gridExtra,
