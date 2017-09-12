@@ -55,10 +55,14 @@ Suggests:
   knitr,
   rmarkdown,
   BiocStyle,
+  methyvimData,
   SuperLearner,
   randomForest,
   earth,
-  gam
+  gam,
+  snow,
+  parallel,
+  BatchJobs
 Remotes:
   nhejazi/methyvimData
 VignetteBuilder: knitr
