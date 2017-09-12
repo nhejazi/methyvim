@@ -28,14 +28,7 @@ methytmle input object which has been reduced include only the relevant CpG
 sites. This subset is then used to estimate VIMs.
 }
 \description{
-Screens the \code{methytmle} object by way of a \code{limma} model with
-empirical Bayes shrinkage for CpG sites below the pre-defined p-value cutoff.
-pre-defined p-value cutoff.
-}
-\details{
-## or something like this? ##
-
 Reduces the \code{methytmle} object by way of a \code{limma} model with
-empirical Bayes shrinkage to include only the CpG sites below the
-pre-defined p-value cutoff.
+empirical Bayes shrinkage to include only the CpG sites below the preset
+p-value cutoff.
 }
