@@ -1,8 +1,6 @@
 branches:
   only:
   - master
-  - develop
-  - /*-dev$/
 
 env:
   global:
@@ -38,10 +36,11 @@ bioc_packages:
 
 ## coverage
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - Rscript -e "covr::codecov(line_exclusions = list('R/plots.R'))"
   - R CMD BiocCheck .
 
 notifications:
   email:
     on_success: change
     on_failure: change
+
