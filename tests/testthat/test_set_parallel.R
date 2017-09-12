@@ -7,7 +7,7 @@ suppressMessages(library(BiocParallel))
 # test: BiocParallel::DoparParam is invoked under parallel=TRUE
 set_parallel(parallel = TRUE)
 test_that("registers BiocParallel::DoparParam by default for parallel=TRUE", {
-  expect_equivalent(names(registered()), "DoparParam")
+  expect_true("DoparParam" %in% names(registered()))
 })
 
 test_that("registers future::multiprocess by default for parallel=TRUE", {
@@ -30,6 +30,7 @@ test_that("registers BiocParallel::SnowParam when so asked", {
 
 set_parallel(parallel = TRUE, bppar_type = "MulticoreParam")
 test_that("registers BiocParallel::MulticoreParam when so asked", {
+  skip_on_os("windows")
   expect_true("MulticoreParam" %in% names(registered()))
 })
 
