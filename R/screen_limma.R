@@ -1,14 +1,8 @@
 #' Screening procedure based on LIMMA
 #'
-#' Screens the \code{methytmle} object by way of a \code{limma} model with
-#' empirical Bayes shrinkage for CpG sites below the pre-defined p-value cutoff.
-#' pre-defined p-value cutoff.
-#'
-#' ## or something like this? ##
-#'
 #' Reduces the \code{methytmle} object by way of a \code{limma} model with
-#' empirical Bayes shrinkage to include only the CpG sites below the
-#' pre-defined p-value cutoff.
+#' empirical Bayes shrinkage to include only the CpG sites below the preset
+#' p-value cutoff.
 #'
 #' @param methytmle An object of class \code{methytmle}.
 #' @param var_int Numeric indicating the column index of the variable of
@@ -31,6 +25,9 @@
 #' @importFrom SummarizedExperiment colData
 #'
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
+
+  stopifnot(class(methytmle) == "methytmle")
+
   # setup design matrix
   design <- as.numeric(SummarizedExperiment::colData(methytmle)[, var_int])
   design <- as.matrix(cbind(rep(1, times = length(design)), design))

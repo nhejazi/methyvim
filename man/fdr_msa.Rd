@@ -18,3 +18,11 @@ employed in the multi-stage analysis performed.}
 Modified FDR Controlling Procedure for Multi-Stage Analyses (MJ van der Laan
 and C Tuglus, 2009, <doi:10.2202/1544-6115.1397>)
 }
+\examples{
+g <- 1e4
+n <- 1e2
+p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
+# treating the vector p as one of p-values, FDR-MSA may be applied
+fdr_p <- fdr_msa(pvals = p, total_obs = g)
+
+}

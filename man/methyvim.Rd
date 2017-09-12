@@ -104,3 +104,15 @@ variable importance measures currently supported are the Average Treatment
 Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 defined by Chambaz, Neuvial, and van der Laan <doi:10.1214/12-EJS703>).
 }
+\examples{
+library(methyvimData)
+suppressMessages(library(SummarizedExperiment))
+data(grsExample)
+methyvim_out_ate <- suppressWarnings(
+ methyvim(data_grs = grsExample, sites_comp = 1, var_int = 1, vim = "ate",
+          type = "Mval", filter = "limma", filter_cutoff = 0.05,
+          parallel = FALSE, tmle_type = "sl"
+         )
+)
+
+}

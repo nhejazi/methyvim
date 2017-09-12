@@ -44,6 +44,13 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #'
 #' @export
 #'
+#' @examples
+#' g <- 1e4
+#' n <- 1e2
+#' p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
+#' # treating the vector p as one of p-values, FDR-MSA may be applied
+#' fdr_p <- fdr_msa(pvals = p, total_obs = g)
+#'
 fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
