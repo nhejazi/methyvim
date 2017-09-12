@@ -3,6 +3,7 @@ suppressMessages(library(future))
 suppressMessages(library(doFuture))
 suppressMessages(library(BiocParallel))
 
+
 # test: BiocParallel::DoparParam is invoked under parallel=TRUE
 set_parallel(parallel = TRUE)
 test_that("registers BiocParallel::DoparParam by default for parallel=TRUE", {

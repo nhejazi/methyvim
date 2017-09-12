@@ -1,4 +1,5 @@
 context("FDR-MSA correction")
+library(limma)
 
 # simulate toy data
 g <- 1e4
