@@ -230,7 +230,9 @@ head(slot(methyvim_out_rr, "vim"))
 
 ## Visualization of Results
 
-...
+In order to explore the visualization tools provided with the `methyvim` R
+package, our toy example (of just $10$ CpG sites) is unfortunately insufficient.
+To proceed, we will use a data set of results...
 
 ```{r methyvim-plot-volcano, eval=FALSE}
 plot(methyvim_out_rr, type = "volcano")
