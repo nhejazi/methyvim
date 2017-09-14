@@ -1,4 +1,4 @@
-context("TMLE-ATE with M-values")
+context("Wrapper function for TMLE for supported target parameters")
 
 # libraries and data
 suppressMessages(library(tmle))
@@ -11,6 +11,14 @@ data(grsExample)
 # run TMLE procedure for the ATE parameter over M-values with Limma filtering
 methyvim_out_ate <- suppressWarnings(
   methyvim(data_grs = grsExample, sites_comp = 3, var_int = 1, vim = "ate",
+           type = "Mval", filter = "limma", filter_cutoff = 0.05,
+           parallel = FALSE, tmle_type = "sl"
+          )
+)
+
+# run TMLE procedure for the RR parameter over M-values with Limma filtering
+methyvim_out_rr <- suppressWarnings(
+  methyvim(data_grs = grsExample, sites_comp = 3, var_int = 1, vim = "rr",
            type = "Mval", filter = "limma", filter_cutoff = 0.05,
            parallel = FALSE, tmle_type = "sl"
           )
@@ -53,5 +61,9 @@ test_that("Variable importance results in tolerance and of correct length", {
 test_that("Cluster IDs are of appropriate length and unique length", {
   expect_equal(length(methyvim_out_ate@clusters), nrow(methyvim_out_ate))
   expect_lt(length(unique(methyvim_out_ate@clusters)), nrow(methyvim_out_ate))
+})
+
+test_that("Variable importance results within tolerance for the RR parameter", {
+  expect_lt(sum(range(methyvim_out_rr@vim$pval) - c(0.2281579, 0.4707649)), 1e-7)
 })
 
