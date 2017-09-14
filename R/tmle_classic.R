@@ -170,10 +170,10 @@ methyvim_tmle <- function(target_site,
 
   # get the influence curve estimates if so requested
   if (return_ic) {
-    ate_ic <- out$estimates$IC$IC.ATE
-    ate_g <- out$g$g1W
-    ate_Q <- out$Qstar
-    ic <- list(ate_ic, ate_g, ate_Q)
+    #ate_ic <- out$estimates$IC$IC.ATE
+    #ate_g <- out$g$g1W
+    #ate_Q <- out$Qstar
+    #ic <- list(ate_ic, ate_g, ate_Q)
   }
 
   # extract and rescale estimates
@@ -193,3 +193,4 @@ methyvim_tmle <- function(target_site,
   }
   return(res)
 }
+

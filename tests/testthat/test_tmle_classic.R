@@ -10,16 +10,16 @@ clustered <- methyvim:::cluster_sites(screened)
 var_int <- colData(clustered)[, 1]
 
 # consistentcy of output for ATE and RR over target site with M-values
-methyvim_mvals_ate <- methyvim_tmle(target_site = 10,
-                                    methytmle_screened = clustered,
-                                    var_of_interest = var_int,
-                                    type = "Mval",
-                                    corr = 0.75,
-                                    obs_per_covar = 20,
-                                    target_param = "ate",
-                                    family = "binomial",
-                                    return_ic = FALSE
-                                   )
+methyvim_mvals_ate <- methyvim:::methyvim_tmle(target_site = 10,
+                                               methytmle_screened = clustered,
+                                               var_of_interest = var_int,
+                                               type = "Mval",
+                                               corr = 0.75,
+                                               obs_per_covar = 20,
+                                               target_param = "ate",
+                                               family = "binomial",
+                                               return_ic = FALSE
+                                              )
 
 test_that("ATE procedure with M-values is consistent for target site", {
   expect_equal(methyvim_mvals_ate,
@@ -27,7 +27,7 @@ test_that("ATE procedure with M-values is consistent for target site", {
                  0.000000000, 0.000000000, NA))
 })
 
-methyvim_mvals_rr <- methyvim_tmle(target_site = 10,
+methyvim_mvals_rr <- methyvim:::methyvim_tmle(target_site = 10,
                                    methytmle_screened = clustered,
                                    var_of_interest = var_int,
                                    type = "Mval",
@@ -45,7 +45,7 @@ test_that("RR procedure with M-values is consistent for target site", {
 })
 
 # consistentcy of output for ATE and RR over target site with Beta-values
-methyvim_betas_ate <- methyvim_tmle(target_site = 10,
+methyvim_betas_ate <- methyvim:::methyvim_tmle(target_site = 10,
                                     methytmle_screened = clustered,
                                     var_of_interest = var_int,
                                     type = "Beta",
@@ -62,7 +62,7 @@ test_that("ATE procedure with Beta-values is consistent for target site", {
                  0.0610121857, 0.0000000000, 0.0000000000, NA))
 })
 
-methyvim_betas_rr <- methyvim_tmle(target_site = 10,
+methyvim_betas_rr <- methyvim:::methyvim_tmle(target_site = 10,
                                    methytmle_screened = clustered,
                                    var_of_interest = var_int,
                                    type = "Beta",
@@ -77,5 +77,25 @@ test_that("RR procedure with Beta-values is consistent for target site", {
   expect_equal(methyvim_betas_rr,
                c(-0.146258893, -0.071235003, 0.003788888, 0.001465167,
                  0.062742021, 0.000000000, 0.000000000, NA))
+})
+
+
+# simple test of estimation results but at a point with neighbors
+methyvim_neighbors <- methyvim:::methyvim_tmle(target_site = 18,
+                                               methytmle_screened = clustered,
+                                               var_of_interest = var_int,
+                                               type = "Mval",
+                                               corr = 0.75,
+                                               obs_per_covar = 20,
+                                               target_param = "ate",
+                                               family = "binomial",
+                                               return_ic = FALSE
+                                              )
+
+test_that("Procedure is generally consistent for a site with neighbors", {
+  expect_lt(sum(methyvim_neighbors -
+                c(-0.53382020341, -0.35780299063, -0.18178577786, 0.00806488421,
+                  0.00006769798, 8.0000000000, 8.00000000000, -0.09301901866)),
+            1e-11)
 })
 
