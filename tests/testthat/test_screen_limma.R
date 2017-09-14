@@ -5,6 +5,7 @@ library(methyvimData)
 data(grsExample)
 methytmle <- .methytmle(grsExample)
 screened <- methyvim:::limma_screen(methytmle, var_int = 1, type = "Mval")
+screened_betas <- methyvim:::limma_screen(methytmle, var_int = 1, type = "Beta")
 
 
 # check the screen_ind slot
@@ -12,8 +13,12 @@ test_that("no sites passing screening before running Limma procedure", {
   expect_equal(length(methytmle@screen_ind), 0)
 })
 
-test_that("some sites passing screening after running Limma procedure", {
+test_that("some sites passing screening after running Limma on M-values", {
   expect_gt(length(screened@screen_ind), 0)
+})
+
+test_that("some sites passing screening after running Limma on Beta-values", {
+  expect_gt(length(screened_betas@screen_ind), 0)
 })
 
 
