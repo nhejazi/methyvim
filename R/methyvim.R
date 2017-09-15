@@ -212,13 +212,17 @@ methyvim <- function(data_grs,
     # get names of sites to be added to output object
     cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
 
-    ## TODO: THIS IS FOR TESTING ONLY
-    cpg_screened_names <- cpg_screened_names[seq_len(sites_comp)]
-
     # object of screened CpG site indices to loop over in TMLE procedure
     methy_tmle_ind <- seq_along(methy_tmle@screen_ind)
 
-    methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind[seq_len(sites_comp)],
+    # If specifying estimation over a limited number of sites
+    if (!is.null(sites_comp)) {
+      cpg_screened_names <- cpg_screened_names[seq_len(sites_comp)]
+      methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
+    }
+
+    # Perform the estimation procedure in parallel
+    methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind,
                                             FUN = methyvim_tmle,
                                             methytmle_screened = methy_tmle,
                                             var_of_interest = var_of_interest,
