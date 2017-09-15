@@ -76,14 +76,18 @@
 \newtheorem{proposition}{Proposition}
 \theoremstyle{definition}
 \newtheorem{example}{Example}
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
 \begin{document}
 \pagestyle{front}
 
 \title{\emph{F1000Research} Software Tool Article Template}
 
-\author[1]{Nima Hejazi}
+\author[1]{Nima S. Hejazi}
+\author[1]{Rachael Phillips}
 \author[2]{Alan E. Hubbard}
 \author[2]{Mark J. van der Laan}
 \affil[1]{Address of author1}
@@ -102,8 +106,8 @@ abbreviations should be minimized.
 \end{abstract}
 
 \section*{Keywords}
-Please list up to eight keywords to help readers interested in your
-article find it more easily.
+DNA methylation, differential methylation, epigenetics, causal
+inference, variable importance, targeted minimum loss-based estimation.
 
 
 \clearpage
@@ -249,8 +253,9 @@ You can include refences in a standard Bibtex file. The name of this
 file is given in the header of the markdown document (in our case it is
 \emph{sample.bib}). References to entries in the Bibtex file are made
 using square brackets and use an @ plus the key for the entry you are
-referencing {[}@Smith:2012qr{]}. You can combine multiple entries by
-separating them with a semi-colon {[}@Smith:2012qr; @Smith:2013jd{]}.
+referencing (Smith and Jones 2012). You can combine multiple entries by
+separating them with a semi-colon (Smith and Jones 2012; Jones and Smith
+2013).
 
 \subsection{Code chunks}\label{code-chunks}
 
@@ -418,5 +423,460 @@ or bullet points
     \end{itemize}
   \end{itemize}
 \end{itemize}
+
+DNA methylation is a fundamental epigenetic process known to play an
+important role in controlling gene expression. It remains perhaps the
+best studied biological mechanism amongst all known epigenetic processes
+of its kind. With relatively recent advances in computational biology
+and bioinformatics, probing DNA methylation has become rather easily
+possible -- in fact, modern assays allow for DNA methylation signatures
+at up to \(850,000\) CpG sites to be measured simultaneously. Most
+statistical techniques available for the analysis of data produced by
+such assays rely on (generalized) linear models. Here, we provide an
+alternative to such approaches. Specifically, we provide a range of
+\emph{variable importance measures} (\textbf{VIM}), parameters that
+arise in statistical causal inference, for which targeted minimum
+loss-based estimates may be readily computed based on the data made
+available by DNA methylation assays. \texttt{methyvim} is an R package
+that provides facilities for performing differential methylation
+analyses within exactly this scope.
+
+For a general discussion of the framework of targeted minimum loss-based
+estimation and the role this approach plays in statistical causal
+inference, the interested reader is invited to consult M. J. van der
+Laan and Rose (2011) and M. J. van der Laan and Rose (2017). For a more
+general introduction to (statistical) causal inference, Pearl (2009) and
+Hernan and Robins (2018, forthcoming) may be of interest.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection{Methodology}\label{methodology}
+
+The core functionality of this package is made available via the
+eponymous \texttt{methyvim} function, which implements a statistical
+algorithm designed to compute targeted estimates of VIMs, defined in
+such a way that the VIMs represent parameters of scientific interest in
+computational biology experiments; moreover, these VIMs are defined such
+that they may be estimated in a manner that is very nearly
+assumption-free, that is, within a fully nonparametric statistical
+model. \textbf{The statistical algorithm consists in several major
+steps:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Pre-screening of genomic sites is used to isolate a subset of sites
+  for which there is cursory evidence of differential methylation. For
+  the sake of computational feasibility, targeted minimum loss-based
+  estimates of VIMs are computed only for this subset of sites.
+  Currently, the available screening approaches adapts core routines
+  from the
+  \href{http://bioconductor.org/packages/release/bioc/html/limma.html}{\texttt{limma}}
+  R package, thought future releases will support functionality from
+  other packages (e.g.,
+  \href{https://CRAN.R-project.org/package=tmle.npvi}{\texttt{tmle.npvi}}).
+\item
+  Nonparametric estimates of VIMs (for the specified target parameter)
+  are currently computed by adapting routines from the
+  \href{https://CRAN.R-project.org/package=tmle}{\texttt{tmle}} R
+  package. Future releases will support doubly-robust estimates of these
+  VIMs (via the
+  \href{https://cran.r-project.org/web/packages/drtmle/index.html}{\texttt{drtmle}}
+  package) and add parameters for continuous treatments/exposures (via
+  the
+  \href{https://CRAN.R-project.org/package=tmle.npvi}{\texttt{tmle.npvi}}
+  package).
+\item
+  Since pre-screening is performed prior to estimating VIMs, we make use
+  of a multiple testing correction uniquely suited to such settings. Due
+  to the multiple testing nature of the estimation problem, a variant of
+  the Benjamini \& Hochberg procedure for controlling the False
+  Discovery Rate (FDR) is applied (Benjamini and Hochberg 1995).
+  Specifically, we apply the modified marginal Benjamini \& Hochberg
+  step-up False Discovery Rate controlling procedure for multi-stage
+  analyses (FDR-MSA), which is guaranteed to control the FDR as if all
+  sites were tested (Tuglus and van der Laan 2009).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection{Parameters of Interest}\label{parameters-of-interest}
+
+For discrete-valued treatments or exposures:
+
+\begin{itemize}
+\item
+  The \emph{average treatment effect} (ATE): The effect of a binary
+  exposure or treatment on the observed methylation at a target CpG site
+  is estimated, controlling for the observed methylation at all other
+  CpG sites in the same neighborhood as the target site, based on an
+  additive form. In particular, the parameter estimate represents the
+  \textbf{additive difference} in methylation that would have been
+  observed at the target site had all observations received the
+  treatment versus the scenario in which none received the treatment.
+\item
+  The \emph{relative risk} (RR): The effect of a binary exposure or
+  treatment on the observed methylation at a target CpG site is
+  estimated, controlling for the observed methylation at all other CpG
+  sites in the same neighborhood as the target site, based on an
+  geometric form. In particular, the parameter estimate represents the
+  \textbf{multiplicative difference} in methylation that would have been
+  observed at the target site had all observations received the
+  treatment versus the scenario in which none received the treatment.
+\end{itemize}
+
+Support for continuous-valued treatments or exposures is \emph{planned
+but not yet available}, though work is underway to incorporate into our
+methodology the following
+
+\begin{itemize}
+\item
+  A \emph{nonparametric variable importance measure} (NPVI) (Chambaz,
+  Neuvial, and van der Laan 2012): The effect of continous-valued
+  exposure or treatment (the observed methylation at a target CpG site)
+  on an outcome of interest is estimated, controlling for the observed
+  methylation at all other CpG sites in the same neighborhood as the
+  target (treatment) site, based on a parameter that compares values of
+  the treatment against a reference value taken to be the null. In
+  particular, the implementation provided is designed to assess the
+  effect of differential methylation at the target CpG site on a
+  (typically) phenotype-level outcome of interest (e.g., survival), in
+  effect providing an nonparametric evaluation of the impact of
+  methylation at the target site on said outcome.
+\end{itemize}
+
+\emph{As previously noted, in all cases, an estimator of the target
+parameter is constructed via targeted minimum loss-based estimation.}
+
+Having now discussed the foundational principles of the estimation
+procedure employed and the statistical algorithm implemented, it is best
+to proceed by examining \texttt{methyvim} by example.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection{Preliminaries: Setting up the
+Data}\label{preliminaries-setting-up-the-data}
+
+First, we'll load the \texttt{methyvim} package and the example data
+contained in the \texttt{methyvimData} package that accompanies it:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(methyvim)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## methyvim: Nonparametric Differential Methylation Analysis with Variable Importance Measures
+\end{verbatim}
+
+\begin{verbatim}
+## Version: 0.99.1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(methyvimData)}
+\end{Highlighting}
+\end{Shaded}
+
+Now, let's load the data set and seed the RNG:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(grsExample)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{479253}\NormalTok{)}
+\NormalTok{grsExample}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## class: GenomicRatioSet 
+## dim: 400 210 
+## metadata(0):
+## assays(2): Beta M
+## rownames(400): cg23578515 cg06747907 ... cg01715842 cg09895959
+## rowData names(0):
+## colnames(210): V2 V3 ... V397 V398
+## colData names(2): exp outcome
+## Annotation
+##   array: IlluminaHumanMethylationEPIC
+## Preprocessing
+##   Method: NA
+##   minfi version: NA
+##   Manifest version: NA
+\end{verbatim}
+
+The example data object is of class \texttt{GenomicRatioSet}, provided
+by the \texttt{minfi} package. The summary provided by the
+\texttt{print} method gives a wealth of information on the experiment
+that generated the data -- since we are working with a simulated data
+set, we need not concern ourselves with much of this information. While
+most slots of objects of this S4 class have descriptive names, the
+interested analyst might consider consulting the documentation of the
+\texttt{minfi} package for an in-depth description (Aryee et al. 2014).
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection{Quantifying the Effect of an Exposure on DNA
+Methylation}\label{quantifying-the-effect-of-an-exposure-on-dna-methylation}
+
+\subsubsection{The Average Treatment Effect as Variable Importance
+Measure}\label{the-average-treatment-effect-as-variable-importance-measure}
+
+\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{suppressMessages}\NormalTok{(}
+\NormalTok{  methyvim_out_ate <-}\StringTok{ }\KeywordTok{methyvim}\NormalTok{(}\DataTypeTok{data_grs =}\NormalTok{ grsExample, }\DataTypeTok{sites_comp =} \DecValTok{10}\NormalTok{,}
+                               \DataTypeTok{var_int =} \DecValTok{1}\NormalTok{, }\DataTypeTok{vim =} \StringTok{"ate"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"Mval"}\NormalTok{,}
+                               \DataTypeTok{filter =} \StringTok{"limma"}\NormalTok{, }\DataTypeTok{filter_cutoff =} \FloatTok{0.05}\NormalTok{,}
+                               \DataTypeTok{parallel =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{tmle_type =} \StringTok{"sl"}
+\NormalTok{                              )}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
+##  Proceed with caution.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{methyvim_out_ate}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## class: methytmle 
+## dim: 400 210 
+## metadata(0):
+## assays(2): Beta M
+## rownames(400): cg23578515 cg06747907 ... cg01715842 cg09895959
+## rowData names(0):
+## colnames(210): V2 V3 ... V397 V398
+## colData names(2): exp outcome
+## Annotation
+##   array: IlluminaHumanMethylationEPIC
+## Preprocessing
+##   Method: NA
+##   minfi version: NA
+##   Manifest version: NA
+\end{verbatim}
+
+As is clear from examining the object \texttt{methyvim\_out\_ate}, the
+output resembles exactly that returned when examining objects of class
+\texttt{GenomicRatioSet} from the \texttt{minfi} R package. In
+particular, the returned \texttt{methytmle} object is merely a modified
+form (in particular, a subclass) of the input \texttt{GenomicRatioSet}
+object -- thus, it contains all of the original slots, with all
+experimental data intact. Several extra pieces of information are
+contained within the output object as well\_.
+
+We can take a look at the results produced from the estimation procedure
+by examining the \texttt{"vim"} \texttt{slot} of the \texttt{methytmle}
+object:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(}\KeywordTok{slot}\NormalTok{(methyvim_out_ate, }\StringTok{"vim"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            lowerCI_ATE     est_ATE upperCI_ATE    Var_ATE      pval
+## cg22913481  -0.3790600 -0.10205080   0.1749584 0.01997451 0.4702524
+## cg15131207  -0.3121142 -0.10416890   0.1037764 0.01125605 0.3261739
+## cg10613282  -0.4272500 -0.16315679   0.1009364 0.01815525 0.2259382
+## cg15857610  -0.3186500 -0.07896784   0.1607144 0.01495407 0.5184354
+## cg24775884  -0.4696981  0.03989038   0.5494788 0.06759693 0.8780607
+## cg22954484  -0.3289972  0.07614832   0.4812939 0.04272775 0.7125840
+##            n_neighbors_all n_neighbors_w max_corr_w
+## cg22913481               0             0         NA
+## cg15131207               0             0         NA
+## cg10613282               0             0         NA
+## cg15857610               5             4  0.7720705
+## cg24775884               5             2  0.8897566
+## cg22954484               5             2  0.8643936
+\end{verbatim}
+
+From the table displayed, we note that we have access to point estimates
+of the ATE (``est\_ATE'') as well as lower and upper confidence interval
+bounds for each estimate (``lowerCI\_ATE'' and ``upperCI\_ATE'',
+respectively). Additional statistical information we have access to
+include the variance (``Var\_ATE'') of the estimate as well as the
+p-value (``pval'') associated with each estimate (based on Wald-style
+testing procedures). Beyond these, key bioinformatical quantities (with
+respect to the algorithm outlined above) are also returned; these
+include the total number of neighbors of the target site, the number of
+neighboring sites controlled for when estimating the effect of exposure
+on DNA methylation, and, finally, the maximum correlation between the
+target site and any given site in its full set of neighbors.
+
+\ldots{}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsubsection{The Risk Ratio as Variable Importance
+Measure}\label{the-risk-ratio-as-variable-importance-measure}
+
+\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{methyvim_out_rr <-}\StringTok{ }\KeywordTok{methyvim}\NormalTok{(}\DataTypeTok{data_grs =}\NormalTok{ grsExample, }\DataTypeTok{sites_comp =} \DecValTok{10}\NormalTok{,}
+                            \DataTypeTok{var_int =} \DecValTok{1}\NormalTok{, }\DataTypeTok{vim =} \StringTok{"rr"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"Mval"}\NormalTok{,}
+                            \DataTypeTok{filter =} \StringTok{"limma"}\NormalTok{, }\DataTypeTok{filter_cutoff =} \FloatTok{0.05}\NormalTok{,}
+                            \DataTypeTok{parallel =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{tmle_type =} \StringTok{"sl"}
+\NormalTok{                           )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
+##  Proceed with caution.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{methyvim_out_rr}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## class: methytmle 
+## dim: 400 210 
+## metadata(0):
+## assays(2): Beta M
+## rownames(400): cg23578515 cg06747907 ... cg01715842 cg09895959
+## rowData names(0):
+## colnames(210): V2 V3 ... V397 V398
+## colData names(2): exp outcome
+## Annotation
+##   array: IlluminaHumanMethylationEPIC
+## Preprocessing
+##   Method: NA
+##   minfi version: NA
+##   Manifest version: NA
+\end{verbatim}
+
+\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(}\KeywordTok{slot}\NormalTok{(methyvim_out_rr, }\StringTok{"vim"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            lowerCI_logRR    est_logRR upperCI_logRR    Var_logRR      pval
+## cg22913481   -0.15978435 -0.042980967    0.07382242 0.0035513930 0.4707649
+## cg15131207   -0.10832796 -0.036151215    0.03602553 0.0013560711 0.3262445
+## cg10613282   -0.18349779 -0.069866731    0.04376433 0.0033611044 0.2281579
+## cg15857610   -0.07196023 -0.018317791    0.03532465 0.0007490399 0.5033043
+## cg24775884   -0.07914787  0.006261306    0.09167049 0.0018988776 0.8857479
+## cg22954484   -0.06728830  0.015365555    0.09801941 0.0017783369 0.7155826
+##            n_neighbors_all n_neighbors_w max_corr_w
+## cg22913481               0             0         NA
+## cg15131207               0             0         NA
+## cg10613282               0             0         NA
+## cg15857610               5             4  0.7720705
+## cg24775884               5             2  0.8897566
+## cg22954484               5             2  0.8643936
+\end{verbatim}
+
+\ldots{}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection{Visualization of Results}\label{visualization-of-results}
+
+\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(methyvim_out_rr, }\DataTypeTok{type =} \StringTok{"volcano"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(methyvim_out_rr, }\DataTypeTok{type =} \StringTok{"pvals"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(methyvim_out_rr, }\DataTypeTok{type =} \StringTok{"heatmap"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\ldots{}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{References}\label{references}
+\addcontentsline{toc}{subsection}{References}
+
+\hypertarget{refs}{}
+\hypertarget{ref-aryee2014minfi}{}
+Aryee, Martin J, Andrew E Jaffe, Hector Corrada-Bravo, Christine
+Ladd-Acosta, Andrew P Feinberg, Kasper D Hansen, and Rafael A Irizarry.
+2014. ``Minfi: A Flexible and Comprehensive Bioconductor Package for the
+Analysis of Infinium DNA Methylation Microarrays.''
+\emph{Bioinformatics} 30 (10). Oxford University Press (OUP): 1363--9.
+doi:\href{https://doi.org/10.1093/bioinformatics/btu049}{10.1093/bioinformatics/btu049}.
+
+\hypertarget{ref-benjamini1995controlling}{}
+Benjamini, Yoav, and Yosef Hochberg. 1995. ``Controlling the False
+Discovery Rate: A Practical and Powerful Approach to Multiple Testing.''
+\emph{Journal of the Royal Statistical Society. Series B
+(Methodological)}. JSTOR, 289--300.
+
+\hypertarget{ref-chambaz2012estimation}{}
+Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012.
+``Estimation of a Non-Parametric Variable Importance Measure of a
+Continuous Exposure.'' \emph{Electronic Journal of Statistics} 6. NIH
+Public Access: 1059.
+
+\hypertarget{ref-hernan2018causal}{}
+Hernan, Miguel A, and James M Robins. 2018, forthcoming. \emph{Causal
+Inference}. Chapman \& Hall/Crc Texts in Statistical Science. Taylor \&
+Francis.
+
+\hypertarget{ref-Smith:2013jd}{}
+Jones, A. B., and J. M. Smith. 2013. ``Article Title.'' \emph{Journal
+Title} 13 (52). Publisher: 123--456.
+
+\hypertarget{ref-pearl2009causality}{}
+Pearl, Judea. 2009. \emph{Causality: Models, Reasoning, and Inference}.
+Cambridge University Press.
+
+\hypertarget{ref-Smith:2012qr}{}
+Smith, J. M., and A. B. Jones. 2012. \emph{Book Title}. 7th ed.
+Publisher.
+
+\hypertarget{ref-tuglus2009modified}{}
+Tuglus, Catherine, and Mark J. van der Laan. 2009. ``Modified FDR
+Controlling Procedure for Multi-Stage Analyses.'' \emph{Statistical
+Applications in Genetics and Molecular Biology} 8 (1). Walter de
+Gruyter: 1--15.
+doi:\href{https://doi.org/10.2202/1544-6115.1397}{10.2202/1544-6115.1397}.
+
+\hypertarget{ref-vdl2011targeted}{}
+van der Laan, Mark J, and Sherri Rose. 2011. \emph{Targeted Learning:
+Causal Inference for Observational and Experimental Data}. Springer
+Science \& Business Media.
+
+\hypertarget{ref-vdl2017targeted}{}
+---------. 2017. \emph{Targeted Learning in Data Science: Causal
+Inference for Complex Longitudinal Studies}. Springer Science \&
+Business Media.
 
 \end{document}
