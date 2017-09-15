@@ -11,6 +11,9 @@ preamble: >
 output:
   BiocStyle::pdf_document
 bibliography: vignette-refs.bib
+abstract: |
+  ...
+  ...
 vignette: >
   %\VignetteIndexEntry{methyvim: Variable Importance for DNA Methylation}
   %\VignetteEngine{knitr::rmarkdown}
@@ -21,11 +24,10 @@ vignette: >
 
 DNA methylation is a fundamental epigenetic process known to play an important
 role in controlling gene expression. It remains perhaps the best studied
-biological mechanism amongst all known epigenetic processes of its kind. With
-relatively recent advances in computational biology and bioinformatics, probing
-DNA methylation has become rather easily possible -- in fact, modern assays
-allow for DNA methylation signatures at up to $850,000$ CpG sites to be measured
-simultaneously. Most statistical techniques available for the analysis of data
+biological mechanism amongst all known epigenetic processes of its kind, with
+numerous biotechnologies developed to probe the mechanism of this epigenetic
+process. In fact, modern assays allow for DNA methylation signatures at up to
+$850,000$ CpG sites to be measured simultaneously. Most statistical techniques available for the analysis of data
 produced by such assays rely on (generalized) linear models. Here, we provide an
 alternative to such approaches. Specifically, we provide a range of _variable
 importance measures_ (__VIM__), parameters that arise in statistical causal
@@ -159,7 +161,7 @@ names, the interested analyst might consider consulting the documentation of the
 
 ---
 
-## Quantifying the Effect of an Exposure on DNA Methylation
+## Differential Methylation Based on a Treatment or Exposure
 
 ### The Average Treatment Effect as Variable Importance Measure
 
@@ -228,14 +230,65 @@ head(slot(methyvim_out_rr, "vim"))
 
 ---
 
-## Visualization of Results
+## Data Analysis with `methyvim`
 
-In order to explore the visualization tools provided with the `methyvim` R
-package, our toy example (of just $10$ CpG sites) is unfortunately insufficient.
-To proceed, we will use a data set of results...
+In order to explore the practical application of the `methyvim` package, as well
+as the full set of utilities it provides, our toy example (of just $10$ CpG
+sites) is unfortunately insufficient. To proceed, we will use a publicly
+available example data set produced by the Illumina 450K array, from the
+`minfiData` R package. Now, let's load the package and data set, and take a look
+
+```{r}
+suppressMessages(library(minfiData))
+data(MsetEx)
+mset <- mapToGenome(MsetEx)
+grs <- ratioConvert(mset)
+grs
+```
+
+After loading the data, which comes in the form of a raw `MethylSet` object, we
+perform some further processing by mapping to the genome (with `mapToGenome`)
+and converting the values from the methylated and unmethylated channels to
+Beta-values (via `ratioConvert`). These two steps together produce an object of
+class `GenomicRatioSet`, like what we had worked with previously.
+
+For this example analysis, we'll treat the condition of the patients as the
+exposure/treatment variable of interest (i.e., `r unique(colData(grs)$status`).
+The `methyvim` function requires that this variable either be `numeric` or
+easily coercible to `numeric`. To facilitate this, we'll simply convert the
+covariate (currently a `character`):
+
+```{r}
+colData(grs) <- DataFrame(as.numeric(as.factor(colData(grs)$status)) - 1)
+```
+
+__n.b.__, the re-coding process results in "normal" patients being assigned a
+value of 1 and cancer patients a 0.
+
+Now, we are ready to analyze the effects of cancer status on DNA methylation
+using this data set. To do this with a targeted minimum loss-based estimate of
+the Average Treatment Effect, we may proceed as follows:
+
+```{r}
+suppressMessages(
+  methyvim_cancer_ate <- methyvim(data_grs = grs, sites_comp = 150, var_int = 1,
+                                  vim = "ate", type = "Beta", filter = "limma",
+                                  filter_cutoff = 0.05, obs_per_covar = 1,
+                                  parallel = FALSE, tmle_type = "sl"
+                                 )
+)
+
+```
+
+### Visualization of Results
+
+visualization tools provided with the `methyvim` R
+package, 
+
+First, let's load and explore the data set
 
 ```{r methyvim-plot-volcano, eval=FALSE}
-plot(methyvim_out_rr, type = "volcano")
+plot(methyvim_cancer_ate, type = "volcano")
 ```
 
 ...
