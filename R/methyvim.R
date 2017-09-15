@@ -11,34 +11,40 @@ utils::globalVariables(c("colData<-"))
 #' @param data_grs An object of class \code{minfi::GenomicRatioSet}, containing
 #'        standard data structures associated with DNA Methylation experiments.
 #'        Consult the documentation for \code{minfi} to construct such objects.
-#' @param sites_comp Numeric indicating the number of sites for which a variable
-#'        importance measure is to be estimated post-screening.
-#' @param var_int Numeric indicating the column index of the variable of
-#'        interest, whether exposure or outcome. If argument \code{vim} is set
-#'        to the ATE, then the variable of interest is treated as an exposure;
-#'        it is treated as an outcome if this is set to be the NPVI.
+#' @param var_int A \code{numeric} vector containing subject-level measurements
+#'        of the variable of interest. The length of this vector must match the
+#'        number of subjects exactly. If argument \code{vim} is set to "ate" or
+#'        "rr", then the variable of interest is treated as an exposure, and the
+#'        variable must be binary in such cases. If setting \code{vim} to target
+#'        parameters assessing continuous treatment effects, then the variable
+#'        need not be binary of course.
 #' @param vim Character indicating the variable importance measure to be used
 #'        in the estimation procedure. Currently supported options are the ATE
-#'        for discretized exposures and NPVI for continuous exposures. ATE is
-#'        the appropriate choice when the underlying scientific question is of
-#'        the effect of an exposure on methylation, while NPVI is the parameter
-#'        of choice when the effect of methylation on an outcome is sought.
+#'        for discretized exposures and NPVI for continuous exposures. ATE and
+#'        RR are the appropriate choices when the underlying scientific question
+#'        is of the effect of an exposure on methylation, while NPVI (and other
+#'        continuous treatment parameters) ought to be used when the effect of
+#'        methylation on an outcome is sought.
 #' @param type Character indicating the particular measure of DNA methylation to
 #'        be used as the observed data in the estimation procedure, either Beta
 #'        values or M-values. The data are accessed via \code{minfi::getBeta} or
 #'        \code{minfi::getM}.
 #' @param filter Character indicating the model to be implemented when screening
-#'        the \code{data_grs} object for CpG sites. Currently
-#'        supported options are limma, npvi, and adaptest.  (?)
+#'        the \code{data_grs} object for CpG sites. The only currently supported
+#'        option is "limma". Contributions for other methods are welcome.
 #' @param filter_cutoff Numeric indicating the p-value cutoff that defines which
 #'        sites pass through the \code{filter}.
-#' @param window_bp Numeric indicating the maximum distance between two sites
-#'        for them to be considered neighboring sites (?)
+#' @param window_bp Numeric indicating the maximum genomic distance (in base
+#'        pairs) between two sites for them to be considered neighboring sites.
 #' @param corr_max Numeric indicating the maximum correlation that a neighboring
 #'        site can have with the target site.
 #' @param obs_per_covar Numeric indicating the number of observations needed for
 #'        for covariate included in W for downstream analysis. This ensures the
 #'        data is sufficient to control for the covariates.
+#' @param sites_comp A \code{numeric} indicating the maximum number of sites for
+#'        which a variable importance measure is to be estimated post-screening.
+#'        This is not typically useful in scientific settings, but may be useful
+#'        when a large number of CpG sites pass the initial screening phase.
 #' @param parallel Logical indicating whether parallelization ought to be used.
 #'        See the documentation of \code{set_parallel} for more information, as
 #'        this arugment is passed directly to that internal function.
@@ -87,17 +93,17 @@ utils::globalVariables(c("colData<-"))
 #' library(methyvimData)
 #' suppressMessages(library(SummarizedExperiment))
 #' data(grsExample)
+#' var_int <- colData(grsExample)[, 1]
 # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 1, var_int = 1, vim = "ate",
-#'           type = "Mval", filter = "limma", filter_cutoff = 0.05,
+#'  methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
+#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
 #'           parallel = FALSE, tmle_type = "sl"
 #'          )
 #' )
 #'
 methyvim <- function(data_grs,
-                     sites_comp = 10,
-                     var_int = 1,
+                     var_int,
                      vim = c("ate", "rr", "npvi"),
                      type = c("Beta", "Mval"),
                      filter = c("limma"),
@@ -105,6 +111,7 @@ methyvim <- function(data_grs,
                      window_bp = 1e3,
                      corr_max = 0.75,
                      obs_per_covar = 20,
+                     sites_comp = NULL,
                      parallel = TRUE,
                      future_param = NULL,
                      bppar_type = NULL,
@@ -118,22 +125,29 @@ methyvim <- function(data_grs,
   # ============================================================================
   # catch input for user convenience and check input types where possible
   # ============================================================================
+
   # catch function call
   call <- match.call(expand.dots = TRUE)
+
   # type checking (in same order the arguments appear)
   vim <- match.arg(vim)
   type <- match.arg(type)
   filter <- match.arg(filter)
   tmle_type <- match.arg(tmle_type)
 
+  # check that variable of interest is the correct length
+  if (length(var_int) == ncol(data_grs)) {
+    stop("Variable of interest is not the same size as number of observations.")
+  }
+
   # ============================================================================
   # set treatment mechanism and outcome regression libraries
   # ============================================================================
   if(is.null(tmle_args$g_lib)) {
-    tmle_args$g_lib <- c("SL.mean", "SL.glm", "SL.glm.interaction")
+    tmle_args$g_lib <- c("SL.mean", "SL.glm", "SL.bayesglm")
   }
   if(is.null(tmle_args$Q_lib)) {
-    tmle_args$Q_lib <- c("SL.mean", "SL.glm", "SL.gam", "SL.earth")
+    tmle_args$Q_lib <- c("SL.mean", "SL.glm", "SL.gam", "SL.earth", "SL.ranger")
   }
 
   # ============================================================================
@@ -143,7 +157,7 @@ methyvim <- function(data_grs,
     if (vim %in% c("ate", "rr")) {
       # set GLM libraries for "tmle" package
       tmle_args$g_lib <- c("SL.mean", "SL.glm")
-      tmle_args$Q_lib <- "SL.glm"
+      tmle_args$Q_lib <- c("SL.mean", "SL.glm")
     }
   }
 
@@ -175,17 +189,6 @@ methyvim <- function(data_grs,
                bppar_type = bppar_type)
 
   #=============================================================================
-  # check if there is missing data in the phenotype-level matrix and drop if so
-  # ============================================================================
-  cols_na <- colSums(sapply(SummarizedExperiment::colData(methy_tmle), is.na))
-  na_var_id <- names(which(cols_na != 0))
-  if (length(na_var_id) != 0) {
-    message(paste("Missing data detected: Dropping variable(s)", na_var_id,
-                  "from phenotype-level data matrix."))
-  }
-  colData(methy_tmle)[na_var_id] <- NULL
-
-  #=============================================================================
   # screen sites to produce a subset on which to estimate VIMs
   # ============================================================================
   if (filter == "limma") {
@@ -204,11 +207,7 @@ methyvim <- function(data_grs,
   # ============================================================================
   if (vim %in% c("ate", "rr")) {
     # make sure that the outcome data is of class numeric
-    var_of_interest <- SummarizedExperiment::colData(methy_tmle)[, var_int]
-    var_of_interest <- as.numeric(var_of_interest)
-    if (class(var_of_interest) != "numeric") {
-      var_of_interest <- as.numeric(var_of_interest)
-    }
+    var_of_interest <- as.numeric(methy_tmle@var_int)
 
     # get names of sites to be added to output object
     cpg_screened_names <- names(methy_tmle[methy_tmle@screen_ind])
@@ -254,3 +253,4 @@ methyvim <- function(data_grs,
   # Let's give 'em some output
   return(methy_tmle)
 }
+
