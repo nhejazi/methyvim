@@ -39,8 +39,7 @@ the tool.
 
 
 # Results <!-- Optional - only if novel data or analyses are included -->
-This section is only required if the paper includes novel data or analyses, and
-should be written as a traditional results section.
+insert minfi data
 
 # Use Cases <!-- Optional - only if NO new datasets are included -->
 This section is required if the paper does not include novel data or analyses.
@@ -449,5 +448,3 @@ plot(methyvim_out_rr, type = "heatmap")
 ---
 
 ## References
-
-
