@@ -8,14 +8,22 @@
 #' @export .methytmle
 #' @exportClass methytmle
 #'
+#' @examples
+#' library(methyvimData)
+#' suppressMessages(library(SummarizedExperiment))
+#' data(grsExample)
+#' # cast the GenomicRatioSet to class methytmle
+#' methy_tmle <- .methytmle(grsExample)
+#'
 .methytmle <- methods::setClass(
        Class = "methytmle",
        slots = list(call = "call",
                     screen_ind = "numeric",
                     clusters = "numeric",
-                    g = "matrix",
-                    Q = "matrix",
-                    ic = "data.frame",
-                    vim = "data.frame"),
+                    var_int = "numeric",
+                    param = "character",
+                    vim = "data.frame",
+                    ic = "matrix"),
        contains = "GenomicRatioSet"
 )
+

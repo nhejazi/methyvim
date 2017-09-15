@@ -1,0 +1,266 @@
+---
+title: '`methyvim`: Variable Importance Measures for Differential Methylation'
+author: |
+  | [Nima Hejazi](http://nimahejazi.org)
+  | Division of Biostatistics
+  | University of California, Berkeley
+  | Berkeley, CA, 94720, USA
+date: "`r Sys.Date()`"
+preamble: >
+  \usepackage{amsmath}
+output:
+  BiocStyle::pdf_document
+bibliography: vignette-refs.bib
+vignette: >
+  %\VignetteIndexEntry{methyvim: Variable Importance for DNA Methylation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+DNA methylation is a fundamental epigenetic process known to play an important
+role in controlling gene expression. It remains perhaps the best studied
+biological mechanism amongst all known epigenetic processes of its kind. With
+relatively recent advances in computational biology and bioinformatics, probing
+DNA methylation has become rather easily possible -- in fact, modern assays
+allow for DNA methylation signatures at up to $850,000$ CpG sites to be measured
+simultaneously. Most statistical techniques available for the analysis of data
+produced by such assays rely on (generalized) linear models. Here, we provide an
+alternative to such approaches. Specifically, we provide a range of _variable
+importance measures_ (__VIM__), parameters that arise in statistical causal
+inference, for which targeted minimum loss-based estimates may be readily
+computed based on the data made available by DNA methylation assays. `methyvim`
+is an R package that provides facilities for performing differential methylation
+analyses within exactly this scope.
+
+For a general discussion of the framework of targeted minimum loss-based
+estimation and the role this approach plays in statistical causal inference, the
+interested reader is invited to consult @vdl2011targeted and @vdl2017targeted.
+For a more general introduction to (statistical) causal inference,
+@pearl2009causality and @hernan2018causal may be of interest.
+
+---
+
+## Methodology
+
+The core functionality of this package is made available via the eponymous
+`methyvim` function, which implements a statistical algorithm designed to
+compute targeted estimates of VIMs, defined in such a way that the VIMs
+represent parameters of scientific interest in computational biology
+experiments; moreover, these VIMs are defined such that they may be estimated in
+a manner that is very nearly assumption-free, that is, within a fully
+nonparametric statistical model. __The statistical algorithm consists in several
+major steps:__
+
+1. Pre-screening of genomic sites is used to isolate a subset of sites for
+  which there is cursory evidence of differential methylation. For the sake of
+  computational feasibility, targeted minimum loss-based estimates of VIMs are
+  computed only for this subset of sites. Currently, the available screening
+  approaches adapts core routines from the
+  [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html) R
+  package, thought future releases will support functionality from other
+  packages (e.g., [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi)).
+
+2. Nonparametric estimates of VIMs (for the specified target parameter) are
+  currently computed by adapting routines from the
+  [`tmle`](https://CRAN.R-project.org/package=tmle) R package. Future releases
+  will support doubly-robust estimates of these VIMs (via the
+  [`drtmle`](https://cran.r-project.org/web/packages/drtmle/index.html) package)
+  and add parameters for continuous treatments/exposures (via the
+  [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) package).
+
+3. Since pre-screening is performed prior to estimating VIMs, we make use of a
+  multiple testing correction uniquely suited to such settings. Due to the
+  multiple testing nature of the estimation problem, a variant of the Benjamini
+  & Hochberg procedure for controlling the False Discovery Rate (FDR) is applied
+  [@benjamini1995controlling]. Specifically, we apply the modified marginal
+  Benjamini & Hochberg step-up False Discovery Rate controlling procedure for
+  multi-stage analyses (FDR-MSA), which is guaranteed to control the FDR as if
+  all sites were tested [@tuglus2009modified].
+
+---
+
+## Parameters of Interest
+
+For discrete-valued treatments or exposures:
+
+* The _average treatment effect_ (ATE): The effect of a binary exposure or
+  treatment on the observed methylation at a target CpG site is estimated,
+  controlling for the observed methylation at all other CpG sites in the same
+  neighborhood as the target site, based on an additive form. In particular, the
+  parameter estimate represents the __additive difference__ in methylation that
+  would have been observed at the target site had all observations received the
+  treatment versus the scenario in which none received the treatment.
+
+* The _relative risk_ (RR): The effect of a binary exposure or treatment on the
+  observed methylation at a target CpG site is estimated, controlling for the
+  observed methylation at all other CpG sites in the same neighborhood as the
+  target site, based on an geometric form. In particular, the parameter estimate
+  represents the __multiplicative difference__ in methylation that would have
+  been observed at the target site had all observations received the treatment
+  versus the scenario in which none received the treatment.
+
+Support for continuous-valued treatments or exposures is _planned but not yet
+available_, though work is underway to incorporate into our methodology the
+following
+
+* A _nonparametric variable importance measure_ (NPVI) [@chambaz2012estimation]:
+  The effect of continous-valued exposure or treatment (the observed methylation
+  at a target CpG site) on an outcome of interest is estimated, controlling for
+  the observed methylation at all other CpG sites in the same neighborhood as
+  the target (treatment) site, based on a parameter that compares values of the
+  treatment against a reference value taken to be the null. In particular, the
+  implementation provided is designed to assess the effect of differential
+  methylation at the target CpG site on a (typically) phenotype-level outcome
+  of interest (e.g., survival), in effect providing an nonparametric evaluation
+  of the impact of methylation at the target site on said outcome.
+
+_As previously noted, in all cases, an estimator of the target parameter is
+constructed via targeted minimum loss-based estimation._
+
+Having now discussed the foundational principles of the estimation procedure
+employed and the statistical algorithm implemented, it is best to proceed by
+examining `methyvim` by example.
+
+---
+
+## Preliminaries: Setting up the Data
+
+```{r reqs, echo=FALSE}
+suppressMessages(library(tmle))
+suppressMessages(library(minfi))
+suppressMessages(library(SummarizedExperiment))
+```
+
+First, we'll load the `methyvim` package and the example data contained in the
+`methyvimData` package that accompanies it:
+
+```{r prelims}
+library(methyvim)
+library(methyvimData)
+```
+
+Now, let's load the data set and seed the RNG:
+
+```{r get-data}
+data(grsExample)
+set.seed(479253)
+grsExample
+```
+
+The example data object is of class `GenomicRatioSet`, provided by the `minfi`
+package. The summary provided by the `print` method gives a wealth of
+information on the experiment that generated the data -- since we are working
+with a simulated data set, we need not concern ourselves with much of this
+information. While most slots of objects of this S4 class have descriptive
+names, the interested analyst might consider consulting the documentation of the
+`minfi` package for an in-depth description [@aryee2014minfi].
+
+---
+
+## Quantifying the Effect of an Exposure on DNA Methylation
+
+### The Average Treatment Effect as Variable Importance Measure
+
+...
+
+```{r methyvim-ate}
+suppressMessages(
+  methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
+                               var_int = 1, vim = "ate", type = "Mval",
+                               filter = "limma", filter_cutoff = 0.05,
+                               parallel = FALSE, tmle_type = "sl"
+                              )
+)
+methyvim_out_ate
+```
+
+As is clear from examining the object `methyvim_out_ate`, the output resembles
+exactly that returned when examining objects of class `GenomicRatioSet` from the
+`minfi` R package. In particular, the returned `methytmle` object is merely a
+modified form (in particular, a subclass) of the input `GenomicRatioSet` object
+-- thus, it contains all of the original slots, with all experimental data
+intact. Several extra pieces of information are contained within the output
+object as well_.
+
+We can take a look at the results produced from the estimation procedure by
+examining the `"vim"` `slot` of the `methytmle` object:
+
+```{r methyvim-ate-print}
+head(slot(methyvim_out_ate, "vim"))
+```
+
+From the table displayed, we note that we have access to point estimates of the
+ATE ("est_ATE") as well as lower and upper confidence interval bounds for each
+estimate ("lowerCI_ATE" and "upperCI_ATE", respectively). Additional statistical
+information we have access to include the variance ("Var_ATE") of the estimate
+as well as the p-value ("pval") associated with each estimate (based on
+Wald-style testing procedures). Beyond these, key bioinformatical quantities
+(with respect to the algorithm outlined above) are also returned; these include
+the total number of neighbors of the target site, the number of neighboring
+sites controlled for when estimating the effect of exposure on DNA methylation,
+and, finally, the maximum correlation between the target site and any given site
+in its full set of neighbors.
+
+...
+
+---
+
+### The Risk Ratio as Variable Importance Measure
+
+...
+
+```{r methyvim-rr}
+methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
+                            var_int = 1, vim = "rr", type = "Mval",
+                            filter = "limma", filter_cutoff = 0.05,
+                            parallel = FALSE, tmle_type = "sl"
+                           )
+methyvim_out_rr
+```
+...
+
+```{r methyvim-rr-print}
+head(slot(methyvim_out_rr, "vim"))
+```
+...
+
+---
+
+## Visualization of Results
+
+In order to explore the visualization tools provided with the `methyvim` R
+package, our toy example (of just $10$ CpG sites) is unfortunately insufficient.
+To proceed, we will use a data set of results...
+
+```{r methyvim-plot-volcano, eval=FALSE}
+plot(methyvim_out_rr, type = "volcano")
+```
+
+...
+
+```{r methyvim-plot-pvals, eval=FALSE}
+plot(methyvim_out_rr, type = "pvals")
+```
+
+...
+
+```{r methyvim-plot-heatmap, eval=FALSE}
+plot(methyvim_out_rr, type = "heatmap")
+```
+
+...
+
+---
+
+## Session Information
+
+```{r session-info, echo=FALSE}
+sessionInfo()
+```
+
+---
+
+## References
+

@@ -1,9 +1,10 @@
-#' Differential Methylation with the Average Treatment Effect
+#' Differential Methylation with Classical Target Parameters
 #'
 #' Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
-#' Effect (ATE), treating DNA methylation as an outcome (Y) and the indicated
-#' variable of interest (which ought to be binarized) as a treatment/exposure
-#' (A), using the neighbors of a given CpG site as the adjustment set (W).
+#' Effect (ATE) or the Risk Ratio, treating DNA methylation as an outcome (Y)
+#' and the indicated variable of interest (which ought to be binarized) as a
+#' treatment/exposure (A), using the neighbors of a given CpG site as the
+#' adjustment set (W).
 #'
 #' @param target_site Numeric indicating the column containing the screened
 #'        CpG site indices that will be looped over in TMLE procedure.
@@ -21,11 +22,15 @@
 #' @param obs_per_covar Numeric indicating the number of observations needed for
 #'        for covariate included in W for downstream analysis. This ensures the
 #'        data is sufficient to control for the covariates.
+#' @param target_param Character indicating the target causal parameter for
+#'        which an estimator will be constructed and computed via targeted
+#'        minimum loss-based estimation. Currently, this is limited to the
+#'        Average Treatment Effect (ATE) and the Risk Ratio (RR), with routines
+#'        from the \code{tmle} package being used for the computation.
 #' @param g_lib Character or vector of characters indicating the algorithms to
 #'        be implemented in SuperLearner if \code{tmle_type} is set to "glm".
 #' @param Q_lib Character or vector of characters indicating the algorithms to
-#'        be implemented in SuperLearner if \code{tmle_type} is set to
-#'        "super_learning".
+#'        be implemented in SuperLearner if \code{tmle_type} is set to "sl".
 #' @param family Character indicating the distribution to be implemented to
 #'        describe the error distribution for regressions, generally "gaussian"
 #'        for a continuous outcome and "binomial" for a binary outcome.
@@ -33,25 +38,26 @@
 #'        should be returned for each site that passed through the filter.
 #'
 #' @importFrom minfi getBeta getM
-#' @importFrom tmle tmle
 #' @importFrom stats cor
+#' @importFrom cluster pam
+#' @importFrom tmle tmle
 #'
-#' @export
-#'
-methyvim_ate <- function(target_site,
-                         methytmle_screened,
-                         var_of_interest,
-                         type = c("Beta", "Mval"),
-                         corr = 0.75,
-                         obs_per_covar = 20,
-                         g_lib = c("SL.mean", "SL.glm"),
-                         Q_lib = c("SL.mean", "SL.glm"),
-                         family = c("gaussian", "binomial"),
-                         return_ic = FALSE
+methyvim_tmle <- function(target_site,
+                          methytmle_screened,
+                          var_of_interest,
+                          type = c("Beta", "Mval"),
+                          corr,
+                          obs_per_covar,
+                          target_param = c("ate", "rr"),
+                          g_lib = c("SL.mean", "SL.glm", "SL.glm.interaction"),
+                          Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
+                          family = c("gaussian", "binomial"),
+                          return_ic = FALSE
                          ) {
   ### check arguments where possible
-  #type <- match.arg(type)
-  #family <- match.arg(family)
+  type <- match.arg(type)
+  target_param <- match.arg(target_param)
+  family <- match.arg(family)
 
   ### get neighboring site
   in_cluster <- which(methytmle_screened@clusters %in%
@@ -67,11 +73,17 @@ methyvim_ate <- function(target_site,
     expr <- minfi::getM(methytmle_screened)
   }
 
-  # get measures at the target site and perform scaling
+  # get measures at the target site
   y <- as.numeric(as.matrix(expr[target_site, , drop = FALSE]))
-  a <- min(y, na.rm = TRUE)
-  b <- max(y, na.rm = TRUE)
-  y_star <- (y - a) / (b - a)
+
+  # perform scaling of outcome if using binomial error family
+  if (family == "binomial") {
+    a <- min(y, na.rm = TRUE)
+    b <- max(y, na.rm = TRUE)
+    y_star <- (y - a) / (b - a)
+  } else {
+    y_star <- y
+  }
 
   ### are there enough neighbors for this estimate to be meaningful
   if (length(only_neighbors) != 0) {
@@ -107,8 +119,8 @@ methyvim_ate <- function(target_site,
 
     # use PAM to reduce W by selecting medoids
     if (!is.null(w_no_corr) & nrow(w_in) > w_max) {
-      message("Implementing PAM to reduce W")
-      w_in <- cluster::pam(x = t(w_in), k = w_max, diss = FALSE)
+      w_pam <- cluster::pam(x = w_in, k = w_max, diss = FALSE)
+      w_in <- as.data.frame(w_pam$medoids)
     }
 
     # strictly enforces the assumption of positivity by discretizing W
@@ -158,18 +170,27 @@ methyvim_ate <- function(target_site,
 
   # get the influence curve estimates if so requested
   if (return_ic) {
-    ate_ic <- out$estimates$IC$IC.ATE
-    ate_g <- out$g$g1W
-    ate_Q <- out$Qstar
-    ic <- list(ate_ic, ate_g, ate_Q)
+    #ate_ic <- out$estimates$IC$IC.ATE
+    #ate_g <- out$g$g1W
+    #ate_Q <- out$Qstar
+    #ic <- list(ate_ic, ate_g, ate_Q)
   }
 
   # extract and rescale estimates
-  est <- out$estimates$ATE
-  est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
-  est_rescaled <- est_raw[1:3] * (b - a)
-  var_rescaled <- est_raw[4] * ((b - a)^2)
-  res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
-           n_neighbors_reduced, max_corr_w)
+  if (target_param == "ate") {
+    est <- out$estimates$ATE
+    est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
+    est_rescaled <- est_raw[1:3] * (b - a)
+    var_rescaled <- est_raw[4] * ((b - a)^2)
+    res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
+             n_neighbors_reduced, max_corr_w)
+  } else if (target_param == "rr" & family == "binomial") {
+    est <- out$estimates$RR
+    est_ci_log <- log(est$CI)
+    est_out <- c(est_ci_log[1], est$log.psi, est_ci_log[2], est$var.log.psi,
+                 est$pvalue)
+    res <- c(est_out, n_neighbors_total, n_neighbors_reduced, max_corr_w)
+  }
   return(res)
 }
+

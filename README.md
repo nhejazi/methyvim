@@ -16,21 +16,31 @@ What's `methyvim`?
 
 `methyvim` is an R package that provides facilities for differential methylation analysis based on *variable importance measures* (VIMs), a class of statistically estimable target parameters that arise in causal inference.
 
-The statistical methodology implemented computes targeted minimum loss-based estimates of well-studied variable importance measures:
+The statistical methodology implemented computes targeted minimum loss-based estimates of several well-characterized variable importance measures:
 
-1.  The *average treatment effect* (ATE) for discrete exposures/treatments,
-2.  A *nonparametric variable importance measure* (NPVI) for continuous exposures (Chambaz, Neuvial, and van der Laan 2012).
+For discrete-valued treatments or exposures:
+
+-   The *average treatment effect* (ATE): The effect of a binary exposure or treatment on the observed methylation at a target CpG site is estimated, controlling for the observed methylation at all other CpG sites in the same neighborhood as the target site, based on an additive form. In particular, the parameter estimate represents the **additive difference** in methylation that would have been observed at the target site had all observations received the treatment versus the scenario in which none received the treatment.
+
+-   The *relative risk* (RR): The effect of a binary exposure or treatment on the observed methylation at a target CpG site is estimated, controlling for the observed methylation at all other CpG sites in the same neighborhood as the target site, based on an geometric form. In particular, the parameter estimate represents the **multiplicative difference** in methylation that would have been observed at the target site had all observations received the treatment versus the scenario in which none received the treatment.
+
+For continous-valued treatments or exposures:
+
+-   A *nonparametric variable importance measure* (NPVI) (Chambaz, Neuvial, and van der Laan 2012): The effect of continous-valued exposure or treatment (the observed methylation at a target CpG site) on an outcome of interest is estimated, controlling for the observed methylation at all other CpG sites in the same neighborhood as the target (treatment) site, based on a parameter that compares values of the treatment against a reference value taken to be the null. In particular, the implementation provided is designed to assess the effect of differential methylation at the target CpG site on a (typically) phenotype-level outcome of interest (e.g., survival), in effect providing an nonparametric evaluation of the impact of methylation at the target site on said outcome.
+
+*In all cases, an estimator of the target parameter is constructed via targeted minimum loss-based estimation.*
 
 These methods allow differential methylation effects to be quantified in a manner that is largely free of assumptions, especially of the variety exploited in parametric models. **The statistical algorithm consists in several major steps:**
 
 1.  Pre-screening of genomic sites is used to isolate a subset of sites for which there is cursory evidence of differential methylation. For the sake of computational feasibility, targeted minimum loss-based estimates of VIMs are computed only for this subset of sites. Several screening approaches are available, adapting core routines from the following R packages: [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html), [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi).
-2.  Nonparametric VIMs are estimated for the specified parameter, currently using routines from the R packages [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) (to estimate the NPVI parameter) or [`tmle`](https://CRAN.R-project.org/package=tmle) (to estimate the ATE).
+2.  Nonparametric VIMs are estimated for the specified parameter, currently adapting routines from the [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) and [`tmle`](https://CRAN.R-project.org/package=tmle) R packages.
 3.  Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Due to the multiple testing nature of the estimation problem, a variant of the Benjamini & Hochberg procedure for controlling the False Discovery Rate (FDR) is applied (Benjamini and Hochberg 1995). Specifically, we apply the modified marginal Benjamini & Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der Laan 2009).
 
 For a general discussion of the framework of targeted minimum loss-based estimation, the many applications of this methodology, and the role the framework plays in statistical causal inference, the recommended references are van der Laan and Rose (2011) and van der Laan and Rose (2017). Hernan and Robins (2018) and Pearl (2009) may be of interest to those desiring a more general introduction to statistical causal inference.
 
 <!--
 Note about shrinkage of influence curves, adapting @smyth2004linear.
+Specifically, this is meant to reference my working paper with Alan.
 
 More exposition here....
 -->
@@ -121,7 +131,7 @@ Related
 License
 -------
 
-© 2017 [Nima S. Hejazi](http://nimahejazi.org), [Alan E. Hubbard](http://sph.berkeley.edu/alan-hubbard), [Mark J. van der Laan](https://www.stat.berkeley.edu/~laan/)
+© 2017 [Nima S. Hejazi](http://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license. See file `LICENSE` for details.
 

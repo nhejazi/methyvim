@@ -1,8 +1,6 @@
 branches:
   only:
   - master
-  - develop
-  - /.*/-dev
 
 env:
   global:
@@ -18,10 +16,11 @@ r:
   - release
   - devel
 
+bioc_required: true
+
 r_github_packages:
   - jimhester/covr
   - nhejazi/methyvimData
-  - achambaz/tmle.npvi
 
 bioc_packages:
   - BiocStyle
@@ -37,10 +36,11 @@ bioc_packages:
 
 ## coverage
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - Rscript -e "covr::codecov(line_exclusions = list('R/plots.R'))"
   - R CMD BiocCheck .
 
 notifications:
   email:
     on_success: change
     on_failure: change
+

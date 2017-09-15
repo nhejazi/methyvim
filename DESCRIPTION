@@ -1,11 +1,19 @@
 Package: methyvim
 Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
   Estimates of Variable Importance Measures
-Version: 0.0.1
-Authors@R: as.person(c(
-  "Nima Hejazi <nhejazi@berkeley.edu> [aut, cre, cph]",
-  "Alan Hubbard <hubbard@berkeley.edu> [ctb]",
-  "Mark van der Laan <laan@stat.berkeley.edu> [aut]"))
+Version: 0.99.1
+Authors@R: c(
+  person("Nima", "Hejazi", email = "nhejazi@berkeley.edu",
+    role = c("aut", "cre", "cph")),
+  person("Rachael", "Phillips", email = "rachaelvphillips@berkeley.edu",
+    role = "ctb"),
+  person("Alan", "Hubbard", email = "hubbard@berkeley.edu", role = "ctb"),
+  person("Mark", "van der Laan", email = "laan@stat.berkeley.edu",
+    role = "aut")
+  )
+Author: Nima Hejazi [aut, cre, cph], Rachael Phillips [ctb], Alan Hubbard [ctb],
+  Mark van der Laan [aut]
+Maintainer: Nima Hejazi <nhejazi@berkeley.edu>
 Description: This package provides facilities for differential methylation
   analysis based on variable importance measures (VIMs), a class of statistical
   target parameters that arise in causal inference. The estimation and inference
@@ -21,38 +29,46 @@ BugReports: https://github.com/nhejazi/methyvim/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
-  tmle,
+  stats,
+  cluster,
   methods,
-  foreach,
-  parallel,
-  doParallel,
-  SuperLearner,
   ggplot2,
+  gridExtra,
+  superheat,
+  wesanderson,
+  magrittr,
   dplyr,
-  tibble,
   gtools,
+  tmle,
   future,
   doFuture,
   BiocParallel,
   BiocGenerics,
   SummarizedExperiment,
   GenomeInfoDb,
-  methyvimData,
   bumphunter,
   IRanges,
   limma,
   minfi
 Suggests:
   testthat,
-  BiocStyle,
   knitr,
-  rmarkdown
-Remotes:
-  nhejazi/methyvimData
+  rmarkdown,
+  BiocStyle,
+  SuperLearner,
+  randomForest,
+  earth,
+  gam,
+  snow,
+  parallel,
+  BatchJobs,
+  methyvimData
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 biocViews:
-    DNAMethylation,
-    DifferentialMethylation,
-    MethylSeq,
-    MethylationArray
+  Clustering,
+  DNAMethylation,
+  DifferentialMethylation,
+  MethylationArray,
+  MethylSeq
+

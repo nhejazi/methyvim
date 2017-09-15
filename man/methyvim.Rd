@@ -4,13 +4,13 @@
 \alias{methyvim}
 \title{Differential Methylation Statistics with Variable Importance Measures}
 \usage{
-methyvim(data_grs, sites_comp = 10, var_int = 1, vim = c("ATE"),
-  type = c("Beta", "Mval"), filter = c("limma"), filter_cutoff = 0.05,
-  window_bp = 1000, corr_max = 0.7, obs_per_covar = 20, parallel = TRUE,
-  future_param = NULL, bppar_type = NULL, return_ic = FALSE,
-  shrink_ic = FALSE, tmle_type = c("glm", "super_learning"),
-  tmle_args = list(family = "binomial", g_lib = c("SL.mean", "SL.glm"), Q_lib
-  = c("SL.mean", "SL.glm"), npvi_cutoff = 0.25, npvi_descr = NULL))
+methyvim(data_grs, sites_comp = 10, var_int = 1, vim = c("ate", "rr",
+  "npvi"), type = c("Beta", "Mval"), filter = c("limma"),
+  filter_cutoff = 0.05, window_bp = 1000, corr_max = 0.75,
+  obs_per_covar = 20, parallel = TRUE, future_param = NULL,
+  bppar_type = NULL, return_ic = FALSE, shrink_ic = FALSE,
+  tmle_type = c("glm", "sl"), tmle_args = list(family = "binomial", g_lib =
+  NULL, Q_lib = NULL, npvi_cutoff = 0.25, npvi_descr = NULL))
 }
 \arguments{
 \item{data_grs}{An object of class \code{minfi::GenomicRatioSet}, containing
@@ -18,8 +18,7 @@ standard data structures associated with DNA Methylation experiments.
 Consult the documentation for \code{minfi} to construct such objects.}
 
 \item{sites_comp}{Numeric indicating the number of sites for which a variable
-importance measure is to be estimated post-screening. This arugment is
-TEMPORARY, USED ONLY FOR TESTING PURPOSES currently.}
+importance measure is to be estimated post-screening.}
 
 \item{var_int}{Numeric indicating the column index of the variable of
 interest, whether exposure or outcome. If argument \code{vim} is set
@@ -52,7 +51,7 @@ for them to be considered neighboring sites (?)}
 site can have with the target site.}
 
 \item{obs_per_covar}{Numeric indicating the number of observations needed for
-for covariate included in (W/downstream analysis). This ensures the
+for covariate included in W for downstream analysis. This ensures the
 data is sufficient to control for the covariates.}
 
 \item{parallel}{Logical indicating whether parallelization ought to be used.
@@ -104,4 +103,16 @@ target parameter, formally defined within models from causal inference. The
 variable importance measures currently supported are the Average Treatment
 Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 defined by Chambaz, Neuvial, and van der Laan <doi:10.1214/12-EJS703>).
+}
+\examples{
+library(methyvimData)
+suppressMessages(library(SummarizedExperiment))
+data(grsExample)
+methyvim_out_ate <- suppressWarnings(
+ methyvim(data_grs = grsExample, sites_comp = 1, var_int = 1, vim = "ate",
+          type = "Mval", filter = "limma", filter_cutoff = 0.05,
+          parallel = FALSE, tmle_type = "sl"
+         )
+)
+
 }
