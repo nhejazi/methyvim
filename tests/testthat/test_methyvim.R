@@ -6,21 +6,22 @@ suppressMessages(library(minfi))
 suppressMessages(library(SummarizedExperiment))
 library(methyvimData)
 data(grsExample)
+var_int <- colData(grsExample)[, 1]
 
 
 # run TMLE procedure for the ATE parameter over M-values with Limma filtering
 methyvim_out_ate <- suppressWarnings(
-  methyvim(data_grs = grsExample, sites_comp = 3, var_int = 1, vim = "ate",
+  methyvim(data_grs = grsExample, var_int = var_int, vim = "ate",
            type = "Mval", filter = "limma", filter_cutoff = 0.05,
-           parallel = FALSE, tmle_type = "sl"
+           sites_comp = 3, parallel = FALSE, tmle_type = "sl"
           )
 )
 
 # run TMLE procedure for the RR parameter over M-values with Limma filtering
 methyvim_out_rr <- suppressWarnings(
-  methyvim(data_grs = grsExample, sites_comp = 3, var_int = 1, vim = "rr",
+  methyvim(data_grs = grsExample, var_int = var_int, vim = "rr",
            type = "Mval", filter = "limma", filter_cutoff = 0.05,
-           parallel = FALSE, tmle_type = "sl"
+           sites_comp = 3, parallel = FALSE, tmle_type = "sl"
           )
 )
 
