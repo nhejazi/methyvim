@@ -136,7 +136,7 @@ methyvim <- function(data_grs,
   tmle_type <- match.arg(tmle_type)
 
   # check that variable of interest is the correct length
-  if (length(var_int) == ncol(data_grs)) {
+  if (length(var_int) != ncol(data_grs)) {
     stop("Variable of interest is not the same size as number of observations.")
   }
 
