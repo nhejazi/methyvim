@@ -27,14 +27,14 @@ role in controlling gene expression. It remains perhaps the best studied
 biological mechanism amongst all known epigenetic processes of its kind, with
 numerous biotechnologies developed to probe the mechanism of this epigenetic
 process. In fact, modern assays allow for DNA methylation signatures at up to
-$850,000$ CpG sites to be measured simultaneously. Most statistical techniques available for the analysis of data
-produced by such assays rely on (generalized) linear models. Here, we provide an
-alternative to such approaches. Specifically, we provide a range of _variable
-importance measures_ (__VIM__), parameters that arise in statistical causal
-inference, for which targeted minimum loss-based estimates may be readily
-computed based on the data made available by DNA methylation assays. `methyvim`
-is an R package that provides facilities for performing differential methylation
-analyses within exactly this scope.
+$850,000$ CpG sites to be measured simultaneously. Most statistical techniques
+available for the analysis of data produced by such assays rely on (generalized)
+linear models. Here, we provide an alternative to such approaches. Specifically,
+we provide a range of _variable importance measures_ (__VIM__), parameters that
+arise in statistical causal inference, for which targeted minimum loss-based
+estimates may be readily computed based on the data made available by DNA
+methylation assays. `methyvim` is an R package that provides facilities for
+performing differential methylation analyses within exactly this scope.
 
 For a general discussion of the framework of targeted minimum loss-based
 estimation and the role this approach plays in statistical causal inference, the
@@ -149,15 +149,39 @@ Now, let's load the data set and seed the RNG:
 data(grsExample)
 set.seed(479253)
 grsExample
+var_int <- colData(grsExample)[, 1]
 ```
 
 The example data object is of class `GenomicRatioSet`, provided by the `minfi`
 package. The summary provided by the `print` method gives a wealth of
 information on the experiment that generated the data -- since we are working
 with a simulated data set, we need not concern ourselves with much of this
-information. While most slots of objects of this S4 class have descriptive
-names, the interested analyst might consider consulting the documentation of the
-`minfi` package for an in-depth description [@aryee2014minfi].
+information.
+
+We can create an object of class `methytmle` from any `GenomicRatioSet` object
+simply invoking the S4 class constructor:
+
+```{r}
+mtmle <- .methytmle(grsExample)
+```
+
+Since the `methytmle` class builds upon the `GenomicRatioSet` class, it contains
+all of the slots of `GenomicRatio`s. The new class introduced in the `mehtyvim`
+package includes several new slots:
+
+* `ate`
+* `call`
+* `screen_ind`
+* `clusters`
+* `var_int`
+* `param`
+* `vim`
+* `ic`
+
+The interested analyst might consider consulting the documentation of the
+`minfi` package for an in-depth description of all of the other slots that
+appear in this class [@aryee2014minfi]. Having examined the core structure of
+the package, it is time now to discuss the analytic capabilities implemented.
 
 ---
 
@@ -170,9 +194,9 @@ names, the interested analyst might consider consulting the documentation of the
 ```{r methyvim-ate}
 suppressMessages(
   methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
-                               var_int = 1, vim = "ate", type = "Mval",
+                               var_int = var_int, vim = "ate", type = "Mval",
                                filter = "limma", filter_cutoff = 0.05,
-                               parallel = FALSE, tmle_type = "sl"
+                               parallel = FALSE, tmle_type = "glm"
                               )
 )
 methyvim_out_ate
@@ -215,7 +239,7 @@ in its full set of neighbors.
 
 ```{r methyvim-rr}
 methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
-                            var_int = 1, vim = "rr", type = "Mval",
+                            var_int = var_int, vim = "rr", type = "Mval",
                             filter = "limma", filter_cutoff = 0.05,
                             parallel = FALSE, tmle_type = "sl"
                            )
@@ -232,11 +256,11 @@ head(slot(methyvim_out_rr, "vim"))
 
 ## Data Analysis with `methyvim`
 
-In order to explore the practical application of the `methyvim` package, as well
-as the full set of utilities it provides, our toy example (of just $10$ CpG
-sites) is unfortunately insufficient. To proceed, we will use a publicly
-available example data set produced by the Illumina 450K array, from the
-`minfiData` R package. Now, let's load the package and data set, and take a look
+In order to explore practical applications of the `methyvim` package, as well as
+the full set of utilities it provides, our toy example (of just $10$ CpG sites)
+is unfortunately insufficient. To proceed, we will use a publicly available
+example data set produced by the Illumina 450K array, from the `minfiData` R
+package. Now, let's load the package and data set, and take a look
 
 ```{r}
 suppressMessages(library(minfiData))
@@ -253,13 +277,12 @@ Beta-values (via `ratioConvert`). These two steps together produce an object of
 class `GenomicRatioSet`, like what we had worked with previously.
 
 For this example analysis, we'll treat the condition of the patients as the
-exposure/treatment variable of interest (i.e., `r unique(colData(grs)$status`).
-The `methyvim` function requires that this variable either be `numeric` or
-easily coercible to `numeric`. To facilitate this, we'll simply convert the
-covariate (currently a `character`):
+exposure/treatment variable of interest. The `methyvim` function requires that
+this variable either be `numeric` or easily coercible to `numeric`. To
+facilitate this, we'll simply convert the covariate (currently a `character`):
 
 ```{r}
-colData(grs) <- DataFrame(as.numeric(as.factor(colData(grs)$status)) - 1)
+var_int <- (as.numeric(as.factor(colData(grs)$status)) - 1)
 ```
 
 __n.b.__, the re-coding process results in "normal" patients being assigned a
@@ -271,10 +294,11 @@ the Average Treatment Effect, we may proceed as follows:
 
 ```{r}
 suppressMessages(
-  methyvim_cancer_ate <- methyvim(data_grs = grs, sites_comp = 150, var_int = 1,
+  methyvim_cancer_ate <- methyvim(data_grs = grs, var_int = var_int,
                                   vim = "ate", type = "Beta", filter = "limma",
-                                  filter_cutoff = 0.05, obs_per_covar = 1,
-                                  parallel = FALSE, tmle_type = "sl"
+                                  filter_cutoff = 0.10, obs_per_covar = 1,
+                                  parallel = FALSE, tmle_type = "sl",
+                                  sites_comp = 125
                                  )
 )
 
@@ -282,10 +306,8 @@ suppressMessages(
 
 ### Visualization of Results
 
-visualization tools provided with the `methyvim` R
-package, 
-
-First, let's load and explore the data set
+The `methyvim` package provides a few convenience utlities for visualizing the
+results of our analyses:
 
 ```{r methyvim-plot-volcano, eval=FALSE}
 plot(methyvim_cancer_ate, type = "volcano")

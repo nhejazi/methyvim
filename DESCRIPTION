@@ -1,7 +1,7 @@
 Package: methyvim
 Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
   Estimates of Variable Importance Measures
-Version: 0.99.1
+Version: 0.99.2
 Authors@R: c(
   person("Nima", "Hejazi", email = "nhejazi@berkeley.edu",
     role = c("aut", "cre", "cph")),
@@ -58,10 +58,13 @@ Suggests:
   SuperLearner,
   randomForest,
   earth,
+  nnet,
   gam,
+  arm,
   snow,
   parallel,
   BatchJobs,
+  minfiData,
   methyvimData
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
