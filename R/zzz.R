@@ -1,5 +1,8 @@
 .onAttach <- function(...) {
-  packageStartupMessage("methyvim: Nonparametric Differential Methylation Analysis with Variable Importance Measures")
+  packageStartupMessage(paste("methyvim: Nonparametric Differential",
+                              "Methylation Analysis \n with Targeted Estimates",
+                              "of Variable Importance Measures"))
   packageStartupMessage("Version: ",
                         utils::packageDescription("methyvim")$Version)
 }
+

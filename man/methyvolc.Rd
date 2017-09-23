@@ -12,28 +12,25 @@ to \code{methyvim}.}
 
 \item{param_bound}{Numeric for a threshold indicating the magnitude of the
 size of the effect considered to be interesting. This is used to
-assign groupings and colors to individual CpG sites. This argument is
-only used when \code{type} is set to the volcano plot option.}
+assign groupings and colors to individual CpG sites.}
 
 \item{pval_bound}{Numeric for a threshold indicating the magnitude of
 p-values deemed to be interesting. This is used to assign groupings
-and colors to individual CpG sites. This argument is only used when
-\code{type} is set to the volcano plot option.}
+and colors to individual CpG sites.}
 }
 \description{
 Volcano plot for methytmle objects
 }
 \examples{
-library(methyvimData)
 suppressMessages(library(SummarizedExperiment))
+library(methyvimData)
 data(grsExample)
-var_int <- colData(grsExample)[, 1]
+var_int <- as.numeric(colData(grsExample)[, 1])
 methyvim_out_ate <- suppressWarnings(
- methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-          parallel = FALSE, tmle_type = "sl"
+ methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+          parallel = FALSE, tmle_type = "glm"
          )
 )
 methyvolc(methyvim_out_ate)
-
 }

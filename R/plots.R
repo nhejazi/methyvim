@@ -8,7 +8,9 @@ utils::globalVariables(c("..count..", "color", "log_pval", "param pval",
 #' @param ... Additional arguments passed \code{plot} as necessary.
 #' @param type The type of plot to build: one of side-by-side histograms (type
 #'        "both") comparing raw p-values to FDR-adjusted p-values (using the
-#'        FDR-MSA correction) or either of these two histogram separately.
+#'        FDR-MSA correction) or either of these two histogram separately. Set
+#'        this argument to "raw_pvals" for a histogram of the raw p-values, and
+#'        to "fdr_pvals" for a histogram of the FDR-corrected p-values.
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr select slice arrange transmute
@@ -24,19 +26,19 @@ utils::globalVariables(c("..count..", "color", "log_pval", "param pval",
 #' @method plot methytmle
 #'
 #' @examples
-#' library(methyvimData)
 #' suppressMessages(library(SummarizedExperiment))
+#' library(methyvimData)
 #' data(grsExample)
-#' var_int <- colData(grsExample)[, 1]
+#' var_int <- as.numeric(colData(grsExample)[, 1])
 # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-#'           parallel = FALSE, tmle_type = "sl"
+#'  methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+#'           parallel = FALSE, tmle_type = "glm"
 #'          )
 #' )
 #' plot(methyvim_out_ate)
-#'
+#
 plot.methytmle <- function(x, ..., type = "both") {
   # use an older color palette to ensure compatibility with CRAN version
   pal <- wesanderson::wes_palette("Royal2", 100, type = "continuous")
@@ -63,8 +65,8 @@ plot.methytmle <- function(x, ..., type = "both") {
                                                   fill = ..count..),
                                      colour = "white", na.rm = TRUE,
                                      binwidth = 0.025)
-  p2 <- p2 + ggplot2::ggtitle("Histogram of BH-corrected FDR p-values")
-  p2 <- p2 + ggplot2::xlab("magnitude of BH-corrected p-values")
+  p2 <- p2 + ggplot2::ggtitle("Histogram of FDR-corrected p-values")
+  p2 <- p2 + ggplot2::xlab("magnitude of FDR-corrected p-values")
   p2 <- p2 + ggplot2::scale_fill_gradientn("Count", colors = pal)
   p2 <- p2 + ggplot2::guides(fill = ggplot2::guide_legend(title = NULL))
   p2 <- p2 + ggplot2::theme_minimal()
@@ -72,9 +74,9 @@ plot.methytmle <- function(x, ..., type = "both") {
   if (type == "both") {
     # return a grob with the two plots side-by-side
     gridExtra::grid.arrange(p1, p2, nrow = 1)
-  } else if (type == "raw-pvals") {
+  } else if (type == "raw_pvals") {
     return(p1)
-  } else if (type == "fdr-pvals") {
+  } else if (type == "fdr_pvals") {
     return(p2)
   }
 }
@@ -85,20 +87,19 @@ plot.methytmle <- function(x, ..., type = "both") {
 #'
 #' @param x Object of class \code{methytmle} as produced by an appropriate call
 #'        to \code{methyvim}.
-#' @param ... Additional arguments passed \code{superheat}. This argument is
-#'        used only if \code{type} below is set to the heatmap option. Please
-#'        consult the documentation of the \code{superheat} package for options
-#'        that may be appropriately set.
+#' @param ... Additional arguments passed to \code{superheat}. Consult the
+#'        documentation of the \code{superheat} package for a list of options.
 #' @param n_sites Numeric indicating the number of CpG sites to be shown in the
-#'        plot. This argument is only used if \code{type} is set to the heatmap
-#'        option. If the number of sites analyzed is greater than this cutoff,
-#'        sites to be displayed are chosen by ranking sites based on the raw
+#'        plot. If the number of sites analyzed is greater than this cutoff,
+#'        sites to be displayed are chosen by ranking sites based on their raw
 #'        (marginal) p-values.
 #' @param type Whether to plot the original data (M-values or Beta-values) for
-#'        the set of top CpG sites or to plot the measurements after having
-#'        moved these into influence curve space. The latter uses the fact that
-#'        the supported parameters have asymptotically linear representations to
-#'        obtain a rotation of the data into an alternative space.
+#'        the set of top CpG sites or to plot the measurements after applying a
+#'        transformation into influence curve space (with respect to the target
+#'        parameter of interest). The latter uses the fact that the parameters
+#'        have asymptotically linear representations to obtain a rotation of the
+#'        raw data into an alternative space; moreover, in this setting, the
+#'        heatmap reduces to visualizing a supervised clustering procedure.
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr select slice arrange transmute
@@ -111,20 +112,23 @@ plot.methytmle <- function(x, ..., type = "both") {
 #' @export
 #'
 #' @examples
-#' library(methyvimData)
 #' suppressMessages(library(SummarizedExperiment))
+#' library(methyvimData)
 #' data(grsExample)
-#' var_int <- colData(grsExample)[, 1]
+#' var_int <- as.numeric(colData(grsExample)[, 1])
 # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-#'           parallel = FALSE, tmle_type = "sl"
+#'  methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+#'           parallel = FALSE, tmle_type = "glm"
 #'          )
 #' )
 #' methyheat(methyvim_out_ate, type = "raw")
-#'
-methyheat <- function(x, ..., n_sites = 25, type = c("raw", "ic")) {
+#
+methyheat <- function(x, ..., n_sites = 25, type = "raw") {
+  # elementary type checking
+  #type <- check.args(type)
+
   # need observations in influence curve space to plot on heatmap
   if(type == "ic" & sum(dim(x@ic)) == 0) {
     stop("Please re-run 'methyvim' and set argument 'return_ic' to 'TRUE'.")
@@ -181,37 +185,35 @@ methyheat <- function(x, ..., n_sites = 25, type = c("raw", "ic")) {
 #'        to \code{methyvim}.
 #' @param param_bound Numeric for a threshold indicating the magnitude of the
 #'        size of the effect considered to be interesting. This is used to
-#'        assign groupings and colors to individual CpG sites. This argument is
-#'        only used when \code{type} is set to the volcano plot option.
+#'        assign groupings and colors to individual CpG sites.
 #' @param pval_bound Numeric for a threshold indicating the magnitude of
 #'        p-values deemed to be interesting. This is used to assign groupings
-#'        and colors to individual CpG sites. This argument is only used when
-#'        \code{type} is set to the volcano plot option.
+#'        and colors to individual CpG sites.
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr select slice arrange transmute
 #' @importFrom ggplot2 ggplot aes geom_point geom_histogram xlab ylab ggtitle
 #'             scale_colour_manual scale_fill_gradientn guides guide_legend
-#'             theme_minimal
+#'             theme_minimal xlim
 #' @importFrom wesanderson wes_palette
 #' @importFrom superheat superheat
 #'
 #' @export
 #'
 #' @examples
-#' library(methyvimData)
 #' suppressMessages(library(SummarizedExperiment))
+#' library(methyvimData)
 #' data(grsExample)
-#' var_int <- colData(grsExample)[, 1]
+#' var_int <- as.numeric(colData(grsExample)[, 1])
 # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-#'           parallel = FALSE, tmle_type = "sl"
+#'  methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+#'           parallel = FALSE, tmle_type = "glm"
 #'          )
 #' )
 #' methyvolc(methyvim_out_ate)
-#'
+#
 methyvolc <- function(x, param_bound = 2.0, pval_bound = 0.2) {
   # use an older color palette to ensure compatibility with CRAN version
   pal <- wesanderson::wes_palette(name = "Darjeeling2", type = "continuous")
@@ -247,6 +249,7 @@ methyvolc <- function(x, param_bound = 2.0, pval_bound = 0.2) {
                                )
                          )
   p <- p + ggplot2::ylab("-log10(raw p-value)")
+  p <- p + ggplot2::xlim(max(abs(into_volcano$param)) * c(-1, 1))
   p <- p + ggplot2::scale_colour_manual(values = pal[seq_len(3)],
                                         guide = FALSE)
   p <- p + ggplot2::theme_minimal()

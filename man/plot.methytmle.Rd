@@ -14,22 +14,23 @@ to \code{methyvim}.}
 
 \item{type}{The type of plot to build: one of side-by-side histograms (type
 "both") comparing raw p-values to FDR-adjusted p-values (using the
-FDR-MSA correction) or either of these two histogram separately.}
+FDR-MSA correction) or either of these two histogram separately. Set
+this argument to "raw_pvals" for a histogram of the raw p-values, and
+to "fdr_pvals" for a histogram of the FDR-corrected p-values.}
 }
 \description{
 Plot p-values of methytmle objects
 }
 \examples{
-library(methyvimData)
 suppressMessages(library(SummarizedExperiment))
+library(methyvimData)
 data(grsExample)
-var_int <- colData(grsExample)[, 1]
+var_int <- as.numeric(colData(grsExample)[, 1])
 methyvim_out_ate <- suppressWarnings(
- methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-          parallel = FALSE, tmle_type = "sl"
+ methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+          parallel = FALSE, tmle_type = "glm"
          )
 )
 plot(methyvim_out_ate)
-
 }

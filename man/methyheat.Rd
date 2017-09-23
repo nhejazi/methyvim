@@ -4,43 +4,41 @@
 \alias{methyheat}
 \title{Heatmap for methytmle objects}
 \usage{
-methyheat(x, ..., n_sites = 25, type = c("raw", "ic"))
+methyheat(x, ..., n_sites = 25, type = "raw")
 }
 \arguments{
 \item{x}{Object of class \code{methytmle} as produced by an appropriate call
 to \code{methyvim}.}
 
-\item{...}{Additional arguments passed \code{superheat}. This argument is
-used only if \code{type} below is set to the heatmap option. Please
-consult the documentation of the \code{superheat} package for options
-that may be appropriately set.}
+\item{...}{Additional arguments passed to \code{superheat}. Consult the
+documentation of the \code{superheat} package for a list of options.}
 
 \item{n_sites}{Numeric indicating the number of CpG sites to be shown in the
-plot. This argument is only used if \code{type} is set to the heatmap
-option. If the number of sites analyzed is greater than this cutoff,
-sites to be displayed are chosen by ranking sites based on the raw
+plot. If the number of sites analyzed is greater than this cutoff,
+sites to be displayed are chosen by ranking sites based on their raw
 (marginal) p-values.}
 
 \item{type}{Whether to plot the original data (M-values or Beta-values) for
-the set of top CpG sites or to plot the measurements after having
-moved these into influence curve space. The latter uses the fact that
-the supported parameters have asymptotically linear representations to
-obtain a rotation of the data into an alternative space.}
+the set of top CpG sites or to plot the measurements after applying a
+transformation into influence curve space (with respect to the target
+parameter of interest). The latter uses the fact that the parameters
+have asymptotically linear representations to obtain a rotation of the
+raw data into an alternative space; moreover, in this setting, the
+heatmap reduces to visualizing a supervised clustering procedure.}
 }
 \description{
 Heatmap for methytmle objects
 }
 \examples{
-library(methyvimData)
 suppressMessages(library(SummarizedExperiment))
+library(methyvimData)
 data(grsExample)
-var_int <- colData(grsExample)[, 1]
+var_int <- as.numeric(colData(grsExample)[, 1])
 methyvim_out_ate <- suppressWarnings(
- methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-          parallel = FALSE, tmle_type = "sl"
+ methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+          parallel = FALSE, tmle_type = "glm"
          )
 )
 methyheat(methyvim_out_ate, type = "raw")
-
 }
