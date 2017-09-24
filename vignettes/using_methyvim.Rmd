@@ -139,6 +139,7 @@ First, we'll load the `methyvim` package and the example data contained in the
 `methyvimData` package that accompanies it:
 
 ```{r prelims}
+set.seed(479253)
 library(methyvim)
 library(methyvimData)
 ```
@@ -147,9 +148,8 @@ Now, let's load the data set and seed the RNG:
 
 ```{r get-data}
 data(grsExample)
-set.seed(479253)
 grsExample
-var_int <- colData(grsExample)[, 1]
+var_int <- as.numeric(colData(grsExample)[, 1])
 ```
 
 The example data object is of class `GenomicRatioSet`, provided by the `minfi`
@@ -189,17 +189,17 @@ the package, it is time now to discuss the analytic capabilities implemented.
 
 ### The Average Treatment Effect as Variable Importance Measure
 
-...
+#### Super Learning for nonparametric parameter estimation
 
-```{r methyvim-ate}
+```{r methyvim-ate-sl}
 suppressMessages(
-  methyvim_out_ate <- methyvim(data_grs = grsExample, sites_comp = 10,
-                               var_int = var_int, vim = "ate", type = "Mval",
-                               filter = "limma", filter_cutoff = 0.05,
-                               parallel = FALSE, tmle_type = "glm"
-                              )
+  methyvim_ate_sl <- methyvim(data_grs = grsExample, sites_comp = 25,
+                              var_int = var_int, vim = "ate", type = "Mval",
+                              filter = "limma", filter_cutoff = 0.10,
+                              parallel = FALSE, tmle_type = "sl"
+                             )
 )
-methyvim_out_ate
+methyvim_ate_sl
 ```
 
 As is clear from examining the object `methyvim_out_ate`, the output resembles
@@ -214,7 +214,7 @@ We can take a look at the results produced from the estimation procedure by
 examining the `"vim"` `slot` of the `methytmle` object:
 
 ```{r methyvim-ate-print}
-head(slot(methyvim_out_ate, "vim"))
+head(slot(methyvim_ate_sl, "vim"))
 ```
 
 From the table displayed, we note that we have access to point estimates of the
@@ -229,28 +229,59 @@ sites controlled for when estimating the effect of exposure on DNA methylation,
 and, finally, the maximum correlation between the target site and any given site
 in its full set of neighbors.
 
+#### Generalized linear models for parameter estimation
+
+```{r methyvim-ate-glm}
+suppressMessages(
+  methyvim_ate_glm <- methyvim(data_grs = grsExample, sites_comp = 25,
+                               var_int = var_int, vim = "ate", type = "Mval",
+                               filter = "limma", filter_cutoff = 0.10,
+                               parallel = FALSE, tmle_type = "glm"
+                              )
+)
+methyvim_ate_glm
+```
 ...
 
 ---
 
 ### The Risk Ratio as Variable Importance Measure
 
+#### Super Learning for nonparametric parameter estimation
 ...
 
-```{r methyvim-rr}
-methyvim_out_rr <- methyvim(data_grs = grsExample, sites_comp = 10,
+```{r methyvim-rr-sl}
+methyvim_rr_sl <- methyvim(data_grs = grsExample, sites_comp = 25,
                             var_int = var_int, vim = "rr", type = "Mval",
-                            filter = "limma", filter_cutoff = 0.05,
+                            filter = "limma", filter_cutoff = 0.10,
                             parallel = FALSE, tmle_type = "sl"
                            )
-methyvim_out_rr
+methyvim_rr_sl
 ```
 ...
 
 ```{r methyvim-rr-print}
-head(slot(methyvim_out_rr, "vim"))
+head(slot(methyvim_rr_sl, "vim"))
 ```
+
 ...
+
+#### Generalized linear models for parameter estimation
+...
+```{r methyvim-rr-glm}
+methyvim_rr_glm <- methyvim(data_grs = grsExample, sites_comp = 25,
+                            var_int = var_int, vim = "rr", type = "Mval",
+                            filter = "limma", filter_cutoff = 0.10,
+                            parallel = FALSE, tmle_type = "glm"
+                           )
+methyvim_rr_glm
+```
+
+...
+
+```{r methyvim-rr-print}
+head(slot(methyvim_rr_glm, "vim"))
+```
 
 ---
 
@@ -262,7 +293,7 @@ is unfortunately insufficient. To proceed, we will use a publicly available
 example data set produced by the Illumina 450K array, from the `minfiData` R
 package. Now, let's load the package and data set, and take a look
 
-```{r}
+```{r setup-minfidata}
 suppressMessages(library(minfiData))
 data(MsetEx)
 mset <- mapToGenome(MsetEx)
@@ -281,10 +312,9 @@ exposure/treatment variable of interest. The `methyvim` function requires that
 this variable either be `numeric` or easily coercible to `numeric`. To
 facilitate this, we'll simply convert the covariate (currently a `character`):
 
-```{r}
+```{r, minfidata-maketx}
 var_int <- (as.numeric(as.factor(colData(grs)$status)) - 1)
 ```
-
 __n.b.__, the re-coding process results in "normal" patients being assigned a
 value of 1 and cancer patients a 0.
 
@@ -292,37 +322,74 @@ Now, we are ready to analyze the effects of cancer status on DNA methylation
 using this data set. To do this with a targeted minimum loss-based estimate of
 the Average Treatment Effect, we may proceed as follows:
 
-```{r}
+```{r, minfidata-methyvim}
 suppressMessages(
   methyvim_cancer_ate <- methyvim(data_grs = grs, var_int = var_int,
                                   vim = "ate", type = "Beta", filter = "limma",
-                                  filter_cutoff = 0.10, obs_per_covar = 1,
-                                  parallel = FALSE, tmle_type = "sl",
-                                  sites_comp = 125
+                                  filter_cutoff = 0.20, obs_per_covar = 2,
+                                  parallel = FALSE, sites_comp = 125,
+                                  tmle_type = "glm"
                                  )
 )
-
 ```
+Note that we set the `obs_per_covar` argument to a relatively low value (2,
+where the recommended default is 20) for the purposes of this example. We do
+this only to exemplify the estimation procedure and would point out here that
+such low values will compromise the quality of inference obtained as this
+setting directly affects the definition of the target parameter.
+
+Further, note that here we apply the `glm` flavor of the `tmle_type` argument,
+which produces faster results by fitting models for the propensity score and
+outcome regressions using a limited number of parametric models. By contrast,
+the `sl` (for "Super Learning") flavor fits these two regressions using highly
+nonparametric and data-adaptive procedures (i.e., via machine learning).
+
+Just as before, we can view a table of results by examining the `vim` slot of
+the produced `methytmle` object:
+
+```{r vim-cancer-ate}
+head(slot(methyvim_cancer_ate, "vim"))
+```
+
+Finally, we may compute FDR-corrected p-values, by applying a modified procedure
+for controlling the False Discovery Rate for multi-stage analyses (FDR-MSA)
+[@tuglus2009modified]. We do this by simply applying the `fdr_msa` function:
+
+```{r fdr-msa}
+fdr_p <- fdr_msa(pvals = slot(methyvim_cancer_ate, "vim")$pval,
+                 total_obs = nrow(methyvim_cancer_ate))
+```
+
+Having explored the results of our analysis numerically, we now proceed to use
+the visualization tools provided with the `methyvim` R package to further
+enhance our understanding of the results.
 
 ### Visualization of Results
 
-The `methyvim` package provides a few convenience utlities for visualizing the
-results of our analyses:
+While making allowance for users to explore the full set of results produced by
+the estimation procedure (by way of exposing these directly to the user), the
+`methyvim` package also provides _three_ (3) visualization utilities that
+produce plots commonly used in examining the results of differential methylation
+analyses.
 
-```{r methyvim-plot-volcano, eval=FALSE}
-plot(methyvim_cancer_ate, type = "volcano")
+```{r methyvim-pvals-both}
+plot(methyvim_cancer_ate)
+```
+__Remark:__ The plots displayed above may also be generated separately by
+explicitly setting the argument "type" to `plot.methytmle`. For a plot of the
+raw p-values, specify `type = "raw_pvals"`, and for a plot of the FDR-corrected
+p-values, specify `type = "fdr_pvals"`.
+
+...
+
+```{r methyvim-volcano}
+methyvolc(methyvim_cancer_ate)
 ```
 
 ...
 
-```{r methyvim-plot-pvals, eval=FALSE}
-plot(methyvim_out_rr, type = "pvals")
-```
-
-...
-
-```{r methyvim-plot-heatmap, eval=FALSE}
-plot(methyvim_out_rr, type = "heatmap")
+```{r methyvim-heatmap}
+methyheat(methyvim_cancer_ate)
 ```
 
 ...

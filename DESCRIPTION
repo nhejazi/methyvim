@@ -56,7 +56,6 @@ Suggests:
   rmarkdown,
   BiocStyle,
   SuperLearner,
-  randomForest,
   earth,
   nnet,
   gam,

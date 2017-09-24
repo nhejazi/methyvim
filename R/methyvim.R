@@ -144,7 +144,7 @@ methyvim <- function(data_grs,
   # set treatment mechanism and outcome regression libraries
   # ============================================================================
   if(is.null(tmle_args$g_lib)) {
-    tmle_args$g_lib <- c("SL.mean", "SL.glm", "SL.bayesglm")
+    tmle_args$g_lib <- c("SL.mean", "SL.glm", "SL.bayesglm", "SL.gam")
   }
   if(is.null(tmle_args$Q_lib)) {
     tmle_args$Q_lib <- c("SL.mean", "SL.glm", "SL.gam", "SL.earth", "SL.nnet")
