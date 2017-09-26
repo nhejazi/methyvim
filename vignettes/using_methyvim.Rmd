@@ -6,8 +6,6 @@ author: |
   | University of California, Berkeley
   | Berkeley, CA, 94720, USA
 date: "`r Sys.Date()`"
-preamble: >
-  \usepackage{amsmath}
 output:
   BiocStyle::html_document
 bibliography: vignette-refs.bib
