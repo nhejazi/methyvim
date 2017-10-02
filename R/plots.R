@@ -12,6 +12,11 @@ utils::globalVariables(c("..count..", "color", "log_pval", "param pval",
 #'        this argument to "raw_pvals" for a histogram of the raw p-values, and
 #'        to "fdr_pvals" for a histogram of the FDR-corrected p-values.
 #'
+#' @return Object of class \code{ggplot} containing a histogram or side-by-side
+#'         histograms of the raw (marginal) and corrected p-values, with the
+#'         latter computed automatically using the method of Tuglus and van der
+#'         Laan.
+#'
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr select slice arrange transmute
 #' @importFrom ggplot2 ggplot aes geom_point geom_histogram xlab ylab ggtitle
@@ -101,6 +106,10 @@ plot.methytmle <- function(x, ..., type = "both") {
 #'        raw data into an alternative space; moreover, in this setting, the
 #'        heatmap reduces to visualizing a supervised clustering procedure.
 #'
+#' @return Nothing. This function is called for its side-effect of outputting a
+#'         heatmap to the graphics device. The heatmap is constructed using the
+#'         \code{superheat} package.
+#'
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr select slice arrange transmute
 #' @importFrom ggplot2 ggplot aes geom_point geom_histogram xlab ylab ggtitle
@@ -167,7 +176,7 @@ methyheat <- function(x, ..., n_sites = 25, type = "raw") {
       as.matrix()
   }
 
-  # plot the super heatmap
+  # plot the (super) heatmap
   superheat::superheat(sites_mat, row.dendrogram = TRUE,
                        grid.hline.col = "white", force.grid.hline = TRUE,
                        grid.vline.col = "white", force.grid.vline = TRUE,
@@ -189,6 +198,11 @@ methyheat <- function(x, ..., n_sites = 25, type = "raw") {
 #' @param pval_bound Numeric for a threshold indicating the magnitude of
 #'        p-values deemed to be interesting. This is used to assign groupings
 #'        and colors to individual CpG sites.
+#'
+#' @return Object of class \code{ggplot} containing a volcano plot of the
+#'         estimated effect size on the x-axis and the -log10(p-value) on the
+#'         y-axis. The volcano plot is used to detect possibly false positive
+#'         cases, where a test statistic is significant due to low variance.
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr select slice arrange transmute
