@@ -97,6 +97,6 @@ test_that("RR procedure with Beta-values is consistent for target site", {
   #expect_lt(sum(methyvim_neighbors -
                 #c(-0.53382020341, -0.35780299063, -0.18178577786, 0.00806488421,
                   #0.00006769798, 8.0000000000, 8.00000000000, -0.09301901866)),
-            #1e-11)
+            #0.01)
 #})
 
