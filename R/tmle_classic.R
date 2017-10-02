@@ -37,6 +37,10 @@
 #' @param return_ic Logical indicating whether an influence curve estimate
 #'        should be returned for each site that passed through the filter.
 #'
+#' @return An \code{data.frame} containing the results of the Targeted Minimum
+#'         Loss-based Estimation (TMLE) procedure for the target parameter of
+#'         interest for a single CpG site, computed via the \code{tmle} package.
+#'
 #' @importFrom minfi getBeta getM
 #' @importFrom stats cor
 #' @importFrom cluster pam

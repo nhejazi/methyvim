@@ -27,6 +27,11 @@ page for \code{BiocParallel::BiocParallelParam} for possible types and
 descriptions on their appropriate uses. The default for this argument
 is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.}
 }
+\value{
+Nothing. This function is designed to be called for its side-effect
+        of registering a parallel backend (for \code{BiocParallel}) and/or
+        \code{future::plan}, making parallel computation a trivial process.
+}
 \description{
 Easily set up parallelization
 }

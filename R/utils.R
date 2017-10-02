@@ -10,6 +10,11 @@
 #'        biological constraints are respected (see the documentation available
 #'        for \code{bumphunter::clusterMaker} for details).
 #'
+#' @return An object of class \code{methytmle} with the "clusters" slot filled
+#'        in. The "clusters" slot contains a \code{numeric} vector as long as
+#'        the number of CpG sites. Each entry in the vector is a neighborhood
+#'        assignment used in the estimation procedure.
+#'
 #' @importFrom bumphunter clusterMaker
 #' @importFrom SummarizedExperiment rowRanges
 #' @importFrom GenomeInfoDb seqnames
@@ -39,6 +44,9 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #' @param total_obs Numeric indicating the total number of observations that
 #'        would have been available for testing prior to the selection procedure
 #'        employed in the multi-stage analysis performed.
+#'
+#' @return A \code{numeric} vector of corrected p-values, controlling the False
+#'         Discovery Rate, using the method of Tuglus and van der Laan.
 #'
 #' @importFrom stats p.adjust
 #'
@@ -79,6 +87,10 @@ fdr_msa <- function(pvals, total_obs) {
 #'        page for \code{BiocParallel::BiocParallelParam} for possible types and
 #'        descriptions on their appropriate uses. The default for this argument
 #'        is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.
+#'
+#' @return Nothing. This function is designed to be called for its side-effect
+#'         of registering a parallel backend (for \code{BiocParallel}) and/or
+#'         \code{future::plan}, making parallel computation a trivial process.
 #'
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
@@ -166,3 +178,4 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   }
   return(out)
 }
+
