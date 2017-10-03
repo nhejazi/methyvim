@@ -2,40 +2,41 @@
 % Please edit documentation in R/plots.R
 \name{plot.methytmle}
 \alias{plot.methytmle}
-\title{Plot utility for methytmle objects}
+\title{Plot p-values of methytmle objects}
 \usage{
-\method{plot}{methytmle}(x, ..., type = c("heatmap", "volcano", "pvals"),
-  num_sites = 25, param_bound = 2, pval_bound = 0.2)
+\method{plot}{methytmle}(x, ..., type = "both")
 }
 \arguments{
 \item{x}{Object of class \code{methytmle} as produced by an appropriate call
 to \code{methyvim}.}
 
-\item{...}{additional arguments passed \code{superheat}. This argument is
-used only if \code{type} below is set to the heatmap option. Please
-consult the documentation of the \code{superheat} package for options
-that may be appropriately set.}
+\item{...}{Additional arguments passed \code{plot} as necessary.}
 
-\item{type}{Character describing the type of plot to be generated: one among
-the following collection: heatmap, volcano plot, or histograms of
-raw and FDR-corrected p-values.}
-
-\item{num_sites}{Numeric indcating the number of CpG sites to be shown in the
-plot. This argument is only used if \code{type} is set to the heatmap
-option. If the number of sites analyzed is greater than this cutoff,
-sites to be displayed are chosen by ranking sites based on the raw
-(marginal) p-values.}
-
-\item{param_bound}{Numeric for a threshold indicating the magnitude of the
-size of the effect considered to be interesting. This is used to
-assign groupings and colors to individual CpG sites. This argument is
-only used when \code{type} is set to the volcano plot option.}
-
-\item{pval_bound}{Numeric for a threshold indicating the magnitude of
-p-values deemed to be interesting. This is used to assign groupings
-and colors to individual CpG sites. This argument is only used when
-\code{type} is set to the volcano plot option.}
+\item{type}{The type of plot to build: one of side-by-side histograms (type
+"both") comparing raw p-values to FDR-adjusted p-values (using the
+FDR-MSA correction) or either of these two histogram separately. Set
+this argument to "raw_pvals" for a histogram of the raw p-values, and
+to "fdr_pvals" for a histogram of the FDR-corrected p-values.}
+}
+\value{
+Object of class \code{ggplot} containing a histogram or side-by-side
+        histograms of the raw (marginal) and corrected p-values, with the
+        latter computed automatically using the method of Tuglus and van der
+        Laan.
 }
 \description{
-Several types of plots providing...
+Plot p-values of methytmle objects
+}
+\examples{
+suppressMessages(library(SummarizedExperiment))
+library(methyvimData)
+data(grsExample)
+var_int <- as.numeric(colData(grsExample)[, 1])
+methyvim_out_ate <- suppressWarnings(
+ methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
+          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+          parallel = FALSE, tmle_type = "glm"
+         )
+)
+plot(methyvim_out_ate)
 }

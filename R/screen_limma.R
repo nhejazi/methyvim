@@ -5,10 +5,13 @@
 #' p-value cutoff.
 #'
 #' @param methytmle An object of class \code{methytmle}.
-#' @param var_int Numeric indicating the column index of the variable of
-#'        interest, whether exposure or outcome. If argument \code{vim} is set
-#'        to the ATE, then the variable of interest is treated as an exposure;
-#'        it is treated as an outcome if this is set to be the NPVI.
+#' @param var_int A \code{numeric} vector containing subject-level measurements
+#'        of the variable of interest. The length of this vector must match the
+#'        number of subjects exactly. If argument \code{vim} is set to "ate" or
+#'        "rr", then the variable of interest is treated as an exposure, and the
+#'        variable must be binary in such cases. If setting \code{vim} to target
+#'        parameters assessing continuous treatment effects, then the variable
+#'        need not be binary of course.
 #' @param type Character indicating the particular measure of DNA methylation to
 #'        be used as the observed data in the estimation procedure, either Beta
 #'        values or M-values. The data are accessed via \code{minfi::getBeta} or
@@ -22,15 +25,13 @@
 #'
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom minfi getBeta getM
-#' @importFrom SummarizedExperiment colData
-#'
+#
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
 
   stopifnot(class(methytmle) == "methytmle")
 
   # setup design matrix
-  design <- as.numeric(SummarizedExperiment::colData(methytmle)[, var_int])
-  design <- as.matrix(cbind(rep(1, times = length(design)), design))
+  design <- as.matrix(cbind(rep(1, times = length(var_int)), var_int))
 
   # create expression object for modeling
   if (type == "Beta") {
@@ -51,3 +52,4 @@ limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   methytmle@screen_ind <- as.numeric(indices_pass)
   return(methytmle)
 }
+

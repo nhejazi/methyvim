@@ -14,7 +14,7 @@
 #' data(grsExample)
 #' # cast the GenomicRatioSet to class methytmle
 #' methy_tmle <- .methytmle(grsExample)
-#'
+#
 .methytmle <- methods::setClass(
        Class = "methytmle",
        slots = list(call = "call",

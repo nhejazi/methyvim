@@ -10,12 +10,17 @@
 #'        biological constraints are respected (see the documentation available
 #'        for \code{bumphunter::clusterMaker} for details).
 #'
+#' @return An object of class \code{methytmle} with the "clusters" slot filled
+#'        in. The "clusters" slot contains a \code{numeric} vector as long as
+#'        the number of CpG sites. Each entry in the vector is a neighborhood
+#'        assignment used in the estimation procedure.
+#'
 #' @importFrom bumphunter clusterMaker
 #' @importFrom SummarizedExperiment rowRanges
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom BiocGenerics start
 #' @importFrom IRanges ranges
-#'
+#
 cluster_sites <- function(methytmle, window_size = 1000) {
   gr <- SummarizedExperiment::rowRanges(methytmle)
   pos <- BiocGenerics::start(IRanges::ranges(gr))
@@ -40,6 +45,9 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #'        would have been available for testing prior to the selection procedure
 #'        employed in the multi-stage analysis performed.
 #'
+#' @return A \code{numeric} vector of corrected p-values, controlling the False
+#'         Discovery Rate, using the method of Tuglus and van der Laan.
+#'
 #' @importFrom stats p.adjust
 #'
 #' @export
@@ -50,7 +58,7 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #' p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
 #' # treating the vector p as one of p-values, FDR-MSA may be applied
 #' fdr_p <- fdr_msa(pvals = p, total_obs = g)
-#'
+#
 fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
@@ -80,10 +88,14 @@ fdr_msa <- function(pvals, total_obs) {
 #'        descriptions on their appropriate uses. The default for this argument
 #'        is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.
 #'
+#' @return Nothing. This function is designed to be called for its side-effect
+#'         of registering a parallel backend (for \code{BiocParallel}) and/or
+#'         \code{future::plan}, making parallel computation a trivial process.
+#'
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
-#'
+#
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,
                          bppar_type = NULL) {
@@ -138,7 +150,7 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #'         levels of the treatment against levels of an adjustment covariate.
 #'
 #' @importFrom gtools quantcut
-#'
+#
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
 
@@ -166,3 +178,4 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   }
   return(out)
 }
+

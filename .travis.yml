@@ -33,6 +33,7 @@ bioc_packages:
   - IRanges
   - limma
   - minfi
+  - minfiData
 
 ## coverage
 after_success:

@@ -39,6 +39,7 @@ build_script:
   - travis-tool.sh install_bioc BiocStyle
   - travis-tool.sh install_bioc bumphunter
   - travis-tool.sh install_bioc minfi
+  - travis-tool.sh install_bioc minfiData
   - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc_deps
   - Rscript -e "source('http://bioconductor.org/biocLite.R'); biocLite(ask = FALSE)"

@@ -17,5 +17,4 @@ suppressMessages(library(SummarizedExperiment))
 data(grsExample)
 # cast the GenomicRatioSet to class methytmle
 methy_tmle <- .methytmle(grsExample)
-
 }
