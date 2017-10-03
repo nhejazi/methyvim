@@ -101,7 +101,7 @@ utils::globalVariables(c("colData<-"))
 #'           parallel = FALSE, tmle_type = "sl"
 #'          )
 #' )
-#'
+#
 methyvim <- function(data_grs,
                      var_int,
                      vim = c("ate", "rr", "npvi"),

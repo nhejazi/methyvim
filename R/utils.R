@@ -20,7 +20,7 @@
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom BiocGenerics start
 #' @importFrom IRanges ranges
-#'
+#
 cluster_sites <- function(methytmle, window_size = 1000) {
   gr <- SummarizedExperiment::rowRanges(methytmle)
   pos <- BiocGenerics::start(IRanges::ranges(gr))
@@ -58,7 +58,7 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #' p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
 #' # treating the vector p as one of p-values, FDR-MSA may be applied
 #' fdr_p <- fdr_msa(pvals = p, total_obs = g)
-#'
+#
 fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
@@ -95,7 +95,7 @@ fdr_msa <- function(pvals, total_obs) {
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
-#'
+#
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,
                          bppar_type = NULL) {
@@ -150,7 +150,7 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #'         levels of the treatment against levels of an adjustment covariate.
 #'
 #' @importFrom gtools quantcut
-#'
+#
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
 

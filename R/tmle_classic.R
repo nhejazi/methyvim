@@ -45,7 +45,7 @@
 #' @importFrom stats cor
 #' @importFrom cluster pam
 #' @importFrom tmle tmle
-#'
+#
 methyvim_tmle <- function(target_site,
                           methytmle_screened,
                           var_of_interest,

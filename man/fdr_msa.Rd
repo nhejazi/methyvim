@@ -28,5 +28,4 @@ n <- 1e2
 p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
 # treating the vector p as one of p-values, FDR-MSA may be applied
 fdr_p <- fdr_msa(pvals = p, total_obs = g)
-
 }
