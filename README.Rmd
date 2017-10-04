@@ -1,5 +1,5 @@
 ---
-output: rmarkdown::github_document
+output: github_document
 bibliography: README-refs.bib
 ---
 

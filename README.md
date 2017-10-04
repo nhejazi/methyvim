@@ -140,11 +140,11 @@ The contents of this repository are distributed under the MIT license. See file 
 References
 ----------
 
-Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” *Journal of the Royal Statistical Society. Series B (Methodological)*. JSTOR, 289–300.
+Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” *Journal of the Royal Statistical Society Series B (Methodological)*. JSTOR, 289–300.
 
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public Access: 1059.
 
-Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman & Hall/Crc Texts in Statistical Science. Taylor & Francis.
+Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman & Hall Crc Texts in Statistical Science. Taylor & Francis.
 
 Pearl, Judea. 2009. *Causality: Models, Reasoning, and Inference*. Cambridge University Press.
 
