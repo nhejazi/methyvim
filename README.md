@@ -40,8 +40,6 @@ For a general discussion of the framework of targeted minimum loss-based estimat
 
 <!--
 Note about shrinkage of influence curves, adapting @smyth2004linear.
-Specifically, this is meant to reference my working paper with Alan.
-
 More exposition here....
 -->
 
@@ -144,7 +142,7 @@ Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Ra
 
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public Access: 1059.
 
-Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman & Hall/Crc Texts in Statistical Science. Taylor & Francis.
+Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman & Hall / CRC Texts in Statistical Science. Taylor & Francis.
 
 Pearl, Judea. 2009. *Causality: Models, Reasoning, and Inference*. Cambridge University Press.
 

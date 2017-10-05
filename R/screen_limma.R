@@ -2,7 +2,7 @@
 #'
 #' Reduces the \code{methytmle} object by way of a \code{limma} model with
 #' empirical Bayes shrinkage to include only the CpG sites below the preset
-#' p-value cutoff.
+#' p-value cutoff. INTERNAL USE ONLY.
 #'
 #' @param methytmle An object of class \code{methytmle}.
 #' @param var_int A \code{numeric} vector containing subject-level measurements
@@ -23,9 +23,11 @@
 #' methytmle input object which has been reduced include only the relevant CpG
 #' sites. This subset is then used to estimate VIMs.
 #'
+#' @keywords internal
+#'
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom minfi getBeta getM
-#'
+#
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
 
   stopifnot(class(methytmle) == "methytmle")

@@ -52,10 +52,16 @@ for a continuous outcome and "binomial" for a binary outcome.}
 \item{return_ic}{Logical indicating whether an influence curve estimate
 should be returned for each site that passed through the filter.}
 }
+\value{
+An \code{data.frame} containing the results of the Targeted Minimum
+        Loss-based Estimation (TMLE) procedure for the target parameter of
+        interest for a single CpG site, computed via the \code{tmle} package.
+}
 \description{
 Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
 Effect (ATE) or the Risk Ratio, treating DNA methylation as an outcome (Y)
 and the indicated variable of interest (which ought to be binarized) as a
 treatment/exposure (A), using the neighbors of a given CpG site as the
-adjustment set (W).
+adjustment set (W). INTERNAL USE ONLY.
 }
+\keyword{internal}

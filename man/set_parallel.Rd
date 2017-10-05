@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{set_parallel}
 \alias{set_parallel}
-\title{Easily set up parallelization}
+\title{Parallelization with Futures and BiocParallel}
 \usage{
 set_parallel(parallel = c(TRUE, FALSE), future_param = NULL,
   bppar_type = NULL)
@@ -27,6 +27,14 @@ page for \code{BiocParallel::BiocParallelParam} for possible types and
 descriptions on their appropriate uses. The default for this argument
 is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.}
 }
-\description{
-Easily set up parallelization
+\value{
+Nothing. This function is designed to be called for its side-effect
+        of registering a parallel backend (for \code{BiocParallel}) and/or
+        \code{future::plan}, making parallel computation a trivial process.
 }
+\description{
+Easily set up a suitable parallelization scheme using the various options
+provided in \code{BiocParallel} and packages of the \code{future} ecosystem.
+INTERNAL USE ONLY.
+}
+\keyword{internal}

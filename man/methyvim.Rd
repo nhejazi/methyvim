@@ -121,5 +121,4 @@ methyvim_out_ate <- suppressWarnings(
           parallel = FALSE, tmle_type = "sl"
          )
 )
-
 }

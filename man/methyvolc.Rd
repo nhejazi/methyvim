@@ -18,6 +18,12 @@ assign groupings and colors to individual CpG sites.}
 p-values deemed to be interesting. This is used to assign groupings
 and colors to individual CpG sites.}
 }
+\value{
+Object of class \code{ggplot} containing a volcano plot of the
+        estimated effect size on the x-axis and the -log10(p-value) on the
+        y-axis. The volcano plot is used to detect possibly false positive
+        cases, where a test statistic is significant due to low variance.
+}
 \description{
 Volcano plot for methytmle objects
 }

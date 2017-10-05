@@ -14,6 +14,10 @@ chosen statistical hypothesis testing procedure.}
 would have been available for testing prior to the selection procedure
 employed in the multi-stage analysis performed.}
 }
+\value{
+A \code{numeric} vector of corrected p-values, controlling the False
+        Discovery Rate, using the method of Tuglus and van der Laan.
+}
 \description{
 Modified FDR Controlling Procedure for Multi-Stage Analyses (MJ van der Laan
 and C Tuglus, 2009, <doi:10.2202/1544-6115.1397>)
@@ -24,5 +28,4 @@ n <- 1e2
 p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
 # treating the vector p as one of p-values, FDR-MSA may be applied
 fdr_p <- fdr_msa(pvals = p, total_obs = g)
-
 }
