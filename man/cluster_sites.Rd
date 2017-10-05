@@ -24,4 +24,6 @@ An object of class \code{methytmle} with the "clusters" slot filled
 }
 \description{
 Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
+INTERNAL USE ONLY.
 }
+\keyword{internal}

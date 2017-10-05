@@ -33,5 +33,6 @@ sites. This subset is then used to estimate VIMs.
 \description{
 Reduces the \code{methytmle} object by way of a \code{limma} model with
 empirical Bayes shrinkage to include only the CpG sites below the preset
-p-value cutoff.
+p-value cutoff. INTERNAL USE ONLY.
 }
+\keyword{internal}

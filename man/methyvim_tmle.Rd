@@ -62,5 +62,6 @@ Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
 Effect (ATE) or the Risk Ratio, treating DNA methylation as an outcome (Y)
 and the indicated variable of interest (which ought to be binarized) as a
 treatment/exposure (A), using the neighbors of a given CpG site as the
-adjustment set (W).
+adjustment set (W). INTERNAL USE ONLY.
 }
+\keyword{internal}

@@ -104,8 +104,6 @@ causal inference.
 
 <!--
 Note about shrinkage of influence curves, adapting @smyth2004linear.
-Specifically, this is meant to reference my working paper with Alan.
-
 More exposition here....
 -->
 
