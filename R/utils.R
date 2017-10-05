@@ -1,6 +1,7 @@
 #' CpG Neighborhoods from Genomic Distance
 #'
 #' Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
+#' INTERNAL USE ONLY.
 #'
 #' @param methytmle Object of class \code{methytmle} produced from an object of
 #'        class \code{GenomicRatioSet}, but containing extra slots.
@@ -14,6 +15,8 @@
 #'        in. The "clusters" slot contains a \code{numeric} vector as long as
 #'        the number of CpG sites. Each entry in the vector is a neighborhood
 #'        assignment used in the estimation procedure.
+#'
+#' @keywords internal
 #'
 #' @importFrom bumphunter clusterMaker
 #' @importFrom SummarizedExperiment rowRanges
@@ -69,7 +72,11 @@ fdr_msa <- function(pvals, total_obs) {
 
 ################################################################################
 
-#' Easily set up parallelization
+#' Parallelization with Futures and BiocParallel
+#'
+#' Easily set up a suitable parallelization scheme using the various options
+#' provided in \code{BiocParallel} and packages of the \code{future} ecosystem.
+#' INTERNAL USE ONLY.
 #'
 #' @param parallel Logical indicating whether parallelization ought to be used.
 #'        Parallelization is invoked via a combination of \code{BiocParallel}
@@ -91,6 +98,8 @@ fdr_msa <- function(pvals, total_obs) {
 #' @return Nothing. This function is designed to be called for its side-effect
 #'         of registering a parallel backend (for \code{BiocParallel}) and/or
 #'         \code{future::plan}, making parallel computation a trivial process.
+#'
+#' @keywords internal
 #'
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
@@ -135,6 +144,7 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #' Discretizes the numeric columns of an input matrix such that the newly
 #' created levels of each variable individually contain at least a specified
 #' mass when considering each level against levels of the treatment variable.
+#' INTERNAL USE ONLY.
 #'
 #' @param A Numeric giving the levels of the (discretized) treatment variable.
 #' @param W Data.Frame or Matrix containing the covariates in the adjustment set
@@ -148,6 +158,8 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #' @return A numeric vector with the adjustment variables re-coded into discrete
 #'         levels respecting the minimum mass requested in each table comparing
 #'         levels of the treatment against levels of an adjustment covariate.
+#'
+#' @keywords internal
 #'
 #' @importFrom gtools quantcut
 #

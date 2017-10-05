@@ -30,4 +30,6 @@ in order to avoid practical violations of the assumption of positivity.
 Discretizes the numeric columns of an input matrix such that the newly
 created levels of each variable individually contain at least a specified
 mass when considering each level against levels of the treatment variable.
+INTERNAL USE ONLY.
 }
+\keyword{internal}
