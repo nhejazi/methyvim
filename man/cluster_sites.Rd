@@ -16,6 +16,14 @@ one another are denoted as neighbors. Chromosome boundaries and other
 biological constraints are respected (see the documentation available
 for \code{bumphunter::clusterMaker} for details).}
 }
+\value{
+An object of class \code{methytmle} with the "clusters" slot filled
+       in. The "clusters" slot contains a \code{numeric} vector as long as
+       the number of CpG sites. Each entry in the vector is a neighborhood
+       assignment used in the estimation procedure.
+}
 \description{
 Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
+INTERNAL USE ONLY.
 }
+\keyword{internal}

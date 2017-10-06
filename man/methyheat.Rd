@@ -26,6 +26,11 @@ have asymptotically linear representations to obtain a rotation of the
 raw data into an alternative space; moreover, in this setting, the
 heatmap reduces to visualizing a supervised clustering procedure.}
 }
+\value{
+Nothing. This function is called for its side-effect of outputting a
+        heatmap to the graphics device. The heatmap is constructed using the
+        \code{superheat} package.
+}
 \description{
 Heatmap for methytmle objects
 }

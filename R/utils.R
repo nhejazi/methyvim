@@ -1,6 +1,7 @@
 #' CpG Neighborhoods from Genomic Distance
 #'
 #' Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
+#' INTERNAL USE ONLY.
 #'
 #' @param methytmle Object of class \code{methytmle} produced from an object of
 #'        class \code{GenomicRatioSet}, but containing extra slots.
@@ -10,12 +11,19 @@
 #'        biological constraints are respected (see the documentation available
 #'        for \code{bumphunter::clusterMaker} for details).
 #'
+#' @return An object of class \code{methytmle} with the "clusters" slot filled
+#'        in. The "clusters" slot contains a \code{numeric} vector as long as
+#'        the number of CpG sites. Each entry in the vector is a neighborhood
+#'        assignment used in the estimation procedure.
+#'
+#' @keywords internal
+#'
 #' @importFrom bumphunter clusterMaker
 #' @importFrom SummarizedExperiment rowRanges
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom BiocGenerics start
 #' @importFrom IRanges ranges
-#'
+#
 cluster_sites <- function(methytmle, window_size = 1000) {
   gr <- SummarizedExperiment::rowRanges(methytmle)
   pos <- BiocGenerics::start(IRanges::ranges(gr))
@@ -40,6 +48,9 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #'        would have been available for testing prior to the selection procedure
 #'        employed in the multi-stage analysis performed.
 #'
+#' @return A \code{numeric} vector of corrected p-values, controlling the False
+#'         Discovery Rate, using the method of Tuglus and van der Laan.
+#'
 #' @importFrom stats p.adjust
 #'
 #' @export
@@ -50,7 +61,7 @@ cluster_sites <- function(methytmle, window_size = 1000) {
 #' p <- abs(rnorm(n, mean = 1e-8, sd = 1e-2))
 #' # treating the vector p as one of p-values, FDR-MSA may be applied
 #' fdr_p <- fdr_msa(pvals = p, total_obs = g)
-#'
+#
 fdr_msa <- function(pvals, total_obs) {
   pvals_not_tested <- rep(1, total_obs - length(pvals))
   pvals_all <- c(pvals, pvals_not_tested)
@@ -61,7 +72,11 @@ fdr_msa <- function(pvals, total_obs) {
 
 ################################################################################
 
-#' Easily set up parallelization
+#' Parallelization with Futures and BiocParallel
+#'
+#' Easily set up a suitable parallelization scheme using the various options
+#' provided in \code{BiocParallel} and packages of the \code{future} ecosystem.
+#' INTERNAL USE ONLY.
 #'
 #' @param parallel Logical indicating whether parallelization ought to be used.
 #'        Parallelization is invoked via a combination of \code{BiocParallel}
@@ -80,10 +95,16 @@ fdr_msa <- function(pvals, total_obs) {
 #'        descriptions on their appropriate uses. The default for this argument
 #'        is \code{NULL}, which silently uses \code{BiocParallel::DoparParam}.
 #'
+#' @return Nothing. This function is designed to be called for its side-effect
+#'         of registering a parallel backend (for \code{BiocParallel}) and/or
+#'         \code{future::plan}, making parallel computation a trivial process.
+#'
+#' @keywords internal
+#'
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
-#'
+#
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,
                          bppar_type = NULL) {
@@ -123,6 +144,7 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #' Discretizes the numeric columns of an input matrix such that the newly
 #' created levels of each variable individually contain at least a specified
 #' mass when considering each level against levels of the treatment variable.
+#' INTERNAL USE ONLY.
 #'
 #' @param A Numeric giving the levels of the (discretized) treatment variable.
 #' @param W Data.Frame or Matrix containing the covariates in the adjustment set
@@ -137,8 +159,10 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #'         levels respecting the minimum mass requested in each table comparing
 #'         levels of the treatment against levels of an adjustment covariate.
 #'
-#' @importFrom gtools quantcut
+#' @keywords internal
 #'
+#' @importFrom gtools quantcut
+#
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
 
@@ -166,3 +190,4 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   }
   return(out)
 }
+

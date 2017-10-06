@@ -1,7 +1,7 @@
 Package: methyvim
 Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
   Estimates of Variable Importance Measures
-Version: 0.99.3
+Version: 0.99.8
 Authors@R: c(
   person("Nima", "Hejazi", email = "nhejazi@berkeley.edu",
     role = c("aut", "cre", "cph")),
@@ -27,7 +27,6 @@ License: file LICENSE
 URL: https://github.com/nhejazi/methyvim
 BugReports: https://github.com/nhejazi/methyvim/issues
 Encoding: UTF-8
-LazyData: true
 Imports:
   stats,
   cluster,
@@ -73,4 +72,3 @@ biocViews:
   DifferentialMethylation,
   MethylationArray,
   MethylSeq
-
