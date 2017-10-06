@@ -5,9 +5,10 @@ suppressMessages(library(SummarizedExperiment))
 library(methyvimData)
 data(grsExample)
 methytmle <- .methytmle(grsExample)
-screened <- methyvim:::limma_screen(methytmle, var_int = 1, type = "Mval")
+var_int <- colData(methytmle)[, 1]
+screened <- methyvim:::limma_screen(methytmle, var_int = var_int, type = "Mval")
 clustered <- methyvim:::cluster_sites(screened)
-var_int <- colData(clustered)[, 1]
+
 
 # consistentcy of output for ATE and RR over target site with M-values
 methyvim_mvals_ate <- methyvim:::methyvim_tmle(target_site = 10,
@@ -28,15 +29,15 @@ test_that("ATE procedure with M-values is consistent for target site", {
 })
 
 methyvim_mvals_rr <- methyvim:::methyvim_tmle(target_site = 10,
-                                   methytmle_screened = clustered,
-                                   var_of_interest = var_int,
-                                   type = "Mval",
-                                   corr = 0.75,
-                                   obs_per_covar = 20,
-                                   target_param = "rr",
-                                   family = "binomial",
-                                   return_ic = FALSE
-                                  )
+                                              methytmle_screened = clustered,
+                                              var_of_interest = var_int,
+                                              type = "Mval",
+                                              corr = 0.75,
+                                              obs_per_covar = 20,
+                                              target_param = "rr",
+                                              family = "binomial",
+                                              return_ic = FALSE
+                                             )
 
 test_that("RR procedure with M-values is consistent for target site", {
   expect_equal(methyvim_mvals_rr,
@@ -46,15 +47,15 @@ test_that("RR procedure with M-values is consistent for target site", {
 
 # consistentcy of output for ATE and RR over target site with Beta-values
 methyvim_betas_ate <- methyvim:::methyvim_tmle(target_site = 10,
-                                    methytmle_screened = clustered,
-                                    var_of_interest = var_int,
-                                    type = "Beta",
-                                    corr = 0.75,
-                                    obs_per_covar = 20,
-                                    target_param = "ate",
-                                    family = "binomial",
-                                    return_ic = FALSE
-                                   )
+                                               methytmle_screened = clustered,
+                                               var_of_interest = var_int,
+                                               type = "Beta",
+                                               corr = 0.75,
+                                               obs_per_covar = 20,
+                                               target_param = "ate",
+                                               family = "binomial",
+                                               return_ic = FALSE
+                                              )
 
 test_that("ATE procedure with Beta-values is consistent for target site", {
   expect_equal(methyvim_betas_ate,
@@ -63,15 +64,15 @@ test_that("ATE procedure with Beta-values is consistent for target site", {
 })
 
 methyvim_betas_rr <- methyvim:::methyvim_tmle(target_site = 10,
-                                   methytmle_screened = clustered,
-                                   var_of_interest = var_int,
-                                   type = "Beta",
-                                   corr = 0.75,
-                                   obs_per_covar = 20,
-                                   target_param = "rr",
-                                   family = "binomial",
-                                   return_ic = FALSE
-                                  )
+                                              methytmle_screened = clustered,
+                                              var_of_interest = var_int,
+                                              type = "Beta",
+                                              corr = 0.75,
+                                              obs_per_covar = 20,
+                                              target_param = "rr",
+                                              family = "binomial",
+                                              return_ic = FALSE
+                                             )
 
 test_that("RR procedure with Beta-values is consistent for target site", {
   expect_equal(methyvim_betas_rr,

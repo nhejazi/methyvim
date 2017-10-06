@@ -9,10 +9,13 @@ limma_screen(methytmle, var_int, type, cutoff = 0.05)
 \arguments{
 \item{methytmle}{An object of class \code{methytmle}.}
 
-\item{var_int}{Numeric indicating the column index of the variable of
-interest, whether exposure or outcome. If argument \code{vim} is set
-to the ATE, then the variable of interest is treated as an exposure;
-it is treated as an outcome if this is set to be the NPVI.}
+\item{var_int}{A \code{numeric} vector containing subject-level measurements
+of the variable of interest. The length of this vector must match the
+number of subjects exactly. If argument \code{vim} is set to "ate" or
+"rr", then the variable of interest is treated as an exposure, and the
+variable must be binary in such cases. If setting \code{vim} to target
+parameters assessing continuous treatment effects, then the variable
+need not be binary of course.}
 
 \item{type}{Character indicating the particular measure of DNA methylation to
 be used as the observed data in the estimation procedure, either Beta

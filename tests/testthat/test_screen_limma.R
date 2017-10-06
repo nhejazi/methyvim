@@ -3,9 +3,12 @@ context("screening procedure based on limma")
 # use example data from methyvimData package
 library(methyvimData)
 data(grsExample)
+var_int <- colData(grsExample)[, 1]
 methytmle <- .methytmle(grsExample)
-screened <- methyvim:::limma_screen(methytmle, var_int = 1, type = "Mval")
-screened_betas <- methyvim:::limma_screen(methytmle, var_int = 1, type = "Beta")
+screened <- methyvim:::limma_screen(methytmle, var_int = var_int,
+                                    type = "Mval")
+screened_betas <- methyvim:::limma_screen(methytmle, var_int = var_int,
+                                          type = "Beta")
 
 
 # check the screen_ind slot
