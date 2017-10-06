@@ -43,7 +43,8 @@ has been invested, by the bioinformatics community, in the development of tools
 for properly removing technological effects that may contaminate biological
 signatures measured by such assays. Despite these advances in both biological
 and bioninformatical techniques, most statistical methods available for the
-analysis of data produced by such assays rely on (generalized) linear models.
+analysis of data produced by such assays rely on over-simplified (often
+generalized linear) models.
 
 Here, we present an alternative to such statistical analysis approaches, in the
 form of nonparametric estimation procedures inspired by machine learning and
@@ -197,7 +198,7 @@ mtmle <- .methytmle(grsExample)
 ```
 
 Since the `methytmle` class builds upon the `GenomicRatioSet` class, it contains
-all of the slots of `GenomicRatio`s. The new class introduced in the `mehtyvim`
+all of the slots of `GenomicRatio`s. The new class introduced in the `methyvim`
 package includes several new slots:
 
 * `call` - the form of the original call to the `methyvim` function.
