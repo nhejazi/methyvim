@@ -4,14 +4,14 @@ Differential Methylation Analysis'
 author:
   - name: Nima S. Hejazi
     affiliation: Address of author1
-  - name: Rachael Phillips
+  - name: Rachael V. Phillips
     affiliation: orchid.org/0000-0002-8474-591X
   - name: Alan E. Hubbard
     affiliation: Address of author2
   - name: Mark J. van der Laan
     affiliation: Address of author2
-abstract:
-  We present a general algorithm for the nonparametric estimation of
+abstract: |
+  We present `methyvim`, a general algorithm for the nonparametric estimation of
   treatment/exposure effects on DNA methylation at CpG sites, complete with straightforward statistical inference for such estimates. This approach
   leverages variable importance measures, a class of parameters that arise in
   causal inference and are defined in such a manner that they provide targeted
@@ -24,7 +24,6 @@ abstract:
   technique for analysis of differentially methylated positions provides an
   avenue to move beyond linear models without the loss of interpretable
   statistical inference.
-
 keywords: DNA methylation, differential methylation, epigenetics, causal
   inference, variable importance, targeted minimum loss-based estimation
 bibliography: paper_BiocF1000.bib
@@ -40,7 +39,7 @@ ring structure to form 5-methylcytosine. Numerous biological and medical studies
 have implicated DNA CpG methylation as playing a role in disease and
 development [@robertson2005dna]. Perhaps unsurprisingly then, biotechnologies
 have been developed to study the molecular mechanisms of this epigenetic
-process. Modern assays, like the Illumina Infinium Methylation assay,
+process. Modern assays, like the Illumina _Infinium_ Methylation assay,
 allow for quantitative interrogation of DNA methylation of CpG sites scattered
 across the genome at single-nucleotide resolution; moreover, much effort
 has been invested, by the bioinformatics community, in the development of tools
@@ -59,26 +58,25 @@ statistical analysis approaches in the form of nonparametric estimation
 procedures that provide simple and well interpretable statistical inference.
 Inspired by concepts of counterfactual effects from the causal inference
 literature and machine learning algorithms, we provide a computationally
-efficient technique for obtaining targeted estimates of nonparametric variable
-importance measures (VIM) for a pre-screened set of CpGs, controlling for
+efficient technique for obtaining targeted estimates of nonparametric _variable
+importance measures_ (__VIM__) for a pre-screened set of CpGs, controlling for
 the False Discovery Rate (FDR) as if all sites were tested. Under counterfactual assumptions, these estimators have asymptotic normal sampling distributions
 and thus provide reliable inference. Counterfactuals are "counter"-fact, defined
 in terms of an unrealistic yet ideal experiment. In the context of DNA
-methylation and for a binary exposure/treatment, we define the counterfactual
+methylation and for a binary treatment, we define the counterfactual
 outcomes as the Beta-value/M-value a CpG site would have if all subjects were
-exposed/treated and the Beta-value/M-value a CpG site would have if all
-subjects were not exposed/treated. Of course, these counterfactual outcomes are
-impossible to observe but they are very helpful for us to asses the importance
-of a CpG site relative to a subjects treatment/exposure and they can be
-statistically estimated [@van2006statistical]. Our VIM definition uses the
-concepts of counterfactuals and the framework for estimation is built on
-targeted maximum likelihood estimation or targeted minimum loss-based estimation
-(TMLE) [@van2006targeted]. This methodology targets the individual importance
-of each CpG site by taking advantage of the prediction power of machine learning
-algorithms. The mathematical properties of this approach have been explored in [@tuglus2008targeted] and we focus on our contribution to it's application,
-methyvim, an R package that accommodates this technique for differential
+treated and the Beta-value/M-value a CpG site would have if all subjects were
+not treated. Of course, these counterfactual outcomes are impossible to observe
+but they are very helpful for us to asses the importance of a CpG site relative
+to a subjects treatment/exposure and they can be statistically estimated [@van2006statistical]. Our VIM definition uses the concepts of counterfactuals
+and the framework for estimation is built on _targeted maximum likelihood
+estimation or targeted minimum loss-based estimation_ (__TMLE__)
+[@van2006targeted]. This methodology targets the individual importance of each
+CpG site by taking advantage of the prediction power of machine learning
+algorithms. The mathematical properties of this approach have been explored in
+[@tuglus2008targeted] and we focus on our contribution to it's application,
+`methyvim`, an R package that accommodates this technique for differential
 methylation analysis.
-
 
 For a general discussion of the framework of targeted minimum loss-based
 estimation and the role this approach plays in statistical causal inference, the
@@ -91,37 +89,36 @@ For a more general introduction to (statistical) causal inference,
 ## Implementation
 
 The core functionality of this package is made available via the eponymous
-methyvim function, which implements a statistical algorithm designed to
+`methyvim` function, which implements a statistical algorithm designed to
 compute targeted estimates of VIMs, defined in such a way that the VIMs
 represent parameters of scientific interest in computational biology
 experiments; moreover, these VIMs are defined such that they may be estimated in
-a manner that is very nearly assumption-free, that is, within a fully
-nonparametric statistical model. The statistical algorithm consists in
-several major steps:
+a manner that is very nearly assumption-free, that is, within a _fully
+nonparametric statistical model_. __The statistical algorithm consists in
+several major steps__:
 
 1. Pre-screening of genomic sites is used to isolate a subset of sites for
   which there is cursory evidence of differential methylation. For the sake of
   computational feasibility, targeted minimum loss-based estimates of VIMs are
   computed only for this subset of sites. Currently, the available screening
   approach adapts core routines from the
-  [limma](http://bioconductor.org/packages/release/bioc/html/limma.html) R
-  package. Future releases will support functionality from other
-  packages (e.g., [randomForest](https://cran.r-project.org/web/packages/randomForest/index.html),
-  [tmle.npvi](https://CRAN.R-project.org/package=tmle.npvi)). Following the
-  style of the function for performing screening via limma, users may write
+  [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html) R
+  package. Future releases will support functionality from other packages (e.g., [`randomForest`](https://cran.r-project.org/web/packages/randomForest/index.html),
+  [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi)). Following the
+  style of the function for performing screening via `limma`, users may write
   their own screening functions and are invited to contribute such functions to
   the core software package by opening pull requests at the GitHub repository.
 
-2. Nonparametric estimates of VIMs, for the specified parameter of interest, are
+2. Nonparametric estimates of VIMs, for the specified target parameter, are
   computed at each of the CpG sites passing the screening step. The VIMs are
   defined in such a way that the estimated effects is of an exposure/treatment
   on the methylation status of a target CpG site, controlling for the observed
   methylation status of the neighbors of that site. Currently, routines are
-  adapted from the [tmle](https://CRAN.R-project.org/package=tmle) R package.
+  adapted from the [`tmle`](https://CRAN.R-project.org/package=tmle) R package.
   Future releases will support doubly-robust estimates of these VIMs (via the
-  [drtmle](https://cran.r-project.org/web/packages/drtmle/index.html) package)
+  [`drtmle`](https://cran.r-project.org/web/packages/drtmle/index.html) package)
   and add parameters for continuous treatments/exposures (via the
-  [tmle.npvi](https://CRAN.R-project.org/package=tmle.npvi) package).
+  [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) package).
 
 3. Since pre-screening is performed prior to estimating VIMs, we make use of a
   multiple testing correction uniquely suited to such settings. Due to the
@@ -135,9 +132,9 @@ several major steps:
 #### Parameters of Interest
 
 For the CpG sites that passed the pre-screening step, the user chooses the
-parameter of interest that will be computed at each site. In all cases, an
+parameter of interest that will be computed at each site. _In all cases, an
 estimator of the parameter of interest is constructed via targeted minimum
-loss-based estimation.
+loss-based estimation_.
 
 For discrete-valued treatments or exposures:
 
@@ -167,8 +164,8 @@ Technical details on the nature of these regressions are discussed in
 framework of targeted minimum loss-based estimation are discussed in
 @vdl2011targeted.
 
-Support for continuous-valued treatments or exposures is planned but not yet
-available, though work is underway to incorporate into our methodology the
+Support for continuous-valued treatments or exposures is _planned but not yet
+available_, though work is underway to incorporate into our methodology the
 following
 
 * A nonparametric variable importance measure (NPVI) [@chambaz2012estimation]:
@@ -182,28 +179,28 @@ following
 
 #### Class methytmle
 
-We have adopted a class methytmle to help organize the functionality within
-this package. The methytmle class builds upon the GenomicRatioSet class
-provided by the minfi package so all of the slots of GenomicRatioSet are
-contained in a methytmle object. The new class introduced in the methyvim
+We have adopted a class `methytmle` to help organize the functionality within
+this package. The `methytmle` class builds upon the `GenomicRatioSet` class
+provided by the `minfi` package so all of the slots of `GenomicRatioSet` are
+contained in a `methytmle` object. The new class introduced in the `methyvim`
 package includes several new slots:
 
-* __call__ - the form of the original call to the methyvim function.
-* __screen_ind__ - indices identifying CpG sites that pass the screening process.
-* __clusters__ - non-unique IDs corresponding to the manner in wich sites are
+* `call` - the form of the original call to the `methyvim` function.
+* `screen_ind` - indices identifying CpG sites that pass the screening process.
+* `clusters` - non-unique IDs corresponding to the manner in wich sites are
   treated as neighbors. These are assigned by genomic distance (bp) and respect
-  chromosome boundaries (produced via a call to bumphunter::clusterMaker).
-* __var_int__ - the treatment/exposure status for each subject. Currently, these
+  chromosome boundaries (produced via a call to `bumphunter::clusterMaker`).
+* `var_int` - the treatment/exposure status for each subject. Currently, these
   must be binary, due to the definition of the supported targeted parameters.
-* __param__ - the name of the target parameter from which the estimated VIMs are
+* `param` - the name of the target parameter from which the estimated VIMs are
   defined.
-* __vim__ - a table of statistical results obtained from estimating VIMs for
+* `vim` - a table of statistical results obtained from estimating VIMs for
   each of the CpG sites that pass the screening procedure.
-* __ic__ - the measured array values for each of the CpG sites passing the
+* `ic` - the measured array values for each of the CpG sites passing the
   screening, transformed into influence curve space based on the chosen target
   parameter.
 
-We refer the reader to the package vignette, "methyvim: Variable Importance
+We refer the reader to the package vignette, "`methyvim`: Variable Importance
 Measures for Differential Methylation" hosted with the package on Bioconductor,
 for a detailed description of the methods used in this package.
 (NEED CITATION FOR VIGNETTE)
@@ -211,7 +208,7 @@ for a detailed description of the methods used in this package.
 ## Operation
 
 A standard computer with the latest version of R and Bioconductor 3.6 installed
-will handle applications of the methyvim package.
+will handle applications of the `methyvim` package.
 
 # Use Cases
 
@@ -354,7 +351,7 @@ plot. This uses the exceptional `superheat` R package [@barter2017superheat].
 
 # Summary
 
-Here we introduce the R package methyvim, an algorithm for differential
+Here we introduce the R package `methyvim`, an algorithm for differential
 methylation analysis that moves beyond linear models. Additionally, this
 estimation procedure produces straightforward statistical inference. Inspired by
 concepts of counterfactual effects from the causal inference literature and
