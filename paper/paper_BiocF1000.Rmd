@@ -32,7 +32,6 @@ output: BiocWorkflowTools::f1000_article
 
 # Introduction
 
-<<<<<<< HEAD
 DNA methylation is a fundamental epigenetic process known to play an important
 role in the regulation of gene expression. DNA CpG methylation involves the
 addition of a methyl group ($\text{CH}_3$) to the fifth carbon of the cytosine
@@ -178,7 +177,7 @@ following
   effect of differential methylation at the target CpG site on a (typically) phenotype-level outcome of interest (e.g., survival), in effect providing an nonparametric evaluation of the impact of methylation at the target site on
   said outcome.
 
-#### Class methytmle
+#### Class `methytmle`
 
 We have adopted a class `methytmle` to help organize the functionality within
 this package. The `methytmle` class builds upon the `GenomicRatioSet` class
