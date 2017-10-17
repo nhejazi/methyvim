@@ -1,19 +1,25 @@
-citHeader("To cite 'methyvim' in publications, please use:")
+citHeader("Please cite the paper below for the 'methyvim' software package
+           itself. Please also make sure to cite the appropriate methodology
+           articles describing the statistical techniques being relied upon.")
 
 citEntry(
-    entry        = "Article",
+    entry        = "Misc",
     doi          = "",
     url          = "",
     year         = "2017",
     month        = "",
     publisher    = "",
-    volume       = "X",
-    number       = "Y",
-    author       = "Nima S. Hejazi, Alan E. Hubbard, Mark J. van der Laan",
-    title        = "methyvim: ...",
-    journal      = "F1000Research",
-    textVersion  = paste("Hejazi, NS, Hubbard, AE, and van der Laan, MJ (2017).",
-                         "methyvim: ...",
-                         "journal, X(Y).",
+    volume       = "",
+    number       = "",
+    author       = "Nima S. Hejazi, Rachael V. Phillips, Alan E. Hubbard, Mark
+                    J. van der Laan",
+    title        = "methyvim: Targeted and model-free analysis of differential
+                    methylation in R",
+    journal      = "",
+    textVersion  = paste("Hejazi, NS, Phillips, RV, Hubbard, AE, and van der
+                          Laan, MJ (2017).",
+                         "methyvim: Targeted and model-free analysis of
+                          differential methylation in R",
+                         "",
                          "")
 )

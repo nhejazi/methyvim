@@ -179,8 +179,8 @@ After using the `methyvim` R package, please cite the following:
           volume = {},
           author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
             J},
-          title = {methyvim: Nonparametric differential methylation analysis
-            with targeted estimates of variable importance measures},
+          title = {methyvim: Targeted and model-free analysis of differential
+            methylation in R},
           journal = {}
         }
 
