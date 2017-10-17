@@ -4,12 +4,16 @@ Title: Differential Methylation Analysis with Targeted Minimum Loss-Based
 Version: 0.99.8
 Authors@R: c(
   person("Nima", "Hejazi", email = "nhejazi@berkeley.edu",
-    role = c("aut", "cre", "cph")),
+         role = c("aut", "cre", "cph"),
+         comment = c(ORCID = "0000-0002-7127-2789")),
   person("Rachael", "Phillips", email = "rachaelvphillips@berkeley.edu",
-    role = "ctb"),
-  person("Alan", "Hubbard", email = "hubbard@berkeley.edu", role = "ctb"),
+         role = "ctb",
+         comment = c(ORCID = "0000-0002-8474-591X")),
+  person("Alan", "Hubbard", email = "hubbard@berkeley.edu",
+         role = "ctb",
+         comment = c(ORCID = "0000-0002-3769-0127")),
   person("Mark", "van der Laan", email = "laan@stat.berkeley.edu",
-    role = "aut")
+         role = "aut")
   )
 Author: Nima Hejazi [aut, cre, cph], Rachael Phillips [ctb], Alan Hubbard [ctb],
   Mark van der Laan [aut]
@@ -65,7 +69,7 @@ Suggests:
   minfiData,
   methyvimData
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 biocViews:
   Clustering,
   DNAMethylation,

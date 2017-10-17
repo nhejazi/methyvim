@@ -1,2 +1,14 @@
-October 2017
-* First stable release of package `methvim` is available in Bioconductor 3.6.
+methyvim 1.0.0:
+- The first release of this package was made as part of Bioconductor 3.6, in
+   October 2017.
+
+The methyvim R package provides routines for the method first described in the
+the technical manuscript [1] and the software paper [2]:
+
+1. Nima S. Hejazi, Alan E. Hubbard, Mark J. van der Laan. Data-adaptive and
+   nonparametric analysis of differential methylation with variable importance
+   measures.
+
+2. Nima S. Hejazi, Rachael V. Phillips, Mark J. van der Laan, Alan E. Hubbard.
+   methyvim: Targeted and model-free analysis of differential methylation in R.
+
