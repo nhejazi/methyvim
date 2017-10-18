@@ -54,4 +54,3 @@ limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   methytmle@screen_ind <- as.numeric(indices_pass)
   return(methytmle)
 }
-
