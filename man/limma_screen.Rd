@@ -33,6 +33,8 @@ sites. This subset is then used to estimate VIMs.
 \description{
 Reduces the \code{methytmle} object by way of a \code{limma} model with
 empirical Bayes shrinkage to include only the CpG sites below the preset
-p-value cutoff. INTERNAL USE ONLY.
+p-value cutoff. Since M-values display far more centrality in distribution
+than do Beta-values, this parametric screening technique converts from Beta-
+to M-values before fitting a model. INTERNAL USE ONLY.
 }
 \keyword{internal}
