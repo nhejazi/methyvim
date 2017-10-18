@@ -36,14 +36,8 @@ limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   design <- as.matrix(cbind(rep(1, times = length(var_int)), var_int))
 
   # create expression object for modeling
-  # M-values have the property of having far more centrality than Beta-values.
-  # Parametric techniques work best with an underlying Gaussian distribution to
-  # the data so M values might be more appropriate to use for analysis.
   if (type == "Beta") {
-    Betas <- minfi::getBeta(methytmle)
-    # shifting the betas from 0 and 1 prevents Inf/Nan Mvals
-    newBetas <- Harman::shiftBetas(methytmle_exprs, shiftBy=1e-4)
-    methytmle_exprs <- wateRmelon::Beta2M(newBetas)
+    methytmle_exprs <- minfi::getBeta(methytmle)
   } else if (type == "Mval") {
     methytmle_exprs <- minfi::getM(methytmle)
   }
