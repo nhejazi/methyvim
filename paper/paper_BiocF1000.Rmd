@@ -1,6 +1,6 @@
 ---
-title: '`methyvim`: Targeted and Model-free Analysis of Differential Methylation
-in R'
+title: '`methyvim`: Targeted and Model-free Differential Methylation Analysis in
+  R'
 author:
   - name: Nima S. Hejazi
     affiliation: Division of Biostatistics, University of California, Berkeley
@@ -217,9 +217,9 @@ package includes several new slots:
   screening, transformed into influence curve space based on the chosen target
   parameter.
 
-We refer the reader to the package vignette, "`methyvim`: Targeted Learning for
-Differential Methylation Analysis," included in any distribution of the software
-package, for further details.
+We refer the reader to the package vignette, "`methyvim`: Targeted Data-Adaptive
+Estimation and Inference for Differential Methylation Analysis," included in any
+distribution of the software package, for further details.
 
 ## Operation
 

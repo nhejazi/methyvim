@@ -5,7 +5,7 @@ R/`methyvim`
 
 [![Travis-CI Build Status](https://travis-ci.org/nhejazi/methyvim.svg?branch=master)](https://travis-ci.org/nhejazi/methyvim) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/nhejazi/methyvim?branch=master&svg=true)](https://ci.appveyor.com/project/nhejazi/methyvim) [![Coverage Status](https://img.shields.io/codecov/c/github/nhejazi/methyvim/master.svg)](https://codecov.io/github/nhejazi/methyvim?branch=master) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT) [![DOI](https://zenodo.org/badge/79256902.svg)](https://zenodo.org/badge/latestdoi/79256902)
 
-> Targeted learning of variable importance measures for the analysis of differential methylation experiments
+> Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis
 
 **Author:** [Nima Hejazi](http://nimahejazi.org)
 
@@ -112,8 +112,8 @@ After using the `methyvim` R package, please cite the following:
           volume = {},
           author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
             J},
-          title = {methyvim: Targeted and model-free analysis of differential
-            methylation in R},
+          title = {methyvim: Targeted and model-free differential methylation
+            analysis in R},
           journal = {}
         }
 

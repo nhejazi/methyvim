@@ -1,5 +1,6 @@
 ---
-title: '`methyvim`: Targeted Learning for Differential Methylation Analysis'
+title: '`methyvim`: Targeted Data-Adaptive Estimation and Inference for
+  Differential Methylation Analysis'
 author: Nima Hejazi
 date: "`r Sys.Date()`"
 output:
@@ -538,3 +539,4 @@ sessionInfo()
 ---
 
 ## References
+
