@@ -1,7 +1,7 @@
 ---
 title: '`methyvim`: Targeted Data-Adaptive Estimation and Inference for
   Differential Methylation Analysis'
-author: Nima Hejazi
+author: "[Nima Hejazi](https://nimahejazi.org)"
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document

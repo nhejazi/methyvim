@@ -239,15 +239,14 @@ methyvim <- function(data_grs,
 
     # TMLE procedure is now done, so let's just make the output object pretty...
     if (vim == "ate") {
-      colnames(methy_vim_out) <- c("lowerCI_ATE", "est_ATE", "upperCI_ATE",
-                                   "Var_ATE", "pval", "n_neighbors_all",
-                                   "n_neighbors_w", "max_corr_w")
+      colnames(methy_vim_out) <- c("lowCI_ATE", "est_ATE", "upCI_ATE",
+                                   "var_ATE", "pval", "n_W", "n_W_contr",
+                                   "max_cor_n_W")
       methy_tmle@param <- "Average Treatment Effect"
     } else {
-      colnames(methy_vim_out) <- c("lowerCI_logRR", "est_logRR",
-                                   "upperCI_logRR", "Var_logRR", "pval",
-                                   "n_neighbors_all", "n_neighbors_w",
-                                   "max_corr_w")
+      colnames(methy_vim_out) <- c("lowCI_logRR", "est_logRR", "upCI_logRR",
+                                   "var_logRR", "pval", "n_W", "n_W_contr",
+                                   "max_cor_n_W")
       methy_tmle@param <- "Risk Ratio"
     }
 
