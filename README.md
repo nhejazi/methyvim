@@ -202,6 +202,13 @@ After using the `methyvim` R package, please cite the following:
 
 -----
 
+## Funding
+
+The development of this software was supported in part through a grant
+from the National Library of Medicine of the NIH (T32 LM012417).
+
+-----
+
 ## License
 
 © 2017 [Nima S. Hejazi](http://nimahejazi.org)
@@ -221,7 +228,7 @@ JSTOR, 289–300.
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012.
 “Estimation of a Non-Parametric Variable Importance Measure of a
 Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public
-Access: 1059.
+Access:1059.
 
 Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman
 & Hall / CRC Texts in Statistical Science. Taylor & Francis.
@@ -232,8 +239,7 @@ Cambridge University Press.
 Tuglus, Catherine, and Mark J van der Laan. 2009. “Modified FDR
 Controlling Procedure for Multi-Stage Analyses.” *Statistical
 Applications in Genetics and Molecular Biology* 8 (1). Walter de
-Gruyter: 1–15.
-doi:[10.2202/1544-6115.1397](https://doi.org/10.2202/1544-6115.1397).
+Gruyter:1–15. <https://doi.org/10.2202/1544-6115.1397>.
 
 van der Laan, Mark J, and Sherri Rose. 2011. *Targeted Learning: Causal
 Inference for Observational and Experimental Data*. Springer Science &

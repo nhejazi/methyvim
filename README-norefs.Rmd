@@ -1,7 +1,5 @@
 ---
-output:
-  rmarkdown::github_document
-bibliography: README-refs.bib
+output: rmarkdown::github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -59,7 +57,7 @@ For discrete-valued treatments or exposures:
 
 For continous-valued treatments or exposures:
 
-* A _nonparametric variable importance measure_ (NPVI) [@chambaz2012estimation]:
+* A _nonparametric variable importance measure_ (NPVI):
   The effect of continous-valued exposure or treatment (the observed methylation
   at a target CpG site) on an outcome of interest is estimated, controlling for
   the observed methylation at all other CpG sites in the same neighborhood as
@@ -92,22 +90,9 @@ adapting routines from the
 3. Since pre-screening is performed prior to estimating VIMs, we make use of a
 multiple testing correction uniquely suited to such settings. Due to the
 multiple testing nature of the estimation problem, a variant of the Benjamini &
-Hochberg procedure for controlling the False Discovery Rate (FDR) is applied
-[@benjamini1995controlling]. Specifically, we apply the modified marginal
-Benjamini & Hochberg step-up False Discovery Rate controlling procedure for
-multi-stage analyses (FDR-MSA) [@tuglus2009modified].
-
-For a general discussion of the framework of targeted minimum loss-based
-estimation, the many applications of this methodology, and the role the
-framework plays in statistical causal inference, the recommended references are
-@vdl2011targeted and @vdl2017targeted. @hernan2018causal and @pearl2009causality
-may be of interest to those desiring a more general introduction to statistical
-causal inference.
-
-<!--
-Note about shrinkage of influence curves, adapting @smyth2004linear.
-More exposition here....
--->
+Hochberg procedure for controlling the False Discovery Rate (FDR) is applied.
+Specifically, we apply the modified marginal Benjamini & Hochberg step-up False
+Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA).
 
 ---
 
@@ -193,14 +178,17 @@ After using the `methyvim` R package, please cite the following:
 
 ---
 
+## Funding
+
+The development of this software was supported in part through a grant from the
+National Library of Medicine of the NIH (T32 LM012417).
+
+---
+
 ## License
 
 &copy; 2017 [Nima S. Hejazi](http://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license. See file
 `LICENSE` for details.
-
----
-
-## References
 
