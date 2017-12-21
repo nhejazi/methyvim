@@ -191,3 +191,21 @@ force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   return(out)
 }
 
+################################################################################
+
+#' Wrap a Function in a Try Statement
+#'
+#' Function factory that generates versions of functions wrapped in \code{try}.
+#' Originally fround in and borrowed from package \code{origami}.
+#'
+#' @param fun A \code{function} to be wrapped in a \code{try} statement.
+#' @param ... Additional arguments passed to the previous argument \code{fun}.
+#
+wrap_in_try <- function(fun, ...) {
+    wrapped <- function(...)
+    try({
+        fun(...)
+    }, silent = TRUE)
+    return(wrapped)
+}
+

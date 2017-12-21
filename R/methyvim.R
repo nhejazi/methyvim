@@ -9,69 +9,73 @@ utils::globalVariables(c("colData<-"))
 #' defined by Chambaz, Neuvial, and van der Laan <doi:10.1214/12-EJS703>).
 #'
 #' @param data_grs An object of class \code{minfi::GenomicRatioSet}, containing
-#'        standard data structures associated with DNA Methylation experiments.
-#'        Consult the documentation for \code{minfi} to construct such objects.
+#'  standard data structures associated with DNA Methylation experiments.
+#'  Consult the documentation for \code{minfi} to construct such objects.
 #' @param var_int A \code{numeric} vector containing subject-level measurements
-#'        of the variable of interest. The length of this vector must match the
-#'        number of subjects exactly. If argument \code{vim} is set to "ate" or
-#'        "rr", then the variable of interest is treated as an exposure, and the
-#'        variable must be binary in such cases. If setting \code{vim} to target
-#'        parameters assessing continuous treatment effects, then the variable
-#'        need not be binary of course.
-#' @param vim Character indicating the variable importance measure to be used
-#'        in the estimation procedure. Currently supported options are the ATE
-#'        for discretized exposures and NPVI for continuous exposures. ATE and
-#'        RR are the appropriate choices when the underlying scientific question
-#'        is of the effect of an exposure on methylation, while NPVI (and other
-#'        continuous treatment parameters) ought to be used when the effect of
-#'        methylation on an outcome is sought.
+#'  of the variable of interest. The length of this vector must match the
+#'  number of subjects exactly. If argument \code{vim} is set to "ate" or "rr",
+#'  then the variable of interest is treated as an exposure, and the variable
+#'  must be binary in such cases. If setting \code{vim} to target parameters
+#'  assessing continuous treatment effects, then the variable need not be binary
+#'  of course.
+#' @param vim Character indicating the variable importance measure to be used in
+#'  the estimation procedure. Currently supported options are the ATE for
+#'  discretized exposures and NPVI for continuous exposures. ATE and RR are the
+#'  appropriate choices when the underlying scientific question is of the effect
+#'  of an exposure on methylation, while NPVI (and other continuous treatment
+#'  parameters) ought to be used when the effect of methylation on an outcome is
+#'  sought.
 #' @param type Character indicating the particular measure of DNA methylation to
-#'        be used as the observed data in the estimation procedure, either Beta
-#'        values or M-values. The data are accessed via \code{minfi::getBeta} or
-#'        \code{minfi::getM}.
+#'  be used as the observed data in the estimation procedure, either Beta values
+#'  or M-values. The data are accessed via \code{minfi::getBeta} or
+#'  \code{minfi::getM}.
 #' @param filter Character indicating the model to be implemented when screening
-#'        the \code{data_grs} object for CpG sites. The only currently supported
-#'        option is "limma". Contributions for other methods are welcome.
+#'  the \code{data_grs} object for CpG sites. The only currently supported
+#'  option is "limma". Contributions for other methods are welcome.
 #' @param filter_cutoff Numeric indicating the p-value cutoff that defines which
-#'        sites pass through the \code{filter}.
+#'  sites pass through the \code{filter}.
 #' @param window_bp Numeric indicating the maximum genomic distance (in base
-#'        pairs) between two sites for them to be considered neighboring sites.
+#'  pairs) between two sites for them to be considered neighboring sites.
 #' @param corr_max Numeric indicating the maximum correlation that a neighboring
-#'        site can have with the target site.
+#'  site can have with the target site.
 #' @param obs_per_covar Numeric indicating the number of observations needed for
-#'        for covariate included in W for downstream analysis. This ensures the
-#'        data is sufficient to control for the covariates.
+#'  for covariate included in W for downstream analysis. This ensures the data
+#'  is sufficient to control for the covariates.
 #' @param sites_comp A \code{numeric} indicating the maximum number of sites for
-#'        which a variable importance measure is to be estimated post-screening.
-#'        This is not typically useful in scientific settings, but may be useful
-#'        when a large number of CpG sites pass the initial screening phase.
+#'  which a variable importance measure is to be estimated post-screening. This
+#'  is not typically useful in scientific settings, but may be useful when a
+#'  large number of CpG sites pass the initial screening phase.
 #' @param parallel Logical indicating whether parallelization ought to be used.
-#'        See the documentation of \code{set_parallel} for more information, as
-#'        this arugment is passed directly to that internal function.
+#'  See the documentation of \code{set_parallel} for more information, as this
+#'  argument is passed directly to that internal function.
 #' @param future_param Character indicating the type of parallelization to be
-#'        used from the list available via the \code{future} package. See the
-#'        documentation for \code{set_parallel} for more information, as this
-#'        argument is passed directly to that internal function.
+#'  used from the list available via the \code{future} package. See the
+#'  documentation for \code{set_parallel} for more information, as this argument
+#'  is passed directly to that internal function.
 #' @param bppar_type Character specifying the type of backend to be used for
-#'        parallelization via \code{BiocParallel}. See the documentation for
-#'        \code{set_parallel} for more information, as this argument is passed
-#'        directly to that internal function.
+#'  parallelization via \code{BiocParallel}. See the documentation for
+#'  \code{set_parallel} for more information, as this argument is passed
+#'  directly to that internal function.
 #' @param return_ic Logical indicating whether an influence curve estimate
-#'          should be returned for each site that passed through the filter.
+#'  should be returned for each site that passed through the filter.
 #' @param shrink_ic Logical indicating whether limma should be applied to reduce
-#'        the variance in the ic based estimates in \code{return_ic}.
+#'  the variance in the ic based estimates in \code{return_ic}.
 #' @param tmle_type Character indicating the general class of regression models
-#'        to be used in fitting the propensity score and outcome regressions.
-#'        This is generally a shorthand and is overridden by \code{tmle_args} if
-#'        that argument is changed from its default values.
+#'  to be used in fitting the propensity score and outcome regressions. This is
+#'  generally a shorthand and is overridden by \code{tmle_args} if that argument
+#'  is changed from its default values.
 #' @param tmle_args List giving several key arguments to be passed to one of
-#'        \code{tmle::tmle} or \code{tmle.npvi::tmle.npvi}, depending on the
-#'        particular variable importance measure specified. This overrides
-#'        \code{tmle_type}, which itself provides sensible defaults. Consider
-#'        changing this away from default settings only if you have sufficient
-#'        experience with theory and software for targeted learning. For more
-#'        information, consider consulting the documentation of the \code{tmle}
-#'        and \code{tmle.npvi} packages.
+#'  \code{tmle::tmle} or \code{tmle.npvi::tmle.npvi}, depending on the
+#'  particular variable importance measure specified. This overrides
+#'  \code{tmle_type}, which itself provides sensible defaults. Consider changing
+#'  this away from default settings only if you have sufficient experience with
+#'  software and the underlying theory for Targeted Learning. For more
+#'  information, consider consulting the documentation of the \code{tmle} and
+#'  \code{tmle.npvi} packages.
+#' @param tmle_backend A \code{character} indicating the package to be used in
+#'  the estimation procedure. The user should only set this parameter if they
+#'  have sufficient familiarity with the backend packages used for estimation.
+#'  Current choices include \code{tmle}, \code{drtmle}, and \code{tmle.npvi}.
 #'
 #' @return An object of class \code{methytmle}, with all unique slots filled in,
 #'         in particular, including indices of CpG sites that pass screening,
@@ -120,7 +124,8 @@ methyvim <- function(data_grs,
                      tmle_type = c("glm", "sl"),
                      tmle_args = list(family = "binomial",
                                       g_lib = NULL, Q_lib = NULL,
-                                      npvi_cutoff = 0.25, npvi_descr = NULL)
+                                      npvi_cutoff = 0.25, npvi_descr = NULL),
+                     tmle_backend = c("tmle", "drtmle", "tmle.npvi")
                     ) {
   # ============================================================================
   # catch input for user convenience and check input types where possible
@@ -221,9 +226,21 @@ methyvim <- function(data_grs,
       methy_tmle_ind <- methy_tmle_ind[seq_len(sites_comp)]
     }
 
+    # set the estimation function based on the choice of backend package
+    if (tmle_backend == "tmle") {
+      methyvim_est <- methyvim_tmle
+    } else if (tmle_backend == "drtmle") {
+      methyvim_est <- methyvim_drtmle
+    } else if (tmle_backend == "tmle.npvi") {
+      methyvim_est <- methyvim_npvi
+    }
+
+    # avoid some try-errors by wrapping estimation function in try statement
+    methyvim_est_try <- wrap_in_try(methyvim_est)
+
     # Perform the estimation procedure in parallel
     methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind,
-                                            FUN = methyvim_tmle,
+                                            FUN = methyvim_est_try,
                                             methytmle_screened = methy_tmle,
                                             var_of_interest = var_of_interest,
                                             type = type,
@@ -239,15 +256,14 @@ methyvim <- function(data_grs,
 
     # TMLE procedure is now done, so let's just make the output object pretty...
     if (vim == "ate") {
-      colnames(methy_vim_out) <- c("lowerCI_ATE", "est_ATE", "upperCI_ATE",
-                                   "Var_ATE", "pval", "n_neighbors_all",
-                                   "n_neighbors_w", "max_corr_w")
+      colnames(methy_vim_out) <- c("lowCI_ATE", "est_ATE", "upCI_ATE",
+                                   "var_ATE", "pval", "n_W", "n_W_contr",
+                                   "max_cor_n_W")
       methy_tmle@param <- "Average Treatment Effect"
     } else {
-      colnames(methy_vim_out) <- c("lowerCI_logRR", "est_logRR",
-                                   "upperCI_logRR", "Var_logRR", "pval",
-                                   "n_neighbors_all", "n_neighbors_w",
-                                   "max_corr_w")
+      colnames(methy_vim_out) <- c("lowCI_logRR", "est_logRR", "upCI_logRR",
+                                   "var_logRR", "pval", "n_W", "n_W_contr",
+                                   "max_cor_n_W")
       methy_tmle@param <- "Risk Ratio"
     }
 

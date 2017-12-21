@@ -1,24 +1,19 @@
 ---
-title: '`methyvim`: an R package for Variable Importance Measures for
-Differential Methylation Analysis'
+title: '`methyvim`: Targeted and Model-free Differential Methylation Analysis in
+  R'
 author:
   - name: Nima S. Hejazi
-    affiliation: 1
+    affiliation: Division of Biostatistics, University of California, Berkeley
     orcid: 0000-0002-7127-2789
   - name: Rachael V. Phillips
-    affiliation: 1
+    affiliation: Division of Biostatistics, University of California, Berkeley
     orcid: 0000-0002-8474-591X
   - name: Alan E. Hubbard
-    affiliation: 1
+    affiliation: Division of Biostatistics, University of California, Berkeley
     orcid: 0000-0002-3769-0127
   - name: Mark J. van der Laan
-    affiliation: 1, 2
+    affiliation: Division of Biostatistics, University of California, Berkeley
     orcid: TBA
-affiliations:
-  - name: Division of Biostatistics, University of California, Berkeley
-    index: 1
-  - name: Department of Statistics, University of California, Berkeley
-    index: 2
 abstract: |
   We present `methyvim`, a general algorithm for the nonparametric estimation of
   treatment/exposure effects on DNA methylation at CpG sites, complete with
@@ -35,7 +30,8 @@ abstract: |
   avenue to move beyond linear models without the loss of interpretable
   statistical inference.
 keywords: DNA methylation, differential methylation, epigenetics, causal
-  inference, variable importance, targeted minimum loss-based estimation
+  inference, statistical variable importance, targeted minimum loss-based
+  estimation, machine learning
 bibliography: paper_BiocF1000.bib
 output: BiocWorkflowTools::f1000_article
 ---
@@ -65,32 +61,34 @@ Data-adaptive estimation procedures that utilize machine learning can control
 for high-dimensional confounders when estimating treatment/exposure effects.
 However, interpretable statistical inference (i.e. confidence intervals,
 hypothesis tests) resulting from these data-adaptive estimates is challenging
-[@libbrecht2015machine]. In this paper, we present an alternative such
-statistical analysis approaches in the form of nonparametric estimation
-procedures that provide simple and well interpretable statistical inference.
-Inspired by concepts of counterfactual effects from the causal inference
-literature and machine learning algorithms, we provide a computationally
-efficient technique for obtaining targeted estimates of nonparametric _variable
-importance measures_ (__VIM__) for a pre-screened set of CpGs, controlling for
-the False Discovery Rate (FDR) as if all sites were tested. Under
-counterfactual assumptions, these estimators have asymptotic normal sampling
-distributions and thus provide reliable inference. Counterfactuals are
-"counter"-fact, defined in terms of an unrealistic yet ideal experiment. In the
-context of DNA methylation and for a binary treatment, we define the
-counterfactual outcomes as the Beta-value/M-value a CpG site would have if all
-subjects were treated and the Beta-value/M-value a CpG site would have if all
-subjects were not treated. Of course, these counterfactual outcomes are
-impossible to observe but they are very helpful for us to asses the importance
-of a CpG site relative to a subjects treatment/exposure and they can be
-statistically estimated [@vdl2006statistical]. Our VIM definition uses the
-concepts of counterfactuals and the framework for estimation is built on
-_targeted maximum likelihood estimation_ or _targeted minimum loss-based
-estimation_ (__TMLE__) [@vdl2006targeted]. This methodology targets the
-individual importance of each CpG site by taking advantage of the prediction
-power of machine learning algorithms. The mathematical properties of this
-approach have been explored in [@tuglus2008targeted] and we focus on our
-contribution to it's application, `methyvim`, an R package that make this
-technique for differential methylation analysis easily accessible.
+[@libbrecht2015machine].
+
+In this paper, we present an alternative such statistical analysis approaches in
+the form of nonparametric estimation procedures that provide simple and well
+interpretable statistical inference. Inspired by concepts of counterfactual
+effects from the causal inference literature and machine learning algorithms, we
+provide a computationally efficient technique for obtaining targeted estimates
+of nonparametric _variable importance measures_ (__VIM__) for a pre-screened set
+of CpGs, controlling for the False Discovery Rate (FDR) as if all sites were
+tested. Under counterfactual assumptions, these estimators have asymptotic
+normal sampling distributions and thus provide reliable inference.
+Counterfactuals are "counter"-fact, defined in terms of an unrealistic yet ideal
+experiment. In the context of DNA methylation and for a binary treatment, we
+define the counterfactual outcomes as the observed methylation value (whether
+Beta- or M-values) a CpG site would have if all subjects were treated and the
+methylation value a CpG site would have if all subjects were not treated. Of
+course, these counterfactual outcomes are impossible to observe but they are
+very helpful for us to asses the importance of a CpG site relative to a subjects
+treatment/exposure and they can be statistically estimated
+[@vdl2006statistical]. Our VIM definition uses the concepts of counterfactuals
+and the framework for estimation is built on _targeted maximum likelihood
+estimation_ or _targeted minimum loss-based estimation_ (__TMLE__)
+[@vdl2006targeted]. This methodology targets the individual importance of each
+CpG site by taking advantage of the prediction power of machine learning
+algorithms. The mathematical properties of this approach have been explored in
+[@tuglus2008targeted] and we focus on our contribution to it's application,
+`methyvim`, an R package that make this technique for differential methylation
+analysis easily accessible.
 
 For a general discussion of the framework of targeted minimum loss-based
 estimation and the role this approach plays in statistical causal inference, the
@@ -219,10 +217,9 @@ package includes several new slots:
   screening, transformed into influence curve space based on the chosen target
   parameter.
 
-We refer the reader to the package vignette, "`methyvim`: Variable Importance
-Measures for Differential Methylation" hosted with the package on Bioconductor,
-for a detailed description of the methods used in this package.
-(NEED CITATION FOR VIGNETTE)
+We refer the reader to the package vignette, "`methyvim`: Targeted Data-Adaptive
+Estimation and Inference for Differential Methylation Analysis," included in any
+distribution of the software package, for further details.
 
 ## Operation
 
@@ -255,6 +252,7 @@ We can create an object of class `methytmle` from any `GenomicRatioSet` object
 simply invoking the S4 class constructor:
 
 ```{r make-methytmle}
+library(methyvim)
 mtmle <- .methytmle(grs)
 ```
 Additionally, a `GenomicRatioSet` can be created from a matrix with the
@@ -334,13 +332,18 @@ A simple call to `plot` produces side-by-side histograms of the raw p-values
 computed as part of the estimation process and the corrected p-values obtained
 from using the FDR-MSA procedure.
 
-```{r methyvim-pvals-both}
-plot(methyvim_cancer_ate)
+```{r methyvim-pvals-raw}
+plot(methyvim_cancer_ate, type = "raw_pvals")
 ```
-__Remark:__ The plots displayed above may also be generated separately by
-explicitly setting the argument "type" to `plot.methytmle`. For a plot of the
-raw p-values, specify `type = "raw_pvals"`, and for a plot of the FDR-corrected
-p-values, specify `type = "fdr_pvals"`.
+
+```{r methyvim-pvals-fdr}
+plot(methyvim_cancer_ate, type = "fdr_pvals")
+```
+
+__Remark:__ The plots displayed above may also be generated as side-by-side
+histograms in a single plot object. This is the default for the `plot` method
+and may easily be invoked by specifying no additional arguments to the `plot`
+function, unlike in the above.
 
 While histograms of the p-values may be generally useful in inspecting the
 results of the estimation procedure, a more common plot used in examining the
@@ -391,11 +394,10 @@ Latest source code (development version): https://github.com/nhejazi/methyvim
 
 Bioconductor (stable release): https://bioconductor.org/packages/methyvim
 
-Archived source code as at time of publication:
+Archived source code as at time of
+publication: https://github.com/nhejazi/methyvim
 
-https://github.com/nhejazi/methyvim
-
-Software license: MIT, copyright Nima S. Hejazi
+Software license: The MIT License, copyright Nima S. Hejazi
 
 # Author contributions
 
@@ -417,3 +419,4 @@ this work is solely the responsibility of the authors and does not necessarily
 represent the official views of the various funding sources and agencies.
 
 # References
+
