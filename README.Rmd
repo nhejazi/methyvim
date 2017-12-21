@@ -1,7 +1,7 @@
 ---
 output:
   rmarkdown::github_document
-bibliography: README-refs.bib
+bibliography: "`r here::here('README-refs.bib')`"
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->

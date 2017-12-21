@@ -92,35 +92,28 @@
 </ul>
 <p>For continous-valued treatments or exposures:</p>
 <ul>
-<li>A <em>nonparametric variable importance measure</em> (NPVI): The effect of continous-valued exposure or treatment (the observed methylation at a target CpG site) on an outcome of interest is estimated, controlling for the observed methylation at all other CpG sites in the same neighborhood as the target (treatment) site, based on a parameter that compares values of the treatment against a reference value taken to be the null. In particular, the implementation provided is designed to assess the effect of differential methylation at the target CpG site on a (typically) phenotype-level outcome of interest (e.g., survival), in effect providing an nonparametric evaluation of the impact of methylation at the target site on said outcome.</li>
+<li>A <em>nonparametric variable importance measure</em> (NPVI) <span class="citation" data-cites="chambaz2012estimation">(Chambaz, Neuvial, and van der Laan 2012)</span>: The effect of continous-valued exposure or treatment (the observed methylation at a target CpG site) on an outcome of interest is estimated, controlling for the observed methylation at all other CpG sites in the same neighborhood as the target (treatment) site, based on a parameter that compares values of the treatment against a reference value taken to be the null. In particular, the implementation provided is designed to assess the effect of differential methylation at the target CpG site on a (typically) phenotype-level outcome of interest (e.g., survival), in effect providing an nonparametric evaluation of the impact of methylation at the target site on said outcome.</li>
 </ul>
 <p><em>In all cases, an estimator of the target parameter is constructed via targeted minimum loss-based estimation.</em></p>
 <p>These methods allow differential methylation effects to be quantified in a manner that is largely free of assumptions, especially of the variety exploited in parametric models. <strong>The statistical algorithm consists in several major steps:</strong></p>
 <ol type="1">
 <li>Pre-screening of genomic sites is used to isolate a subset of sites for which there is cursory evidence of differential methylation. For the sake of computational feasibility, targeted minimum loss-based estimates of VIMs are computed only for this subset of sites. Several screening approaches are available, adapting core routines from the following R packages: <a href="http://bioconductor.org/packages/release/bioc/html/limma.html"><code>limma</code></a>, <a href="https://CRAN.R-project.org/package=tmle.npvi"><code>tmle.npvi</code></a>.</li>
 <li>Nonparametric VIMs are estimated for the specified parameter, currently adapting routines from the <a href="https://CRAN.R-project.org/package=tmle.npvi"><code>tmle.npvi</code></a> and <a href="https://CRAN.R-project.org/package=tmle"><code>tmle</code></a> R packages.</li>
-<li>Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Due to the multiple testing nature of the estimation problem, a variant of the Benjamini &amp; Hochberg procedure for controlling the False Discovery Rate (FDR) is applied. Specifically, we apply the modified marginal Benjamini &amp; Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA).</li>
+<li>Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Due to the multiple testing nature of the estimation problem, a variant of the Benjamini &amp; Hochberg procedure for controlling the False Discovery Rate (FDR) is applied <span class="citation" data-cites="benjamini1995controlling">(Benjamini and Hochberg 1995)</span>. Specifically, we apply the modified marginal Benjamini &amp; Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) <span class="citation" data-cites="tuglus2009modified">(Tuglus and van der Laan 2009)</span>.</li>
 </ol>
+<p>For a general discussion of the framework of targeted minimum loss-based estimation, the many applications of this methodology, and the role the framework plays in statistical causal inference, the recommended references are <span class="citation" data-cites="vdl2011targeted">van der Laan and Rose (2011)</span> and <span class="citation" data-cites="vdl2017targeted">van der Laan and Rose (2017)</span>. <span class="citation" data-cites="hernan2018causal">Hernan and Robins (2018)</span> and <span class="citation" data-cites="pearl2009causality">Pearl (2009)</span> may be of interest to those desiring a more general introduction to statistical causal inference.</p>
+<!--
+Note about shrinkage of influence curves, adapting @smyth2004linear.
+More exposition here....
+-->
 <hr></section><section id="installation" class="level2"><h2>Installation</h2>
-<!--
-For standard use, install from [Bioconductor](https://bioconductor.org):
-
-```r
-source("https://bioconductor.org/biocLite.R")
-biocLite("methyvim")
-```
--->
-<p>Install the most recent <em>stable release</em> from GitHub via <a href="https://www.rstudio.com/products/rpackages/devtools/"><code>devtools</code></a>:</p>
-<pre class="sourceCode r" id="cb1"><code class="sourceCode r"><div class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"nhejazi/methyvim"</span>)</div></code></pre>
-<!--
-To contribute, install the _development version_ from GitHub via
-[`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
-
-
-```r
-devtools::install_github("nhejazi/methyvim", ref = "develop")
-```
--->
+<p>For standard use, install from <a href="https://bioconductor.org">Bioconductor</a>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">source</span>(<span class="st">"https://bioconductor.org/biocLite.R"</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">biocLite</span>(<span class="st">"methyvim"</span>)</a></code></pre></div>
+<p>To contribute, install the bleeding-edge <em>development version</em> from GitHub via <a href="https://www.rstudio.com/products/rpackages/devtools/"><code>devtools</code></a>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"nhejazi/methyvim"</span>)</a></code></pre></div>
+<p>Current and prior <a href="https://bioconductor.org">Bioconductor</a> releases are available under branches with numbers prefixed by “RELEASE_”. For example, to install the version of this package available via Bioconductor 3.6, use</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"nhejazi/methyvim"</span>, <span class="dt">ref =</span> <span class="st">"RELEASE_3_6"</span>)</a></code></pre></div>
 <hr>
 <!--
 ## Example
@@ -155,9 +148,35 @@ This is a basic example which shows you how to solve a common problem:
 <li>
 <a href="https://github.com/nhejazi/methyvimData">R/<code>methyvimData</code></a> - R package with sample experimental DNA methylation data for use as an example with this analysis package.</li>
 </ul>
+<hr></section><section id="funding" class="level2"><h2>Funding</h2>
+<p>The development of this software was supported in part through a grant from the National Library of Medicine of the NIH (T32 LM012417).</p>
 <hr></section><section id="license" class="level2"><h2>License</h2>
 <p>© 2017 <a href="http://nimahejazi.org">Nima S. Hejazi</a></p>
 <p>The contents of this repository are distributed under the MIT license. See file <code>LICENSE</code> for details.</p>
+<hr></section><section id="references" class="level2 unnumbered"><h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-benjamini1995controlling">
+<p>Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em>. JSTOR, 289–300.</p>
+</div>
+<div id="ref-chambaz2012estimation">
+<p>Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” <em>Electronic Journal of Statistics</em> 6. NIH Public Access:1059.</p>
+</div>
+<div id="ref-hernan2018causal">
+<p>Hernan, Miguel A, and James M Robins. 2018. <em>Causal Inference</em>. Chapman &amp; Hall / CRC Texts in Statistical Science. Taylor &amp; Francis.</p>
+</div>
+<div id="ref-pearl2009causality">
+<p>Pearl, Judea. 2009. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
+</div>
+<div id="ref-tuglus2009modified">
+<p>Tuglus, Catherine, and Mark J van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” <em>Statistical Applications in Genetics and Molecular Biology</em> 8 (1). Walter de Gruyter:1–15. <a href="https://doi.org/10.2202/1544-6115.1397" class="uri">https://doi.org/10.2202/1544-6115.1397</a>.</p>
+</div>
+<div id="ref-vdl2011targeted">
+<p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
+</div>
+<div id="ref-vdl2017targeted">
+<p>———. 2017. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
+</div>
+</div>
 </section></section>
 </div>
   </div>

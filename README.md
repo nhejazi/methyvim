@@ -220,30 +220,62 @@ See file `LICENSE` for details.
 
 ## References
 
+<div id="refs" class="references">
+
+<div id="ref-benjamini1995controlling">
+
 Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False
 Discovery Rate: A Practical and Powerful Approach to Multiple Testing.”
 *Journal of the Royal Statistical Society. Series B (Methodological)*.
 JSTOR, 289–300.
+
+</div>
+
+<div id="ref-chambaz2012estimation">
 
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012.
 “Estimation of a Non-Parametric Variable Importance Measure of a
 Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public
 Access:1059.
 
+</div>
+
+<div id="ref-hernan2018causal">
+
 Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman
 & Hall / CRC Texts in Statistical Science. Taylor & Francis.
 
+</div>
+
+<div id="ref-pearl2009causality">
+
 Pearl, Judea. 2009. *Causality: Models, Reasoning, and Inference*.
 Cambridge University Press.
+
+</div>
+
+<div id="ref-tuglus2009modified">
 
 Tuglus, Catherine, and Mark J van der Laan. 2009. “Modified FDR
 Controlling Procedure for Multi-Stage Analyses.” *Statistical
 Applications in Genetics and Molecular Biology* 8 (1). Walter de
 Gruyter:1–15. <https://doi.org/10.2202/1544-6115.1397>.
 
+</div>
+
+<div id="ref-vdl2011targeted">
+
 van der Laan, Mark J, and Sherri Rose. 2011. *Targeted Learning: Causal
 Inference for Observational and Experimental Data*. Springer Science &
 Business Media.
 
+</div>
+
+<div id="ref-vdl2017targeted">
+
 ———. 2017. *Targeted Learning in Data Science: Causal Inference for
 Complex Longitudinal Studies*. Springer Science & Business Media.
+
+</div>
+
+</div>
