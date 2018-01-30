@@ -108,11 +108,6 @@ references are van der Laan and Rose (2011) and van der Laan and Rose
 those desiring a more general introduction to statistical causal
 inference.
 
-<!--
-Note about shrinkage of influence curves, adapting @smyth2004linear.
-More exposition here....
--->
-
 -----
 
 ## Installation
@@ -143,16 +138,17 @@ devtools::install_github("nhejazi/methyvim", ref = "RELEASE_3_6")
 
 -----
 
-<!--
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+For details on how to best use `methyvim` to perform data-adaptive
+estimation and obtain nonparametric inference in the context of
+differential methylation analyses, please consult the most recent
+[package
+vignette](http://bioconductor.org/packages/release/bioc/vignettes/methyvim/inst/doc/using_methyvim.html)
+available through the [Bioconductor
+project](https://bioconductor.org/packages/methvim).
 
-
-```r
-## basic example code
-```
--->
+-----
 
 ## Issues
 
@@ -177,15 +173,15 @@ prior to submitting a pull request.
 After using the `methyvim` R package, please cite the following:
 
 ``` 
-    @article{hejazi2017methyvim,
+    @article{hejazi2018methyvim,
       doi = {},
       url = {},
-      year  = {2017},
+      year  = {2018},
       month = {},
       publisher = {},
       volume = {},
-      author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
-        J},
+      author = {Hejazi, Nima S and Phillips, Rachael V and Hubbard, Alan E
+        and {van der Laan}, Mark J},
       title = {methyvim: Targeted and model-free differential methylation
         analysis in R},
       journal = {}
@@ -206,9 +202,9 @@ After using the `methyvim` R package, please cite the following:
 
 The development of this software was supported in part through grants
 from the National Institutes of Health: [T32
-LM012417](https://projectreporter.nih.gov/project_info_description.cfm?aid=9248418&icde=37849831&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=),
+LM012417-02](https://projectreporter.nih.gov/project_info_description.cfm?aid=9248418&icde=37849831&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=),
 [R01
-ES021369](https://projectreporter.nih.gov/project_info_description.cfm?aid=9210551&icde=37849782&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=),
+ES021369-05](https://projectreporter.nih.gov/project_info_description.cfm?aid=9210551&icde=37849782&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=),
 and [P42
 ES004705-29](https://projectreporter.nih.gov/project_info_details.cfm?aid=9260357&map=y).
 
@@ -216,7 +212,7 @@ ES004705-29](https://projectreporter.nih.gov/project_info_details.cfm?aid=926035
 
 ## License
 
-© 2017 [Nima S. Hejazi](http://nimahejazi.org)
+© 2017-2018 [Nima S. Hejazi](https://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license.
 See file `LICENSE` for details.

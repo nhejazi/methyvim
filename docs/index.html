@@ -102,10 +102,6 @@
 <li>Since pre-screening is performed prior to estimating VIMs, we make use of a multiple testing correction uniquely suited to such settings. Due to the multiple testing nature of the estimation problem, a variant of the Benjamini &amp; Hochberg procedure for controlling the False Discovery Rate (FDR) is applied <span class="citation" data-cites="benjamini1995controlling">(Benjamini and Hochberg 1995)</span>. Specifically, we apply the modified marginal Benjamini &amp; Hochberg step-up False Discovery Rate controlling procedure for multi-stage analyses (FDR-MSA) <span class="citation" data-cites="tuglus2009modified">(Tuglus and van der Laan 2009)</span>.</li>
 </ol>
 <p>For a general discussion of the framework of targeted minimum loss-based estimation, the many applications of this methodology, and the role the framework plays in statistical causal inference, the recommended references are <span class="citation" data-cites="vdl2011targeted">van der Laan and Rose (2011)</span> and <span class="citation" data-cites="vdl2017targeted">van der Laan and Rose (2017)</span>. <span class="citation" data-cites="hernan2018causal">Hernan and Robins (2018)</span> and <span class="citation" data-cites="pearl2009causality">Pearl (2009)</span> may be of interest to those desiring a more general introduction to statistical causal inference.</p>
-<!--
-Note about shrinkage of influence curves, adapting @smyth2004linear.
-More exposition here....
--->
 <hr></section><section id="installation" class="level2"><h2>Installation</h2>
 <p>For standard use, install from <a href="https://bioconductor.org">Bioconductor</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">source</span>(<span class="st">"https://bioconductor.org/biocLite.R"</span>)</a>
@@ -114,31 +110,23 @@ More exposition here....
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"nhejazi/methyvim"</span>)</a></code></pre></div>
 <p>Current and prior <a href="https://bioconductor.org">Bioconductor</a> releases are available under branches with numbers prefixed by “RELEASE_”. For example, to install the version of this package available via Bioconductor 3.6, use</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"nhejazi/methyvim"</span>, <span class="dt">ref =</span> <span class="st">"RELEASE_3_6"</span>)</a></code></pre></div>
-<hr>
-<!--
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-
-```r
-## basic example code
-```
---></section><section id="issues" class="level2"><h2>Issues</h2>
+<hr></section><section id="example" class="level2"><h2>Example</h2>
+<p>For details on how to best use <code>methyvim</code> to perform data-adaptive estimation and obtain nonparametric inference in the context of differential methylation analyses, please consult the most recent <a href="http://bioconductor.org/packages/release/bioc/vignettes/methyvim/inst/doc/using_methyvim.html">package vignette</a> available through the <a href="https://bioconductor.org/packages/methvim">Bioconductor project</a>.</p>
+<hr></section><section id="issues" class="level2"><h2>Issues</h2>
 <p>If you encounter any bugs or have any specific feature requests, please <a href="https://github.com/nhejazi/methyvim/issues">file an issue</a>.</p>
 <hr></section><section id="contributions" class="level2"><h2>Contributions</h2>
 <p>It is our hope that <code>methyvim</code> will grow to be widely adopted as a tool for the nonparametric assessment of variable importance in studies of differential methylation. To that end, contributions are very welcome, though we ask that interested contributors consult our <a href="https://github.com/nhejazi/methyvim/blob/master/CONTRIBUTING.md"><code>contribution guidelines</code></a> prior to submitting a pull request.</p>
 <hr></section><section id="citation" class="level2"><h2>Citation</h2>
 <p>After using the <code>methyvim</code> R package, please cite the following:</p>
-<pre><code>    @article{hejazi2017methyvim,
+<pre><code>    @article{hejazi2018methyvim,
       doi = {},
       url = {},
-      year  = {2017},
+      year  = {2018},
       month = {},
       publisher = {},
       volume = {},
-      author = {Hejazi, Nima S and Hubbard, Alan E and {van der Laan}, Mark
-        J},
+      author = {Hejazi, Nima S and Phillips, Rachael V and Hubbard, Alan E
+        and {van der Laan}, Mark J},
       title = {methyvim: Targeted and model-free differential methylation
         analysis in R},
       journal = {}
@@ -149,9 +137,9 @@ This is a basic example which shows you how to solve a common problem:
 <a href="https://github.com/nhejazi/methyvimData">R/<code>methyvimData</code></a> - R package with sample experimental DNA methylation data for use as an example with this analysis package.</li>
 </ul>
 <hr></section><section id="funding" class="level2"><h2>Funding</h2>
-<p>The development of this software was supported in part through a grant from the National Library of Medicine of the NIH (T32 LM012417).</p>
+<p>The development of this software was supported in part through grants from the National Institutes of Health: <a href="https://projectreporter.nih.gov/project_info_description.cfm?aid=9248418&amp;icde=37849831&amp;ddparam=&amp;ddvalue=&amp;ddsub=&amp;cr=1&amp;csb=default&amp;cs=ASC&amp;pball=">T32 LM012417-02</a>, <a href="https://projectreporter.nih.gov/project_info_description.cfm?aid=9210551&amp;icde=37849782&amp;ddparam=&amp;ddvalue=&amp;ddsub=&amp;cr=1&amp;csb=default&amp;cs=ASC&amp;pball=">R01 ES021369-05</a>, and <a href="https://projectreporter.nih.gov/project_info_details.cfm?aid=9260357&amp;map=y">P42 ES004705-29</a>.</p>
 <hr></section><section id="license" class="level2"><h2>License</h2>
-<p>© 2017 <a href="http://nimahejazi.org">Nima S. Hejazi</a></p>
+<p>© 2017-2018 <a href="https://nimahejazi.org">Nima S. Hejazi</a></p>
 <p>The contents of this repository are distributed under the MIT license. See file <code>LICENSE</code> for details.</p>
 <hr></section><section id="references" class="level2 unnumbered"><h2>References</h2>
 <div id="refs" class="references">
