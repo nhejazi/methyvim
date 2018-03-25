@@ -1,7 +1,6 @@
 .onAttach <- function(...) {
-  packageStartupMessage(paste("methyvim: Targeted Data-Adaptive Estimation and",
-                              "Inference",
-                              "\n for Differential Methylation Analysis"))
-  packageStartupMessage("Version: ",
-                        utils::packageDescription("methyvim")$Version)
+  packageStartupMessage(paste0("methyvim v",
+                               utils::packageDescription("methyvim")$Version,
+                               ": Targeted Variable Importance for ",
+                               "Differential Methylation Analysis"))
 }

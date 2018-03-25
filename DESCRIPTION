@@ -2,28 +2,27 @@ Package: methyvim
 Title: Targeted Variable Importance for Differential Methylation Analysis
 Version: 1.1.0
 Authors@R: c(
-  person("Nima", "Hejazi", email = "nhejazi@berkeley.edu",
+  person("Nima", "Hejazi", email = "nh@nimahejazi.org",
          role = c("aut", "cre", "cph"),
          comment = c(ORCID = "0000-0002-7127-2789")),
   person("Rachael", "Phillips", email = "rachaelvphillips@berkeley.edu",
          role = "ctb",
          comment = c(ORCID = "0000-0002-8474-591X")),
-  person("Alan", "Hubbard", email = "hubbard@berkeley.edu",
-         role = "ctb",
-         comment = c(ORCID = "0000-0002-3769-0127")),
   person("Mark", "van der Laan", email = "laan@stat.berkeley.edu",
-         role = "aut")
+         role = c("aut", "ths")),
+  person("Alan", "Hubbard", email = "hubbard@berkeley.edu",
+         role = c("ctb", "ths"),
+         comment = c(ORCID = "0000-0002-3769-0127"))
   )
-Author: Nima Hejazi [aut, cre, cph], Rachael Phillips [ctb], Alan Hubbard [ctb],
-  Mark van der Laan [aut]
 Maintainer: Nima Hejazi <nhejazi@berkeley.edu>
 Description: This package provides facilities for differential methylation
   analysis based on variable importance measures (VIMs), a class of statistical
   target parameters that arise in causal inference. The estimation and inference
   procedures provided are nonparametric, relying on ensemble machine learning to
-  flexibly assess functional relationship among covariates and the outcome of
+  flexibly assess functional relationships among covariates and the outcome of
   interest. These tools can be applied to differential methylation at the level
-  of CpG sites, with valid inference after multiple hypothesis testing.
+  of CpG sites, to obtain valid statistical inference even after corrections for
+  multiple hypothesis testing.
 Depends:
   R (>= 3.4.0)
 License: file LICENSE
