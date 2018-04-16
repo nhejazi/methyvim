@@ -5,10 +5,14 @@ library(methyvimData)
 data(grsExample)
 var_int <- colData(grsExample)[, 1]
 methytmle <- .methytmle(grsExample)
-screened <- methyvim:::limma_screen(methytmle, var_int = var_int,
-                                    type = "Mval")
-screened_betas <- methyvim:::limma_screen(methytmle, var_int = var_int,
-                                          type = "Beta")
+screened <- methyvim:::limma_screen(methytmle,
+  var_int = var_int,
+  type = "Mval"
+)
+screened_betas <- methyvim:::limma_screen(methytmle,
+  var_int = var_int,
+  type = "Beta"
+)
 
 
 # check the screen_ind slot
@@ -41,4 +45,3 @@ test_that("classes of screened object and of unscreened object match", {
 test_that("class types of screened object and of unscreened object match", {
   expect_equivalent(typeof(screened), typeof(methytmle))
 })
-

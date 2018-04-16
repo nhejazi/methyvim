@@ -14,22 +14,22 @@ to \code{methyvim}.}
 documentation of the \code{superheat} package for a list of options.}
 
 \item{n_sites}{Numeric indicating the number of CpG sites to be shown in the
-plot. If the number of sites analyzed is greater than this cutoff,
-sites to be displayed are chosen by ranking sites based on their raw
-(marginal) p-values.}
+plot. If the number of sites analyzed is greater than this cutoff, sites to
+be displayed are chosen by ranking sites based on their raw (marginal)
+p-values.}
 
 \item{type}{Whether to plot the original data (M-values or Beta-values) for
 the set of top CpG sites or to plot the measurements after applying a
 transformation into influence curve space (with respect to the target
-parameter of interest). The latter uses the fact that the parameters
-have asymptotically linear representations to obtain a rotation of the
-raw data into an alternative space; moreover, in this setting, the
-heatmap reduces to visualizing a supervised clustering procedure.}
+parameter of interest). The latter uses the fact that the parameters have
+asymptotically linear representations to obtain a rotation of the raw data
+into an alternative space; moreover, in this setting, the heatmap reduces to
+visualizing a supervised clustering procedure.}
 }
 \value{
 Nothing. This function is called for its side-effect of outputting a
-        heatmap to the graphics device. The heatmap is constructed using the
-        \code{superheat} package.
+ heatmap to the graphics device. The heatmap is constructed using the
+ \code{superheat} package.
 }
 \description{
 Heatmap for methytmle objects

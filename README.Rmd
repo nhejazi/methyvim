@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 > Targeted Data-Adaptive Estimation and Inference for Differential Methylation
 > Analysis
 
-__Author:__ [Nima Hejazi](http://nimahejazi.org)
+__Author:__ [Nima Hejazi](https://nimahejazi.org)
 
 ---
 
@@ -108,7 +108,8 @@ causal inference.
 
 ## Installation
 
-For standard use, install from [Bioconductor](https://bioconductor.org):
+For standard use, install from
+[Bioconductor](https://bioconductor.org/packages/methyvim):
 
 ```{r bioc-installation, eval = FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -134,11 +135,11 @@ devtools::install_github("nhejazi/methyvim", ref = "RELEASE_3_6")
 
 ## Example
 
-For details on how to best use `methyvim` to perform data-adaptive estimation
-and obtain nonparametric inference in the context of differential methylation
-analyses, please consult the most recent [package vignette](http://bioconductor.org/packages/release/bioc/vignettes/methyvim/inst/doc/using_methyvim.html)
+For details on how to best use the `methyvim` R package, please consult the most
+recent [package
+vignette](http://bioconductor.org/packages/release/bioc/vignettes/methyvim/inst/doc/using_methyvim.html)
 available through the [Bioconductor
-project](https://bioconductor.org/packages/methvim).
+Project](https://bioconductor.org/packages/methvim).
 
 ---
 
@@ -151,11 +152,9 @@ issue](https://github.com/nhejazi/methyvim/issues).
 
 ## Contributions
 
-It is our hope that `methyvim` will grow to be widely adopted as a tool for the
-nonparametric assessment of variable importance in studies of differential
-methylation. To that end, contributions are very welcome, though we ask that
-interested contributors consult our [`contribution
-guidelines`](https://github.com/nhejazi/methyvim/blob/master/CONTRIBUTING.md)
+Contributions are very welcome. Interested contributors should consult our
+[contribution
+guidelines](https://github.com/nhejazi/methyvim/blob/master/CONTRIBUTING.md)
 prior to submitting a pull request.
 
 ---
