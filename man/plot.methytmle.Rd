@@ -13,16 +13,15 @@ to \code{methyvim}.}
 \item{...}{Additional arguments passed \code{plot} as necessary.}
 
 \item{type}{The type of plot to build: one of side-by-side histograms (type
-"both") comparing raw p-values to FDR-adjusted p-values (using the
-FDR-MSA correction) or either of these two histogram separately. Set
-this argument to "raw_pvals" for a histogram of the raw p-values, and
-to "fdr_pvals" for a histogram of the FDR-corrected p-values.}
+"both") comparing raw p-values to FDR-adjusted p-values (using the FDR-MSA
+correction) or either of these two histogram separately. Set this argument
+to "raw_pvals" for a histogram of the raw p-values, and to "fdr_pvals" for
+a histogram of the FDR-corrected p-values.}
 }
 \value{
 Object of class \code{ggplot} containing a histogram or side-by-side
-        histograms of the raw (marginal) and corrected p-values, with the
-        latter computed automatically using the method of Tuglus and van der
-        Laan.
+ histograms of the raw (marginal) and corrected p-values, with the latter
+ computed automatically using the method of Tuglus and van der Laan.
 }
 \description{
 Plot p-values of methytmle objects

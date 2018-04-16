@@ -78,7 +78,7 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;)." /
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/using_methyvim.html">`methyvim`: Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</a>
+      <a href="../articles/using_methyvim.html">Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</a>
     </li>
   </ul>
 </li>
@@ -118,9 +118,10 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;).</p
   <span class='kw'>corr_max</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>obs_per_covar</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>sites_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>future_param</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bppar_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>return_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>shrink_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmle_type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"glm"</span>, <span class='st'>"sl"</span>),
-  <span class='kw'>tmle_args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"binomial"</span>, <span class='kw'>g_lib</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Q_lib</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>), <span class='kw'>tmle_backend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"tmle"</span>, <span class='st'>"drtmle"</span>,
-  <span class='st'>"tmle.npvi"</span>))</pre>
+  <span class='kw'>tmle_args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"binomial"</span>, <span class='kw'>g_lib</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>,
+  <span class='st'>"SL.bayesglm"</span>, <span class='st'>"SL.gam"</span>), <span class='kw'>Q_lib</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>, <span class='st'>"SL.gam"</span>,
+  <span class='st'>"SL.earth"</span>), <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>),
+  <span class='kw'>tmle_backend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"tmle"</span>, <span class='st'>"drtmle"</span>, <span class='st'>"tmle.npvi"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -252,12 +253,12 @@ Current choices include <code>tmle</code>, <code>drtmle</code>, and <code>tmle.n
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>methytmle</code>, with all unique slots filled in,
-        in particular, including indices of CpG sites that pass screening,
-        cluster of neighboring CpG sites, and a matrix of the results of the
-        estimation procedure performed for the given variable importance
-        measure. Optionally, estimates of the propensity score and outcome
-        regressions, as well as the original data rotated into influence
-        curve space may be returned, if so requested.</p>
+ in particular, including indices of CpG sites that pass screening, cluster
+ of neighboring CpG sites, and a matrix of the results of the estimation
+ procedure performed for the given variable importance measure. Optionally,
+ estimates of the propensity score and outcome regressions, as well as the
+ original data rotated into influence curve space may be returned, if so
+ requested.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

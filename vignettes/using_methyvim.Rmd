@@ -1,6 +1,6 @@
 ---
-title: '`methyvim`: Targeted Data-Adaptive Estimation and Inference for
-  Differential Methylation Analysis'
+title: "Targeted Data-Adaptive Estimation and Inference for Differential
+  Methylation Analysis"
 author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
@@ -19,7 +19,8 @@ abstract: |
   learning to estimating quantities of scientific interest in computational
   biology.
 vignette: >
-  %\VignetteIndexEntry{methyvim: Variable Importance for DNA Methylation}
+  %\VignetteIndexEntry{Targeted Data-Adaptive Estimation and Inference for
+    Differential Methylation Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -63,8 +64,7 @@ as outlined by others in the computational biology community
 discussion of the framework of targeted minimum loss-based estimation and the
 role this approach plays in statistical causal inference, the interested reader
 is invited to consult @vdl2011targeted and @vdl2017targeted. For a more general
-introduction to (statistical) causal inference, @pearl2009causality and
-@hernan2018causal may be of interest.
+introduction to statistical causal inference, @pearl2009causality serves well.
 
 ---
 
@@ -163,9 +163,9 @@ examining `methyvim` by example.
 ## Preliminaries: Setting up the Data
 
 ```{r reqs, echo=FALSE}
-library(tmle, quietly = TRUE)
-library(minfi, quietly = TRUE)
-library(SummarizedExperiment, quietly = TRUE)
+suppressMessages(library(tmle))
+suppressMessages(library(minfi))
+suppressMessages(library(SummarizedExperiment))
 ```
 
 First, we'll load the `methyvim` package and the example data contained in the
@@ -183,6 +183,7 @@ Now, let's load the data set and seed the RNG:
 data(grsExample)
 grsExample
 var_int <- as.numeric(colData(grsExample)[, 1])
+table(var_int)
 ```
 
 The example data object is of class `GenomicRatioSet`, provided by the `minfi`
@@ -429,6 +430,7 @@ facilitate this, we'll simply convert the covariate (currently a `character`):
 
 ```{r, minfidata-maketx}
 var_int <- (as.numeric(as.factor(colData(grs)$status)) - 1)
+table(var_int)
 ```
 __n.b.__, the re-coding process results in "normal" patients being assigned a
 value of 1 and cancer patients a 0.
@@ -495,6 +497,7 @@ from using the FDR-MSA procedure.
 ```{r methyvim-pvals-both}
 plot(methyvim_cancer_ate)
 ```
+
 __Remark:__ The plots displayed above may also be generated separately by
 explicitly setting the argument "type" to `plot.methytmle`. For a plot of the
 raw p-values, specify `type = "raw_pvals"`, and for a plot of the FDR-corrected

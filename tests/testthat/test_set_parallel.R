@@ -56,4 +56,3 @@ test_that("sets up transparent future plan when so asked", {
   set_parallel(parallel = TRUE, future_param = "transparent")
   expect_true("transparent" %in% class(plan()))
 })
-

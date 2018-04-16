@@ -58,8 +58,7 @@ methyvim_tmle <- function(target_site,
                           g_lib = c("SL.mean", "SL.glm", "SL.glm.interaction"),
                           Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
                           family = c("gaussian", "binomial"),
-                          return_ic = FALSE
-                         ) {
+                          return_ic = FALSE) {
   ### check arguments where possible
   type <- match.arg(type)
   target_param <- match.arg(target_param)
@@ -67,7 +66,7 @@ methyvim_tmle <- function(target_site,
 
   ### get neighboring site
   in_cluster <- which(methytmle_screened@clusters %in%
-                      methytmle_screened@clusters[target_site])
+    methytmle_screened@clusters[target_site])
 
   ### remove target site from the set of neighbors
   only_neighbors <- in_cluster[in_cluster != target_site]
@@ -147,14 +146,15 @@ methyvim_tmle <- function(target_site,
     max_corr_w <- max(cor(y, t(w)))
 
     # compute the ATE
-    out <- tmle::tmle(Y = as.numeric(y_star),
-                      A = as.numeric(var_of_interest),
-                      W = as.data.frame(w_pos),
-                      Q.SL.library = Q_lib,
-                      g.SL.library = g_lib,
-                      family = family,
-                      verbose = FALSE
-                     )
+    out <- tmle::tmle(
+      Y = as.numeric(y_star),
+      A = as.numeric(var_of_interest),
+      W = as.data.frame(w_pos),
+      Q.SL.library = Q_lib,
+      g.SL.library = g_lib,
+      family = family,
+      verbose = FALSE
+    )
   } else {
     n_neighbors_total <- 0
     n_neighbors_reduced <- 0
@@ -164,22 +164,23 @@ methyvim_tmle <- function(target_site,
     w_int <- as.data.frame(rep(1, length(var_of_interest)))
 
     # compute the ATE
-    out <- tmle::tmle(Y = as.numeric(y_star),
-                      A = as.numeric(var_of_interest),
-                      W = as.data.frame(w_int),
-                      Q.SL.library = Q_lib,
-                      g.SL.library = g_lib,
-                      family = family,
-                      verbose = FALSE
-                     )
+    out <- tmle::tmle(
+      Y = as.numeric(y_star),
+      A = as.numeric(var_of_interest),
+      W = as.data.frame(w_int),
+      Q.SL.library = Q_lib,
+      g.SL.library = g_lib,
+      family = family,
+      verbose = FALSE
+    )
   }
 
   # get the influence curve estimates if so requested
   if (return_ic) {
-    #ate_ic <- out$estimates$IC$IC.ATE
-    #ate_g <- out$g$g1W
-    #ate_Q <- out$Qstar
-    #ic <- list(ate_ic, ate_g, ate_Q)
+    # ate_ic <- out$estimates$IC$IC.ATE
+    # ate_g <- out$g$g1W
+    # ate_Q <- out$Qstar
+    # ic <- list(ate_ic, ate_g, ate_Q)
   }
 
   # extract and rescale estimates
@@ -188,15 +189,18 @@ methyvim_tmle <- function(target_site,
     est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
     est_rescaled <- est_raw[1:3] * (b - a)
     var_rescaled <- est_raw[4] * ((b - a)^2)
-    res <- c(est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
-             n_neighbors_reduced, max_corr_w)
+    res <- c(
+      est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
+      n_neighbors_reduced, max_corr_w
+    )
   } else if (target_param == "rr" & family == "binomial") {
     est <- out$estimates$RR
     est_ci_log <- log(est$CI)
-    est_out <- c(est_ci_log[1], est$log.psi, est_ci_log[2], est$var.log.psi,
-                 est$pvalue)
+    est_out <- c(
+      est_ci_log[1], est$log.psi, est_ci_log[2], est$var.log.psi,
+      est$pvalue
+    )
     res <- c(est_out, n_neighbors_total, n_neighbors_reduced, max_corr_w)
   }
   return(res)
 }
-
