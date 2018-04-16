@@ -40,6 +40,8 @@ build_script:
   - travis-tool.sh install_bioc bumphunter
   - travis-tool.sh install_bioc minfi
   - travis-tool.sh install_bioc minfiData
+  - travis-tool.sh install_bioc Harman
+  - travis-tool.sh install_bioc lumi
   - travis-tool.sh install_bioc_deps
   - Rscript -e "source('http://bioconductor.org/biocLite.R'); biocLite(ask = FALSE)"
   - travis-tool.sh install_github jimhester/covr

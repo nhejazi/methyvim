@@ -42,6 +42,8 @@ bioc_packages:
   - limma
   - minfi
   - minfiData
+  - Harman
+  - lumi
 
 ## coverage
 after_success:
