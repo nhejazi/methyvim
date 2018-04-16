@@ -54,7 +54,6 @@ on_failure:
 
 on_success:
   - Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
-  - R CMD BiocCheck .
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
