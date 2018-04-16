@@ -18,4 +18,3 @@ test_that("discretized W variable has fewer levels than desired maximum", {
 test_that("minimum mass in discretized W is higher than desired minimum", {
   expect_gte(min(table(discrete_w[, 1], a) / n), 0.10)
 })
-

@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,10 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="Volcano plot for methytmle objects — methyvolc" />
+
+<meta property="og:description" content="Volcano plot for methytmle objects" />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,7 +58,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -68,12 +74,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/using_methyvim.html">`methyvim`: Variable Importance Measures for Differential Methylation</a>
+      <a href="../articles/using_methyvim.html">Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -115,23 +118,23 @@ to <code>methyvim</code>.</p></td>
     <tr>
       <th>param_bound</th>
       <td><p>Numeric for a threshold indicating the magnitude of the
-size of the effect considered to be interesting. This is used to
-assign groupings and colors to individual CpG sites.</p></td>
+size of the effect considered to be interesting. This is used to assign
+groupings and colors to individual CpG sites.</p></td>
     </tr>
     <tr>
       <th>pval_bound</th>
       <td><p>Numeric for a threshold indicating the magnitude of
-p-values deemed to be interesting. This is used to assign groupings
-and colors to individual CpG sites.</p></td>
+p-values deemed to be interesting. This is used to assign groupings and
+colors to individual CpG sites.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Object of class <code>ggplot</code> containing a volcano plot of the
-        estimated effect size on the x-axis and the -log10(p-value) on the
-        y-axis. The volcano plot is used to detect possibly false positive
-        cases, where a test statistic is significant due to low variance.</p>
+ estimated effect size on the x-axis and the -log10(p-value) on the y-axis.
+ The volcano plot is used to detect possibly false positive cases, where a
+ test statistic is significant due to low variance.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -164,7 +167,7 @@ and colors to individual CpG sites.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -172,3 +175,4 @@ and colors to individual CpG sites.</p></td>
 
   </body>
 </html>
+

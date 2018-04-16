@@ -36,4 +36,3 @@ test_that("maximum of corrected p-values is 1", {
 test_that("minimum of corrected p-values is less than 1", {
   expect_lt(min(range(fdr_p)), 1)
 })
-

@@ -25,4 +25,3 @@ test_that("methytmle objects inherit from minfi::GenomicRatioSet", {
 test_that("methytmle objects inherit from minfi::GenomicRatioSet", {
   expect_true(inherits(methy_tmle, "GenomicRatioSet"))
 })
-
