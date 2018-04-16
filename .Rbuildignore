@@ -3,7 +3,6 @@
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^codecov\.yml$
-^CODE_OF_CONDUCT\.md$
 ^CONTRIBUTING\.md$
 ^README\.md$
 ^README\.Rmd$
