@@ -231,9 +231,11 @@ methyvim <- function(data_grs,
     if (tmle_backend == "tmle") {
       methyvim_est <- methyvim_tmle
     } else if (tmle_backend == "drtmle") {
-      methyvim_est <- methyvim_drtmle
+      methyvim_est <- methyvim_tmle
+      #methyvim_est <- methyvim_drtmle
     } else if (tmle_backend == "tmle.npvi") {
-      methyvim_est <- methyvim_npvi
+      methyvim_est <- methyvim_tmle
+      #methyvim_est <- methyvim_npvi
     }
 
     # avoid some try-errors by wrapping estimation function in try statement

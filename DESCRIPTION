@@ -39,7 +39,6 @@ Imports:
   ggsci,
   gridExtra,
   superheat,
-  magrittr,
   dplyr,
   gtools,
   tmle,

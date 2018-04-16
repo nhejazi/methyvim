@@ -18,8 +18,7 @@ utils::globalVariables(c(
 #'  histograms of the raw (marginal) and corrected p-values, with the latter
 #'  computed automatically using the method of Tuglus and van der Laan.
 #'
-#' @importFrom magrittr "%>%"
-#' @importFrom dplyr select slice arrange transmute
+#' @importFrom dplyr "%>%" select slice arrange transmute
 #' @importFrom ggplot2 ggplot aes geom_histogram xlab ylab ggtitle guides
 #'  guide_legend theme_bw
 #' @importFrom ggsci scale_fill_gsea
@@ -112,8 +111,7 @@ plot.methytmle <- function(x, ..., type = "both") {
 #'  heatmap to the graphics device. The heatmap is constructed using the
 #'  \code{superheat} package.
 #'
-#' @importFrom magrittr "%>%"
-#' @importFrom dplyr select slice arrange transmute
+#' @importFrom dplyr "%>%" select slice arrange transmute
 #' @importFrom superheat superheat
 #'
 #' @export
@@ -200,10 +198,9 @@ methyheat <- function(x, ..., n_sites = 25, type = "raw") {
 #'  The volcano plot is used to detect possibly false positive cases, where a
 #'  test statistic is significant due to low variance.
 #'
-#' @importFrom magrittr "%>%"
-#' @importFrom dplyr select slice arrange transmute
+#' @importFrom dplyr "%>%" select slice arrange transmute
 #' @importFrom ggplot2 ggplot aes geom_point xlab ylab ggtitle xlim guides
-#'  theme_bw
+#'  guide_legend theme_bw
 #' @importFrom ggsci scale_fill_gsea
 #'
 #' @export
@@ -256,7 +253,8 @@ methyvolc <- function(x, param_bound = 2.0, pval_bound = 0.2) {
     ggplot2::ylab("-log10(raw p-value)") +
     ggplot2::xlim(max(abs(into_volcano$param)) * c(-1, 1)) +
     ggsci::scale_fill_gsea() +
-    ggplot2::guides(color = FALSE) +
+    ggplot2::guides(color = ggplot2::guide_legend(title = NULL)) +
+    # ggplot2::guides(color = FALSE) +
     ggplot2::theme_bw()
   return(p)
 }

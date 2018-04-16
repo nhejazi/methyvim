@@ -19,8 +19,7 @@ abstract: |
   learning to estimating quantities of scientific interest in computational
   biology.
 vignette: >
-  %\VignetteIndexEntry{Targeted Data-Adaptive Estimation and Inference for
-    Differential Methylation Analysis}
+  %\VignetteIndexEntry{Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
