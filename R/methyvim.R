@@ -78,12 +78,12 @@ utils::globalVariables(c("colData<-"))
 #'  Current choices include \code{tmle}, \code{drtmle}, and \code{tmle.npvi}.
 #'
 #' @return An object of class \code{methytmle}, with all unique slots filled in,
-#'         in particular, including indices of CpG sites that pass screening,
-#'         cluster of neighboring CpG sites, and a matrix of the results of the
-#'         estimation procedure performed for the given variable importance
-#'         measure. Optionally, estimates of the propensity score and outcome
-#'         regressions, as well as the original data rotated into influence
-#'         curve space may be returned, if so requested.
+#'  in particular, including indices of CpG sites that pass screening, cluster
+#'  of neighboring CpG sites, and a matrix of the results of the estimation
+#'  procedure performed for the given variable importance measure. Optionally,
+#'  estimates of the propensity score and outcome regressions, as well as the
+#'  original data rotated into influence curve space may be returned, if so
+#'  requested.
 #'
 #' @importFrom SummarizedExperiment colData
 #' @importFrom BiocParallel bplapply
@@ -122,11 +122,14 @@ methyvim <- function(data_grs,
                      return_ic = FALSE,
                      shrink_ic = FALSE,
                      tmle_type = c("glm", "sl"),
-                     tmle_args = list(family = "binomial",
-                                      g_lib = NULL, Q_lib = NULL,
-                                      npvi_cutoff = 0.25, npvi_descr = NULL),
-                     tmle_backend = c("tmle", "drtmle", "tmle.npvi")
-                    ) {
+                     tmle_args = list(
+                       family = "binomial",
+                       g_lib = c("SL.mean", "SL.glm", "SL.bayesglm", "SL.gam"),
+                       Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
+                       npvi_cutoff = 0.25,
+                       npvi_descr = NULL
+                     ),
+                     tmle_backend = c("tmle", "drtmle", "tmle.npvi")) {
   # ============================================================================
   # catch input for user convenience and check input types where possible
   # ============================================================================
@@ -139,20 +142,11 @@ methyvim <- function(data_grs,
   type <- match.arg(type)
   filter <- match.arg(filter)
   tmle_type <- match.arg(tmle_type)
+  tmle_backend <- match.arg(tmle_backend)
 
   # check that variable of interest is the correct length
   if (length(var_int) != ncol(data_grs)) {
     stop("Variable of interest is not the same size as number of observations.")
-  }
-
-  # ============================================================================
-  # set treatment mechanism and outcome regression libraries
-  # ============================================================================
-  if(is.null(tmle_args$g_lib)) {
-    tmle_args$g_lib <- c("SL.mean", "SL.glm", "SL.bayesglm", "SL.gam")
-  }
-  if(is.null(tmle_args$Q_lib)) {
-    tmle_args$Q_lib <- c("SL.mean", "SL.glm", "SL.gam", "SL.earth", "SL.nnet")
   }
 
   # ============================================================================
@@ -170,12 +164,15 @@ methyvim <- function(data_grs,
   # if NPVI parameter requested, set sensible defaults
   # ============================================================================
   if (vim == "npvi" & is.null(tmle_args$npvi_descr)) {
-    npvi_descr_defaults <- list(f = identity, iter = 10, cvControl = 2,
-                                nMax = 30,
-                                stoppingCriteria = list(mic = 0.001,
-                                                        div = 0.001,
-                                                        psi = 0.01)
-                               )
+    npvi_descr_defaults <- list(
+      f = identity, iter = 10, cvControl = 2,
+      nMax = 30,
+      stoppingCriteria = list(
+        mic = 0.001,
+        div = 0.001,
+        psi = 0.01
+      )
+    )
     tmle_args$npvi_descr <- npvi_descr_defaults
   }
 
@@ -186,28 +183,32 @@ methyvim <- function(data_grs,
   methy_tmle@call <- call
   methy_tmle@var_int <- var_int
 
-  #=============================================================================
+  # =============================================================================
   # set up parallelization if so desired
   # ============================================================================
-  set_parallel(parallel = parallel,
-               future_param = future_param,
-               bppar_type = bppar_type)
+  set_parallel(
+    parallel = parallel,
+    future_param = future_param,
+    bppar_type = bppar_type
+  )
 
-  #=============================================================================
+  # =============================================================================
   # screen sites to produce a subset on which to estimate VIMs
   # ============================================================================
   if (filter == "limma") {
-    methy_tmle <- limma_screen(methytmle = methy_tmle,
-                               var_int = var_int,
-                               type = type)
+    methy_tmle <- limma_screen(
+      methytmle = methy_tmle,
+      var_int = var_int,
+      type = type
+    )
   }
 
-  #=============================================================================
+  # =============================================================================
   # cluster sites based on genomic windows
-  #=============================================================================
+  # =============================================================================
   methy_tmle <- cluster_sites(methytmle = methy_tmle)
 
-  #=============================================================================
+  # =============================================================================
   # TMLEs for the Average Treatment Effect (ATE) and Risk Ratio (RR) parameters
   # ============================================================================
   if (vim %in% c("ate", "rr")) {
@@ -230,9 +231,11 @@ methyvim <- function(data_grs,
     if (tmle_backend == "tmle") {
       methyvim_est <- methyvim_tmle
     } else if (tmle_backend == "drtmle") {
-      methyvim_est <- methyvim_drtmle
+      methyvim_est <- methyvim_tmle
+      #methyvim_est <- methyvim_drtmle
     } else if (tmle_backend == "tmle.npvi") {
-      methyvim_est <- methyvim_npvi
+      methyvim_est <- methyvim_tmle
+      #methyvim_est <- methyvim_npvi
     }
 
     # avoid some try-errors by wrapping estimation function in try statement
@@ -240,30 +243,34 @@ methyvim <- function(data_grs,
 
     # Perform the estimation procedure in parallel
     methy_vim_out <- BiocParallel::bplapply(methy_tmle_ind,
-                                            FUN = methyvim_est_try,
-                                            methytmle_screened = methy_tmle,
-                                            var_of_interest = var_of_interest,
-                                            type = type,
-                                            corr = corr_max,
-                                            obs_per_covar = obs_per_covar,
-                                            target_param = vim,
-                                            g_lib = tmle_args$g_lib,
-                                            Q_lib = tmle_args$Q_lib,
-                                            family = tmle_args$family,
-                                            return_ic = return_ic
-                                           )
+      FUN = methyvim_est_try,
+      methytmle_screened = methy_tmle,
+      var_of_interest = var_of_interest,
+      type = type,
+      corr = corr_max,
+      obs_per_covar = obs_per_covar,
+      target_param = vim,
+      g_lib = tmle_args$g_lib,
+      Q_lib = tmle_args$Q_lib,
+      family = tmle_args$family,
+      return_ic = return_ic
+    )
     methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
 
     # TMLE procedure is now done, so let's just make the output object pretty...
     if (vim == "ate") {
-      colnames(methy_vim_out) <- c("lowCI_ATE", "est_ATE", "upCI_ATE",
-                                   "var_ATE", "pval", "n_W", "n_W_contr",
-                                   "max_cor_n_W")
+      colnames(methy_vim_out) <- c(
+        "lwr_ci", "est_ate", "upr_ci",
+        "var_ate", "pval", "n_neighbors", "n_neighbors_control",
+        "max_cor_neighbors"
+      )
       methy_tmle@param <- "Average Treatment Effect"
     } else {
-      colnames(methy_vim_out) <- c("lowCI_logRR", "est_logRR", "upCI_logRR",
-                                   "var_logRR", "pval", "n_W", "n_W_contr",
-                                   "max_cor_n_W")
+      colnames(methy_vim_out) <- c(
+        "lwr_ci", "est_logrr", "upr_ci",
+        "var_logrr", "pval", "n_neighbors", "n_neighbors_control",
+        "max_cor_neighbors"
+      )
       methy_tmle@param <- "Risk Ratio"
     }
 
@@ -273,4 +280,3 @@ methyvim <- function(data_grs,
   # Let's give 'em some output
   return(methy_tmle)
 }
-

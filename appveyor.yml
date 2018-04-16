@@ -16,7 +16,6 @@ cache:
 branches:
   only:
     - master
-    - develop
 
 environment:
   global:
@@ -30,17 +29,17 @@ environment:
 build_script:
   - Rscript -e "source('http://bioconductor.org/biocLite.R')"
   - travis-tool.sh install_deps
+  - travis-tool.sh install_bioc BiocStyle
+  - travis-tool.sh install_bioc BiocCheck
   - travis-tool.sh install_bioc BiocGenerics
+  - travis-tool.sh install_bioc BiocParallel
+  - travis-tool.sh install_bioc SummarizedExperiment
+  - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc IRanges
   - travis-tool.sh install_bioc GenomeInfoDb
-  - travis-tool.sh install_bioc SummarizedExperiment
-  - travis-tool.sh install_bioc BiocParallel
-  - travis-tool.sh install_bioc BiocCheck
-  - travis-tool.sh install_bioc BiocStyle
   - travis-tool.sh install_bioc bumphunter
   - travis-tool.sh install_bioc minfi
   - travis-tool.sh install_bioc minfiData
-  - travis-tool.sh install_bioc limma
   - travis-tool.sh install_bioc_deps
   - Rscript -e "source('http://bioconductor.org/biocLite.R'); biocLite(ask = FALSE)"
   - travis-tool.sh install_github jimhester/covr

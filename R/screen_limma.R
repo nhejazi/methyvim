@@ -33,7 +33,6 @@
 #' @importFrom lumi beta2m
 #
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
-
   stopifnot(class(methytmle) == "methytmle")
 
   # setup design matrix

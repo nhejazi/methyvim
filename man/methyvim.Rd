@@ -9,9 +9,10 @@ methyvim(data_grs, var_int, vim = c("ate", "rr", "npvi"), type = c("Beta",
   corr_max = 0.75, obs_per_covar = 20, sites_comp = NULL,
   parallel = TRUE, future_param = NULL, bppar_type = NULL,
   return_ic = FALSE, shrink_ic = FALSE, tmle_type = c("glm", "sl"),
-  tmle_args = list(family = "binomial", g_lib = NULL, Q_lib = NULL,
-  npvi_cutoff = 0.25, npvi_descr = NULL), tmle_backend = c("tmle", "drtmle",
-  "tmle.npvi"))
+  tmle_args = list(family = "binomial", g_lib = c("SL.mean", "SL.glm",
+  "SL.bayesglm", "SL.gam"), Q_lib = c("SL.mean", "SL.glm", "SL.gam",
+  "SL.earth"), npvi_cutoff = 0.25, npvi_descr = NULL),
+  tmle_backend = c("tmle", "drtmle", "tmle.npvi"))
 }
 \arguments{
 \item{data_grs}{An object of class \code{minfi::GenomicRatioSet}, containing
@@ -102,12 +103,12 @@ Current choices include \code{tmle}, \code{drtmle}, and \code{tmle.npvi}.}
 }
 \value{
 An object of class \code{methytmle}, with all unique slots filled in,
-        in particular, including indices of CpG sites that pass screening,
-        cluster of neighboring CpG sites, and a matrix of the results of the
-        estimation procedure performed for the given variable importance
-        measure. Optionally, estimates of the propensity score and outcome
-        regressions, as well as the original data rotated into influence
-        curve space may be returned, if so requested.
+ in particular, including indices of CpG sites that pass screening, cluster
+ of neighboring CpG sites, and a matrix of the results of the estimation
+ procedure performed for the given variable importance measure. Optionally,
+ estimates of the propensity score and outcome regressions, as well as the
+ original data rotated into influence curve space may be returned, if so
+ requested.
 }
 \description{
 Computes the Targeted Minimum Loss-Based Estimate of a specified statistical

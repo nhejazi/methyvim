@@ -6,9 +6,9 @@ citEntry(
     entry        = "Misc",
     doi          = "",
     url          = "",
-    year         = "2017",
+    year         = "2018",
     month        = "",
-    publisher    = "",
+    publisher    = "forthcoming",
     volume       = "",
     number       = "",
     author       = "Nima S. Hejazi, Rachael V. Phillips, Alan E. Hubbard, Mark
@@ -17,9 +17,9 @@ citEntry(
                     methylation in R",
     journal      = "",
     textVersion  = paste("Hejazi, NS, Phillips, RV, Hubbard, AE, and van der
-                          Laan, MJ (2017).",
+                          Laan, MJ (2018).",
                          "methyvim: Targeted and model-free analysis of
                           differential methylation in R",
-                         "",
+                         "(forthcoming)",
                          "")
 )

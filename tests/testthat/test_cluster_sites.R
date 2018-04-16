@@ -33,4 +33,3 @@ test_that("classes of clustered object and of unclustered object match", {
 test_that("class types of clustered object and of unclustered object match", {
   expect_equivalent(typeof(clustered), typeof(methytmle))
 })
-

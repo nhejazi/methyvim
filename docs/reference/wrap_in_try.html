@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CpG Neighborhoods from Genomic Distance — cluster_sites • methyvim</title>
+<title>Wrap a Function in a Try Statement — wrap_in_try • methyvim</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -27,10 +27,10 @@
 <script src="../pkgdown.js"></script>
   
   
-<meta property="og:title" content="CpG Neighborhoods from Genomic Distance — cluster_sites" />
+<meta property="og:title" content="Wrap a Function in a Try Statement — wrap_in_try" />
 
-<meta property="og:description" content="Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
-INTERNAL USE ONLY." />
+<meta property="og:description" content="Function factory that generates versions of functions wrapped in try.
+Originally fround in and borrowed from package origami." />
 <meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -99,40 +99,28 @@ INTERNAL USE ONLY." />
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>CpG Neighborhoods from Genomic Distance</h1>
+    <h1>Wrap a Function in a Try Statement</h1>
     </div>
 
     
-    <p>Clustering of CpG sites to define CpG neighborhoods based on distance (bp).
-INTERNAL USE ONLY.</p>
+    <p>Function factory that generates versions of functions wrapped in <code>try</code>.
+Originally fround in and borrowed from package <code>origami</code>.</p>
     
 
-    <pre class="usage"><span class='fu'>cluster_sites</span>(<span class='no'>methytmle</span>, <span class='kw'>window_size</span> <span class='kw'>=</span> <span class='fl'>1000</span>)</pre>
+    <pre class="usage"><span class='fu'>wrap_in_try</span>(<span class='no'>fun</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>methytmle</th>
-      <td><p>Object of class <code>methytmle</code> produced from an object of
-class <code>GenomicRatioSet</code>, but containing extra slots.</p></td>
+      <th>fun</th>
+      <td><p>A <code>function</code> to be wrapped in a <code>try</code> statement.</p></td>
     </tr>
     <tr>
-      <th>window_size</th>
-      <td><p>Numeric giving the number of base pairs used to define
-neighborhoods along the genome. CpG sites within this distance (bp) of one
-another are denoted as neighbors. Chromosome boundaries and other biological
-constraints are respected (see the documentation available for
-<code><a href='http://www.rdocumentation.org/packages/bumphunter/topics/clusterMaker'>bumphunter::clusterMaker</a></code> for details).</p></td>
+      <th>...</th>
+      <td><p>Additional arguments passed to the previous argument <code>fun</code>.</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>An object of class <code>methytmle</code> with the "clusters" slot filled
- in. The "clusters" slot contains a <code>numeric</code> vector as long as the
- number of CpG sites. Each entry in the vector is a neighborhood assignment
- used in the estimation procedure.</p>
     
 
   </div>
@@ -140,9 +128,7 @@ constraints are respected (see the documentation available for
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

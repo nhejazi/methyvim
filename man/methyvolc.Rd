@@ -11,18 +11,18 @@ methyvolc(x, param_bound = 2, pval_bound = 0.2)
 to \code{methyvim}.}
 
 \item{param_bound}{Numeric for a threshold indicating the magnitude of the
-size of the effect considered to be interesting. This is used to
-assign groupings and colors to individual CpG sites.}
+size of the effect considered to be interesting. This is used to assign
+groupings and colors to individual CpG sites.}
 
 \item{pval_bound}{Numeric for a threshold indicating the magnitude of
-p-values deemed to be interesting. This is used to assign groupings
-and colors to individual CpG sites.}
+p-values deemed to be interesting. This is used to assign groupings and
+colors to individual CpG sites.}
 }
 \value{
 Object of class \code{ggplot} containing a volcano plot of the
-        estimated effect size on the x-axis and the -log10(p-value) on the
-        y-axis. The volcano plot is used to detect possibly false positive
-        cases, where a test statistic is significant due to low variance.
+ estimated effect size on the x-axis and the -log10(p-value) on the y-axis.
+ The volcano plot is used to detect possibly false positive cases, where a
+ test statistic is significant due to low variance.
 }
 \description{
 Volcano plot for methytmle objects
