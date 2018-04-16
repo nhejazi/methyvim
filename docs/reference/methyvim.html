@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,14 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="Differential Methylation Statistics with Variable Importance Measures — methyvim" />
+
+<meta property="og:description" content="Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
+target parameter, formally defined within models from causal inference. The
+variable importance measures currently supported are the Average Treatment
+Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
+defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;)." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -52,7 +62,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -68,12 +78,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/using_methyvim.html">`methyvim`: Variable Importance Measures for Differential Methylation</a>
+      <a href="../articles/using_methyvim.html">`methyvim`: Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -112,7 +119,8 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;).</p
   <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>future_param</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bppar_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>return_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>shrink_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmle_type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"glm"</span>, <span class='st'>"sl"</span>),
   <span class='kw'>tmle_args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"binomial"</span>, <span class='kw'>g_lib</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Q_lib</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>))</pre>
+  <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>), <span class='kw'>tmle_backend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"tmle"</span>, <span class='st'>"drtmle"</span>,
+  <span class='st'>"tmle.npvi"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -127,27 +135,27 @@ Consult the documentation for <code>minfi</code> to construct such objects.</p><
       <th>var_int</th>
       <td><p>A <code>numeric</code> vector containing subject-level measurements
 of the variable of interest. The length of this vector must match the
-number of subjects exactly. If argument <code>vim</code> is set to "ate" or
-"rr", then the variable of interest is treated as an exposure, and the
-variable must be binary in such cases. If setting <code>vim</code> to target
-parameters assessing continuous treatment effects, then the variable
-need not be binary of course.</p></td>
+number of subjects exactly. If argument <code>vim</code> is set to "ate" or "rr",
+then the variable of interest is treated as an exposure, and the variable
+must be binary in such cases. If setting <code>vim</code> to target parameters
+assessing continuous treatment effects, then the variable need not be binary
+of course.</p></td>
     </tr>
     <tr>
       <th>vim</th>
-      <td><p>Character indicating the variable importance measure to be used
-in the estimation procedure. Currently supported options are the ATE
-for discretized exposures and NPVI for continuous exposures. ATE and
-RR are the appropriate choices when the underlying scientific question
-is of the effect of an exposure on methylation, while NPVI (and other
-continuous treatment parameters) ought to be used when the effect of
-methylation on an outcome is sought.</p></td>
+      <td><p>Character indicating the variable importance measure to be used in
+the estimation procedure. Currently supported options are the ATE for
+discretized exposures and NPVI for continuous exposures. ATE and RR are the
+appropriate choices when the underlying scientific question is of the effect
+of an exposure on methylation, while NPVI (and other continuous treatment
+parameters) ought to be used when the effect of methylation on an outcome is
+sought.</p></td>
     </tr>
     <tr>
       <th>type</th>
       <td><p>Character indicating the particular measure of DNA methylation to
-be used as the observed data in the estimation procedure, either Beta
-values or M-values. The data are accessed via <code><a href='http://www.rdocumentation.org/packages/minfi/topics/MethylSet-class'>minfi::getBeta</a></code> or
+be used as the observed data in the estimation procedure, either Beta values
+or M-values. The data are accessed via <code><a href='http://www.rdocumentation.org/packages/minfi/topics/MethylSet-class'>minfi::getBeta</a></code> or
 <code><a href='http://www.rdocumentation.org/packages/minfi/topics/MethylSet-class'>minfi::getM</a></code>.</p></td>
     </tr>
     <tr>
@@ -174,28 +182,28 @@ site can have with the target site.</p></td>
     <tr>
       <th>obs_per_covar</th>
       <td><p>Numeric indicating the number of observations needed for
-for covariate included in W for downstream analysis. This ensures the
-data is sufficient to control for the covariates.</p></td>
+for covariate included in W for downstream analysis. This ensures the data
+is sufficient to control for the covariates.</p></td>
     </tr>
     <tr>
       <th>sites_comp</th>
       <td><p>A <code>numeric</code> indicating the maximum number of sites for
-which a variable importance measure is to be estimated post-screening.
-This is not typically useful in scientific settings, but may be useful
-when a large number of CpG sites pass the initial screening phase.</p></td>
+which a variable importance measure is to be estimated post-screening. This
+is not typically useful in scientific settings, but may be useful when a
+large number of CpG sites pass the initial screening phase.</p></td>
     </tr>
     <tr>
       <th>parallel</th>
       <td><p>Logical indicating whether parallelization ought to be used.
-See the documentation of <code>set_parallel</code> for more information, as
-this arugment is passed directly to that internal function.</p></td>
+See the documentation of <code>set_parallel</code> for more information, as this
+argument is passed directly to that internal function.</p></td>
     </tr>
     <tr>
       <th>future_param</th>
       <td><p>Character indicating the type of parallelization to be
 used from the list available via the <code>future</code> package. See the
-documentation for <code>set_parallel</code> for more information, as this
-argument is passed directly to that internal function.</p></td>
+documentation for <code>set_parallel</code> for more information, as this argument
+is passed directly to that internal function.</p></td>
     </tr>
     <tr>
       <th>bppar_type</th>
@@ -217,20 +225,27 @@ the variance in the ic based estimates in <code>return_ic</code>.</p></td>
     <tr>
       <th>tmle_type</th>
       <td><p>Character indicating the general class of regression models
-to be used in fitting the propensity score and outcome regressions.
-This is generally a shorthand and is overridden by <code>tmle_args</code> if
-that argument is changed from its default values.</p></td>
+to be used in fitting the propensity score and outcome regressions. This is
+generally a shorthand and is overridden by <code>tmle_args</code> if that argument
+is changed from its default values.</p></td>
     </tr>
     <tr>
       <th>tmle_args</th>
       <td><p>List giving several key arguments to be passed to one of
 <code><a href='http://www.rdocumentation.org/packages/tmle/topics/tmle'>tmle::tmle</a></code> or <code>tmle.npvi::tmle.npvi</code>, depending on the
 particular variable importance measure specified. This overrides
-<code>tmle_type</code>, which itself provides sensible defaults. Consider
-changing this away from default settings only if you have sufficient
-experience with theory and software for targeted learning. For more
-information, consider consulting the documentation of the <code>tmle</code>
-and <code>tmle.npvi</code> packages.</p></td>
+<code>tmle_type</code>, which itself provides sensible defaults. Consider changing
+this away from default settings only if you have sufficient experience with
+software and the underlying theory for Targeted Learning. For more
+information, consider consulting the documentation of the <code>tmle</code> and
+<code>tmle.npvi</code> packages.</p></td>
+    </tr>
+    <tr>
+      <th>tmle_backend</th>
+      <td><p>A <code>character</code> indicating the package to be used in
+the estimation procedure. The user should only set this parameter if they
+have sufficient familiarity with the backend packages used for estimation.
+Current choices include <code>tmle</code>, <code>drtmle</code>, and <code>tmle.npvi</code>.</p></td>
     </tr>
     </table>
     
@@ -275,7 +290,7 @@ and <code>tmle.npvi</code> packages.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -283,3 +298,4 @@ and <code>tmle.npvi</code> packages.</p></td>
 
   </body>
 </html>
+

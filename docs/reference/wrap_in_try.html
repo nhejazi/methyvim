@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FDR-MSA correction — fdr_msa • methyvim</title>
+<title>Wrap a Function in a Try Statement — wrap_in_try • methyvim</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -27,10 +27,10 @@
 <script src="../pkgdown.js"></script>
   
   
-<meta property="og:title" content="FDR-MSA correction — fdr_msa" />
+<meta property="og:title" content="Wrap a Function in a Try Statement — wrap_in_try" />
 
-<meta property="og:description" content="Modified FDR Controlling Procedure for Multi-Stage Analyses (MJ van der Laan
-and C Tuglus, 2009, &lt;doi:10.2202/1544-6115.1397&gt;)" />
+<meta property="og:description" content="Function factory that generates versions of functions wrapped in try.
+Originally fround in and borrowed from package origami." />
 <meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -99,54 +99,36 @@ and C Tuglus, 2009, &lt;doi:10.2202/1544-6115.1397&gt;)" />
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>FDR-MSA correction</h1>
+    <h1>Wrap a Function in a Try Statement</h1>
     </div>
 
     
-    <p>Modified FDR Controlling Procedure for Multi-Stage Analyses (MJ van der Laan
-and C Tuglus, 2009, &lt;doi:10.2202/1544-6115.1397&gt;)</p>
+    <p>Function factory that generates versions of functions wrapped in <code>try</code>.
+Originally fround in and borrowed from package <code>origami</code>.</p>
     
 
-    <pre class="usage"><span class='fu'>fdr_msa</span>(<span class='no'>pvals</span>, <span class='no'>total_obs</span>)</pre>
+    <pre class="usage"><span class='fu'>wrap_in_try</span>(<span class='no'>fun</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>pvals</th>
-      <td><p>Numeric vector containing the p-values that result from any
-chosen statistical hypothesis testing procedure.</p></td>
+      <th>fun</th>
+      <td><p>A <code>function</code> to be wrapped in a <code>try</code> statement.</p></td>
     </tr>
     <tr>
-      <th>total_obs</th>
-      <td><p>Numeric indicating the total number of observations that
-would have been available for testing prior to the selection procedure
-employed in the multi-stage analysis performed.</p></td>
+      <th>...</th>
+      <td><p>Additional arguments passed to the previous argument <code>fun</code>.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>numeric</code> vector of corrected p-values, controlling the False
-        Discovery Rate, using the method of Tuglus and van der Laan.</p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fl'>1e4</span>
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>1e2</span>
-<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>abs</span>(<span class='fu'>rnorm</span>(<span class='no'>n</span>, <span class='kw'>mean</span> <span class='kw'>=</span> <span class='fl'>1e-8</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>1e-2</span>))
-<span class='co'># treating the vector p as one of p-values, FDR-MSA may be applied</span>
-<span class='no'>fdr_p</span> <span class='kw'>&lt;-</span> <span class='fu'>fdr_msa</span>(<span class='kw'>pvals</span> <span class='kw'>=</span> <span class='no'>p</span>, <span class='kw'>total_obs</span> <span class='kw'>=</span> <span class='no'>g</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>

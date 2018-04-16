@@ -1,7 +1,7 @@
 ---
 title: '`methyvim`: Targeted Data-Adaptive Estimation and Inference for
   Differential Methylation Analysis'
-author: "[Nima Hejazi](https://nimahejazi.org)"
+author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document
@@ -163,9 +163,9 @@ examining `methyvim` by example.
 ## Preliminaries: Setting up the Data
 
 ```{r reqs, echo=FALSE}
-suppressMessages(library(tmle))
-suppressMessages(library(minfi))
-suppressMessages(library(SummarizedExperiment))
+library(tmle, quietly = TRUE)
+library(minfi, quietly = TRUE)
+library(SummarizedExperiment, quietly = TRUE)
 ```
 
 First, we'll load the `methyvim` package and the example data contained in the
