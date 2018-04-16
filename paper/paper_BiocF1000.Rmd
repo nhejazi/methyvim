@@ -3,17 +3,23 @@ title: '`methyvim`: Targeted and Model-free Differential Methylation Analysis in
   R'
 author:
   - name: Nima S. Hejazi
-    affiliation: Division of Biostatistics, University of California, Berkeley
+    affiliation:
+      - Group in Biostatistics, University of California, Berkeley
+      - Center for Computational Biology, University of California, Berkeley
     orcid: 0000-0002-7127-2789
+    email: nhejazi@berkeley.edu
   - name: Rachael V. Phillips
-    affiliation: Division of Biostatistics, University of California, Berkeley
+    affiliation:
+      - Group in Biostatistics, University of California, Berkeley
     orcid: 0000-0002-8474-591X
   - name: Alan E. Hubbard
-    affiliation: Division of Biostatistics, University of California, Berkeley
+    affiliation:
+      - Group in Biostatistics, University of California, Berkeley
     orcid: 0000-0002-3769-0127
   - name: Mark J. van der Laan
-    affiliation: Division of Biostatistics, University of California, Berkeley
-    orcid: TBA
+    affiliation:
+      - Group in Biostatistics, University of California, Berkeley
+      - Department of Statistics, University of California, Berkeley
 abstract: |
   We present `methyvim`, a general algorithm for the nonparametric estimation of
   treatment/exposure effects on DNA methylation at CpG sites, complete with
@@ -402,9 +408,9 @@ Software license: The MIT License, copyright Nima S. Hejazi
 # Author contributions
 
 NH designed and implemented the software package, applied the tool to the use
-cases, and co-drafted the present article. RP helped in designing the software
-and co-drafted the present article. AH and ML serve as the advisors for the
-development of this software and general statistical algorithm.
+cases presented, and co-drafted the present manuscript. RP helped in designing
+the software and co-drafted the present article. AH and ML served as advisors
+for the development of this software and general statistical algorithm.
 
 # Competing interests
 
@@ -412,11 +418,11 @@ No competing interests were disclosed.
 
 # Grant information
 
-NH was supported in part by the National Library Of Medicine of the National
-Institutes of Health under Award Number T32LM012417, by [SUPERFUND GRANT], and
-by [NINA HOLLAND GRANT]. RP was supported by [SUPERFUND GRANT]. The content of
-this work is solely the responsibility of the authors and does not necessarily
-represent the official views of the various funding sources and agencies.
+NH was supported in part by the National Library of Medicine of the National
+Institutes of Health under Award Number T32-LM012417, by P42-ES004705, and
+by R01-ES021369. RP was supported by P42-ES004705. The content of this work is
+solely the responsibility of the authors and does not necessarily represent the
+official views of the various funding sources and agencies.
 
 # References
 
