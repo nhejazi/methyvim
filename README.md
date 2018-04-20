@@ -12,6 +12,10 @@ Status](https://img.shields.io/codecov/c/github/nhejazi/methyvim/master.svg)](ht
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Bioc
+Time](http://bioconductor.org/shields/years-in-bioc/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
+[![Bioc
+Downloads](http://bioconductor.org/shields/downloads/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
 [![MIT
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/79256902.svg)](https://zenodo.org/badge/latestdoi/79256902)
@@ -145,7 +149,7 @@ For details on how to best use the `methyvim` R package, please consult
 the most recent [package
 vignette](http://bioconductor.org/packages/release/bioc/vignettes/methyvim/inst/doc/using_methyvim.html)
 available through the [Bioconductor
-Project](https://bioconductor.org/packages/methvim).
+project](https://bioconductor.org/packages/methvim).
 
 -----
 
