@@ -1,12 +1,14 @@
-methyvim 1.1.0:
+methyvim 1.1.0 (BioC 3.7):
 - An updated release of this package for Bioconductor 3.7, released April 2018.
+- This release primarily implements minor changes, including the use of colors
+  in the plots produced by the visualization methods.
 
-methyvim 1.0.0:
-- The first release of this package was made as part of Bioconductor 3.6, in
-   October 2017.
+methyvim 1.0.0 (BioC 3.6):
+- The first release of this package was made as part of Bioconductor 3.6,
+  released in October 2017.
 
-The methyvim R package provides routines for the method first described in the
-the technical manuscript [1] and the software paper [2]:
+The methyvim R package provides routines for statistical methodology first
+described in the technical manuscript [1] and the software paper [2]:
 
 1. Nima S. Hejazi, Alan E. Hubbard, Mark J. van der Laan. Data-adaptive and
    nonparametric analysis of differential methylation with variable importance
