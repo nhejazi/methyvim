@@ -1,3 +1,6 @@
+methyvim 1.1.0:
+- An updated release of this package for Bioconductor 3.7, released April 2018.
+
 methyvim 1.0.0:
 - The first release of this package was made as part of Bioconductor 3.6, in
    October 2017.
