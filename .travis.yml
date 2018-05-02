@@ -17,11 +17,8 @@ r:
 before_install:
   - Rscript -e 'update.packages(ask = FALSE)'
 
-r_packages:
-  - devtools
-  - covr
-
 r_github_packages:
+  - r-lib/devtools
   - jimhester/covr
   - nhejazi/methyvimData
 
