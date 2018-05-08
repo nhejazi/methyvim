@@ -45,7 +45,7 @@ bioc_packages:
 
 after_success:
   ## coverage
-  - travis_wait 60 Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
+  - travis_wait 80 Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
   - R CMD BiocCheck .
 
 on_failure:
