@@ -6,6 +6,7 @@ init:
         $ErrorActionPreference = "Stop"
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
+
 install:
   ps: Bootstrap
 
@@ -27,10 +28,12 @@ environment:
     - R_VERSION: release
 
 build_script:
-  - Rscript -e "source('http://bioconductor.org/biocLite.R')"
   - travis-tool.sh install_deps
-  - travis-tool.sh install_bioc BiocStyle
+  - travis-tool.sh install_github r-lib/devtools
+  - travis-tool.sh install_github jimhester/covr
+  - travis-tool.sh install_github nhejazi/methyvimData
   - travis-tool.sh install_bioc BiocCheck
+  - travis-tool.sh install_bioc BiocStyle
   - travis-tool.sh install_bioc BiocGenerics
   - travis-tool.sh install_bioc BiocParallel
   - travis-tool.sh install_bioc SummarizedExperiment
@@ -41,9 +44,6 @@ build_script:
   - travis-tool.sh install_bioc minfi
   - travis-tool.sh install_bioc minfiData
   - travis-tool.sh install_bioc_deps
-  - Rscript -e "source('http://bioconductor.org/biocLite.R'); biocLite(ask = FALSE)"
-  - travis-tool.sh install_github jimhester/covr
-  - travis-tool.sh install_github nhejazi/methyvimData
 
 test_script:
   - travis-tool.sh run_tests
