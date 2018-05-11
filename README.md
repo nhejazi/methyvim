@@ -12,6 +12,10 @@ Status](https://img.shields.io/codecov/c/github/nhejazi/methyvim/master.svg)](ht
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Bioc
+Time](http://bioconductor.org/shields/years-in-bioc/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
+[![Bioc
+Downloads](http://bioconductor.org/shields/downloads/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
 [![MIT
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/79256902.svg)](https://zenodo.org/badge/latestdoi/79256902)
@@ -145,7 +149,7 @@ For details on how to best use the `methyvim` R package, please consult
 the most recent [package
 vignette](http://bioconductor.org/packages/release/bioc/vignettes/methyvim/inst/doc/using_methyvim.html)
 available through the [Bioconductor
-Project](https://bioconductor.org/packages/methvim).
+project](https://bioconductor.org/packages/methvim).
 
 -----
 
@@ -234,7 +238,7 @@ JSTOR, 289–300.
 Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012.
 “Estimation of a Non-Parametric Variable Importance Measure of a
 Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public
-Access:1059.
+Access: 1059.
 
 </div>
 
@@ -257,7 +261,7 @@ Cambridge University Press.
 Tuglus, Catherine, and Mark J van der Laan. 2009. “Modified FDR
 Controlling Procedure for Multi-Stage Analyses.” *Statistical
 Applications in Genetics and Molecular Biology* 8 (1). Walter de
-Gruyter:1–15. <https://doi.org/10.2202/1544-6115.1397>.
+Gruyter: 1–15. <https://doi.org/10.2202/1544-6115.1397>.
 
 </div>
 

@@ -4,29 +4,29 @@ branches:
 
 env:
   global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual"
+  - RGL_USE_NULL=TRUE
 
 language: r
 sudo: required
 cache: packages
+
 warnings_are_errors: true
-r_check_args: ''
+r_build_args: '--no-manual'
+r_check_args: '--no-build-vignettes --no-manual'
 
 r:
-  - release
-  - devel
+  - bioc-release
+  - bioc-devel
 
 before_install:
   - Rscript -e 'update.packages(ask = FALSE)'
-
-bioc_required: true
 
 r_packages:
   - devtools
   - covr
 
 r_github_packages:
+  - r-lib/devtools
   - jimhester/covr
   - nhejazi/methyvimData
 
@@ -45,10 +45,13 @@ bioc_packages:
   - Harman
   - lumi
 
-## coverage
 after_success:
-  - travis_wait Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
+  ## coverage
+  - travis_wait 80 Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
   - R CMD BiocCheck .
+
+on_failure:
+  - "./travis-tool.sh dump_logs"
 
 notifications:
   email:
