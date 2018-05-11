@@ -50,6 +50,8 @@ Imports:
   GenomeInfoDb,
   bumphunter,
   IRanges,
+  Harman,
+  lumi,
   limma,
   minfi
 Suggests:

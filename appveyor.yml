@@ -43,6 +43,8 @@ build_script:
   - travis-tool.sh install_bioc bumphunter
   - travis-tool.sh install_bioc minfi
   - travis-tool.sh install_bioc minfiData
+  - travis-tool.sh install_bioc Harman
+  - travis-tool.sh install_bioc lumi
   - travis-tool.sh install_bioc_deps
 
 test_script:
@@ -53,7 +55,8 @@ on_failure:
   - appveyor PushArtifact failure.zip
 
 on_success:
-  - Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
+  - travis_wait Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
+  - R CMD BiocCheck .
 
 artifacts:
   - path: '*.Rcheck\**\*.log'

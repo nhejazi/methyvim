@@ -2,7 +2,9 @@
 #'
 #' Reduces the \code{methytmle} object by way of a \code{limma} model with
 #' empirical Bayes shrinkage to include only the CpG sites below the preset
-#' p-value cutoff. INTERNAL USE ONLY.
+#' p-value cutoff. Since M-values display far more centrality in distribution
+#' than do Beta-values, this parametric screening technique converts from Beta-
+#' to M-values before fitting a model. INTERNAL USE ONLY.
 #'
 #' @param methytmle An object of class \code{methytmle}.
 #' @param var_int A \code{numeric} vector containing subject-level measurements
@@ -27,6 +29,8 @@
 #'
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom minfi getBeta getM
+#' @importFrom Harman shiftBetas
+#' @importFrom lumi beta2m
 #
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   stopifnot(class(methytmle) == "methytmle")
@@ -36,7 +40,10 @@ limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
 
   # create expression object for modeling
   if (type == "Beta") {
-    methytmle_exprs <- minfi::getBeta(methytmle)
+    betas <- minfi::getBeta(methytmle)
+    # shifting the betas away from 0 and 1 prevents Inf/Nan M-values
+    betas_shifted <- Harman::shiftBetas(betas, shiftBy = 1e-3)
+    methytmle_exprs <- lumi::beta2m(betas_shifted)
   } else if (type == "Mval") {
     methytmle_exprs <- minfi::getM(methytmle)
   }
