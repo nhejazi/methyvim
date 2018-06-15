@@ -1,6 +1,6 @@
 Package: methyvim
 Title: Targeted Variable Importance for Differential Methylation Analysis
-Version: 1.3.0
+Version: 1.3.1
 Authors@R: c(
   person("Nima", "Hejazi", email = "nh@nimahejazi.org",
          role = c("aut", "cre", "cph"),
@@ -44,6 +44,7 @@ Imports:
   tmle,
   future,
   doFuture,
+  S4Vectors,
   BiocGenerics,
   BiocParallel,
   SummarizedExperiment,

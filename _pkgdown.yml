@@ -1,0 +1,6 @@
+title: methyvim
+url: https://code.nimahejazi.org/methyvim
+template:
+  params:
+    bootswatch: readable
+

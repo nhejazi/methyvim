@@ -35,6 +35,7 @@ bioc_packages:
   - BiocCheck
   - BiocParallel
   - BiocGenerics
+  - S4Vectors
   - SummarizedExperiment
   - GenomeInfoDb
   - bumphunter
