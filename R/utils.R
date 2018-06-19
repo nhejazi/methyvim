@@ -82,3 +82,4 @@ wrap_in_try <- function(fun, ...) {
     }, silent = TRUE)
   return(wrapped)
 }
+

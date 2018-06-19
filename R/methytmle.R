@@ -28,3 +28,18 @@
   ),
   contains = "GenomicRatioSet"
 )
+
+################################################################################
+
+#' @importFrom methods setMethod
+#
+methods::setMethod("show", "methytmle", function(object) {
+  print(noquote(paste("class:", class(object)[1])))
+  print(noquote(paste("data dimension:", paste(as.character(dim(object))[1],
+                      as.character(dim(object))[2]))))
+  print(noquote(paste("annotation:", object@annotation)))
+  print(noquote(paste("target parameter:", object@param)))
+  print(noquote("results:"))
+  print(object@vim)
+})
+

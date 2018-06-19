@@ -102,7 +102,7 @@ multi-stage analyses (FDR-MSA) [@tuglus2009modified].
 For a general discussion of the framework of targeted minimum loss-based
 estimation, the many applications of this methodology, and the role the
 framework plays in statistical causal inference, the recommended references are
-@vdl2011targeted and @vdl2017targeted. @hernan2018causal and @pearl2009causality
+@vdl2011targeted and @vdl2018targeted. @hernan2018causal and @pearl2009causality
 may be of interest to those desiring a more general introduction to statistical
 causal inference.
 
