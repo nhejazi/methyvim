@@ -6,7 +6,7 @@
 #' @importClassesFrom minfi GenomicRatioSet
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #'  RangedSummarizedExperiment
-#' @import S4Vectors
+#' @importClassesFrom S4Vectors Vector Annotated
 #'
 #' @export .methytmle
 #' @exportClass methytmle

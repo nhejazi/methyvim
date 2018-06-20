@@ -117,11 +117,14 @@ inference.
 ## Installation
 
 For standard use, install from
-[Bioconductor](https://bioconductor.org/packages/methyvim):
+[Bioconductor](https://bioconductor.org/packages/methyvim) using
+[`BiocManager`](https://CRAN.R-project.org/package=BiocManager):
 
 ``` r
-source("https://bioconductor.org/biocLite.R")
-biocLite("methyvim")
+if (!("BiocManager" %in% installed.packages())) {
+  install.packages("BiocManager")
+}
+BiocManager::install("methyvim")
 ```
 
 To contribute, install the bleeding-edge *development version* from
