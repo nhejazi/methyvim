@@ -31,3 +31,34 @@
   ),
   contains = "GenomicRatioSet"
 )
+
+################################################################################
+
+#' @importFrom methods setMethod callNextMethod
+#
+methods::setMethod("show", "methytmle", function(object) {
+  methods::callNextMethod()
+  cat("Target Parameter: ")
+  cat(param(object))
+  cat("\nResults: \n")
+  show(vim(object))
+})
+
+################################################################################
+
+#' @importFrom methods setGeneric setMethod
+#
+methods::setGeneric("param", function(object) standardGeneric("param"))
+methods::setMethod("param", "methytmle", function(object) {
+  object@param
+})
+
+################################################################################
+
+#' @importFrom methods setGeneric setMethod
+#
+methods::setGeneric("vim", function(object) standardGeneric("vim"))
+methods::setMethod("vim", "methytmle", function(object) {
+  object@vim
+})
+
