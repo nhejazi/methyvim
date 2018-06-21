@@ -47,6 +47,8 @@ methods::setMethod("show", "methytmle", function(object) {
 ################################################################################
 
 #' @importFrom methods setGeneric setMethod
+#'
+#' @export param
 #
 methods::setGeneric("param", function(object) standardGeneric("param"))
 methods::setMethod("param", "methytmle", function(object) {
@@ -56,6 +58,8 @@ methods::setMethod("param", "methytmle", function(object) {
 ################################################################################
 
 #' @importFrom methods setGeneric setMethod
+#'
+#' @export vim
 #
 methods::setGeneric("vim", function(object) standardGeneric("vim"))
 methods::setMethod("vim", "methytmle", function(object) {
