@@ -31,15 +31,31 @@
 
 ################################################################################
 
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod callNextMethod
 #
 methods::setMethod("show", "methytmle", function(object) {
-  print(noquote(paste("class:", class(object)[1])))
-  print(noquote(paste("data dimension:", paste(as.character(dim(object))[1],
-                      as.character(dim(object))[2]))))
-  print(noquote(paste("annotation:", object@annotation)))
-  print(noquote(paste("target parameter:", object@param)))
-  print(noquote("results:"))
-  print(object@vim)
+  methods::callNextMethod()
+  cat("Target Parameter: ")
+  cat(param(object))
+  cat("\nResults: \n")
+  show(vim(object))
+})
+
+################################################################################
+
+#' @importFrom methods setGeneric setMethod
+#
+methods::setGeneric("param", function(object) standardGeneric("param"))
+methods::setMethod("param", "methytmle", function(object) {
+  object@param
+})
+
+################################################################################
+
+#' @importFrom methods setGeneric setMethod
+#
+methods::setGeneric("vim", function(object) standardGeneric("vim"))
+methods::setMethod("vim", "methytmle", function(object) {
+  object@vim
 })
 
