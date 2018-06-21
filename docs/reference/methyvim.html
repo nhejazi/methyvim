@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -21,20 +21,26 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
 <meta property="og:title" content="Differential Methylation Statistics with Variable Importance Measures — methyvim" />
 
 <meta property="og:description" content="Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
 target parameter, formally defined within models from causal inference. The
 variable importance measures currently supported are the Average Treatment
 Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
-defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;)." />
+defined by Chambaz, Neuvial, and van der Laan &amp;lt;doi:10.1214/12-EJS703&amp;gt;)." />
 <meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -57,8 +63,12 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;)." /
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">methyvim</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">methyvim</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.1</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -92,6 +102,7 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;)." /
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -99,12 +110,15 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;)." /
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Differential Methylation Statistics with Variable Importance Measures</h1>
+    <small class="dont-index">Source: <a href='https://github.com/nhejazi/methyvim/blob/master/R/methyvim.R'><code>R/methyvim.R</code></a></small>
+    <div class="hidden name"><code>methyvim.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
 target parameter, formally defined within models from causal inference. The
@@ -112,6 +126,7 @@ variable importance measures currently supported are the Average Treatment
 Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>methyvim</span>(<span class='no'>data_grs</span>, <span class='no'>var_int</span>, <span class='kw'>vim</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ate"</span>, <span class='st'>"rr"</span>, <span class='st'>"npvi"</span>), <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Beta"</span>,
   <span class='st'>"Mval"</span>), <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"limma"</span>), <span class='kw'>filter_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>window_bp</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
@@ -123,7 +138,7 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;).</p
   <span class='st'>"SL.earth"</span>), <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>),
   <span class='kw'>tmle_backend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"tmle"</span>, <span class='st'>"drtmle"</span>, <span class='st'>"tmle.npvi"</span>))</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -233,7 +248,7 @@ is changed from its default values.</p></td>
     <tr>
       <th>tmle_args</th>
       <td><p>List giving several key arguments to be passed to one of
-<code><a href='http://www.rdocumentation.org/packages/tmle/topics/tmle'>tmle::tmle</a></code> or <code>tmle.npvi::tmle.npvi</code>, depending on the
+<code><a href='http://www.rdocumentation.org/packages/tmle/topics/tmle'>tmle::tmle</a></code> or <code><a href='http://www.rdocumentation.org/packages/tmle.npvi/topics/tmle.npvi.'>tmle.npvi::tmle.npvi</a></code>, depending on the
 particular variable importance measure specified. This overrides
 <code>tmle_type</code>, which itself provides sensible defaults. Consider changing
 this away from default settings only if you have sufficient experience with
@@ -265,12 +280,20 @@ Current choices include <code>tmle</code>, <code>drtmle</code>, and <code>tmle.n
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>methyvimData</span>)
 <span class='fu'>suppressMessages</span>(<span class='fu'>library</span>(<span class='no'>SummarizedExperiment</span>))
 <span class='fu'>data</span>(<span class='no'>grsExample</span>)
-<span class='no'>var_int</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/SummarizedExperiment/topics/SummarizedExperiment-class'>colData</a></span>(<span class='no'>grsExample</span>)[, <span class='fl'>1</span>]</div><div class='output co'>#&gt; <span class='error'>Error in (function (classes, fdef, mtable) {    methods &lt;- .findInheritedMethods(classes, fdef, mtable)    if (length(methods) == 1L)         return(methods[[1L]])    else if (length(methods) == 0L) {        cnames &lt;- paste0("\"", vapply(classes, as.character,             ""), "\"", collapse = ", ")        stop(gettextf("unable to find an inherited method for function %s for signature %s",             sQuote(fdef@generic), sQuote(cnames)), domain = NA)    }    else stop("Internal error in finding inherited methods; didn't return a unique method",         domain = NA)})(list(structure("DataFrame", package = "S4Vectors")), structure(function (x,     use.names = FALSE, ...) standardGeneric("mcols"), generic = structure("mcols", package = "S4Vectors"), package = "S4Vectors", group = list(), valueClass = character(0), signature = c("x", "use.names"), default = `\001NULL\001`, skeleton = (function (x,     use.names = FALSE, ...) stop("invalid call in method dispatch to 'mcols' (no default method)",     domain = NA))(x, use.names, ...), class = structure("standardGeneric", package = "methods")),     &lt;environment&gt;): unable to find an inherited method for function ‘mcols’ for signature ‘"DataFrame"’</span></div><div class='input'><span class='no'>methyvim_out_ate</span> <span class='kw'>&lt;-</span> <span class='fu'>suppressWarnings</span>(
+<span class='no'>var_int</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/SummarizedExperiment/topics/SummarizedExperiment-class'>colData</a></span>(<span class='no'>grsExample</span>)[, <span class='fl'>1</span>]
+<span class='no'>methyvim_out_ate</span> <span class='kw'>&lt;-</span> <span class='fu'>suppressWarnings</span>(
  <span class='fu'>methyvim</span>(<span class='kw'>data_grs</span> <span class='kw'>=</span> <span class='no'>grsExample</span>, <span class='kw'>sites_comp</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>var_int</span> <span class='kw'>=</span> <span class='no'>var_int</span>,
           <span class='kw'>vim</span> <span class='kw'>=</span> <span class='st'>"ate"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"Mval"</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='st'>"limma"</span>, <span class='kw'>filter_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
           <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmle_type</span> <span class='kw'>=</span> <span class='st'>"sl"</span>
          )
-)</div><div class='output co'>#&gt; <span class='error'>Error in methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,     vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,     parallel = FALSE, tmle_type = "sl"): object 'var_int' not found</span></div></pre>
+)</div><div class='output co'>#&gt; <span class='message'>Loading required package: gam</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: splines</span></div><div class='output co'>#&gt; <span class='message'>Loaded gam 1.15</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: earth</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: plotmo</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: plotrix</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: TeachingDemos</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: arm</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: MASS</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Matrix</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘Matrix’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:S4Vectors’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    expand</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: lme4</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>arm (Version 1.10-1, built: 2018-4-12)</span></div><div class='output co'>#&gt; <span class='message'>Working directory is /Users/nimahejazi/git/methyvim/docs/reference</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘arm’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:plotrix’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    rescale</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -296,6 +319,8 @@ Current choices include <code>tmle</code>, <code>drtmle</code>, and <code>tmle.n
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

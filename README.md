@@ -108,7 +108,7 @@ For a general discussion of the framework of targeted minimum loss-based
 estimation, the many applications of this methodology, and the role the
 framework plays in statistical causal inference, the recommended
 references are van der Laan and Rose (2011) and van der Laan and Rose
-(2017). Hernan and Robins (2018) and Pearl (2009) may be of interest to
+(2018). Hernan and Robins (2018) and Pearl (2009) may be of interest to
 those desiring a more general introduction to statistical causal
 inference.
 
@@ -117,11 +117,14 @@ inference.
 ## Installation
 
 For standard use, install from
-[Bioconductor](https://bioconductor.org/packages/methyvim):
+[Bioconductor](https://bioconductor.org/packages/methyvim) using
+[`BiocManager`](https://CRAN.R-project.org/package=BiocManager):
 
 ``` r
-source("https://bioconductor.org/biocLite.R")
-biocLite("methyvim")
+if (!("BiocManager" %in% installed.packages())) {
+  install.packages("BiocManager")
+}
+BiocManager::install("methyvim")
 ```
 
 To contribute, install the bleeding-edge *development version* from
@@ -273,9 +276,9 @@ Business Media.
 
 </div>
 
-<div id="ref-vdl2017targeted">
+<div id="ref-vdl2018targeted">
 
-———. 2017. *Targeted Learning in Data Science: Causal Inference for
+———. 2018. *Targeted Learning in Data Science: Causal Inference for
 Complex Longitudinal Studies*. Springer Science & Business Media.
 
 </div>

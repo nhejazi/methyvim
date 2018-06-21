@@ -6,10 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis • methyvim</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">methyvim</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">methyvim</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.1</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -70,13 +74,17 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</h1>
                         <h4 class="author">Nima Hejazi</h4>
             
-            <h4 class="date">2018-04-19</h4>
-          </div>
+            <h4 class="date">2018-06-20</h4>
+      
+      <small class="dont-index">Source: <a href="https://github.com/nhejazi/methyvim/blob/master/vignettes/using_methyvim.Rmd"><code>vignettes/using_methyvim.Rmd</code></a></small>
+      <div class="hidden name"><code>using_methyvim.Rmd</code></div>
+
+    </div>
 
     
         <div class="abstract">
@@ -84,13 +92,12 @@
       We present a general algorithm for the nonparametric estimation of effects of DNA methylation at CpG sites scattered across the genome, complete with honest statistical inference for such estimates. This approach leverages variable importance measures, a class of parameters that arise in the study of causal inference. The parameters we present are defined in such a manner that they provide targeted estimates of the relative importance of CpG sites in the case of binary exposures/treatments assigned at the level of subjects. Such parameters come equipped with rich scientific interpretations, providing an avenue to move beyond linear models, applying modern developments in machine learning to estimating quantities of scientific interest in computational biology.
     </div>
     
-<div class="contents">
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>DNA methylation is a fundamental epigenetic process known to play an important role in the regulation of gene expression. DNA CpG methylation involves the addition of a methyl group (<span class="math inline">\(\text{CH}_3\)</span>) to the fifth carbon of the cytosine ring structure to form 5-methylcytosine. Numerous biological and medical studies have implicated DNA CpG methylation as playing a role in disease and development <span class="citation">(Robertson 2005)</span>. Perhaps unsurprisingly then, biotechnologies have been developed to study the molecular mechanisms of this epigenetic process. Modern assays, like the Illumina <em>Infinium</em> Methylation assay, allow for quantitative interrogation of DNA methylation of CpG sites scattered across the genome at single-nucleotide resolution; moreover, much effort has been invested, by the bioinformatics community, in the development of tools for properly removing technological effects that may contaminate biological signatures measured by such assays. Despite these advances in both biological and bioninformatical techniques, most statistical methods available for the analysis of data produced by such assays rely on over-simplified (often generalized linear) models.</p>
 <p>Here, we present an alternative to such statistical analysis approaches, in the form of nonparametric estimation procedures inspired by machine learning and causal inference. Specifically, we provide a technique for obtaining estimates of nonparametric <em>variable importance measures</em> (<strong>VIM</strong>), parameters with rich scientific interpretations under the standard (untestable) assumptions used in statistical causal inference, defining a limited set of VIMs specifically with respect to the type of data commonly produced by DNA methylation assays. For VIMs defined in such a manner, targeted minimum loss-based estimates may be readily computed based on the data made available by DNA methylation assays. Our contribution, <code>methyvim</code> is an R package that provides facilities for performing differential methylation analyses within exactly this scope.</p>
-<p>As the substantive contribution of our work is an estimation procedure, we focus on data produced by 450k and 850k (EPIC) arrays made by Illumina and assume that data has been subjected to proper quality control and normalizaton procedures, as outlined by others in the computational biology community <span class="citation">(Fortin et al. 2014, <span class="citation">@dedeurwaerder2013comprehensive</span>)</span>. For a general discussion of the framework of targeted minimum loss-based estimation and the role this approach plays in statistical causal inference, the interested reader is invited to consult <span class="citation">van der Laan and Rose (2011)</span> and <span class="citation">van der Laan and Rose (2017)</span>. For a more general introduction to statistical causal inference, <span class="citation">Pearl (2009)</span> serves well.</p>
+<p>As the substantive contribution of our work is an estimation procedure, we focus on data produced by 450k and 850k (EPIC) arrays made by Illumina and assume that data has been subjected to proper quality control and normalizaton procedures, as outlined by others in the computational biology community <span class="citation">(Fortin et al. 2014, <span class="citation">@dedeurwaerder2013comprehensive</span>)</span>. For a general discussion of the framework of targeted minimum loss-based estimation and the role this approach plays in statistical causal inference, the interested reader is invited to consult <span class="citation">van der Laan and Rose (2011)</span> and <span class="citation">van der Laan and Rose (2018)</span>. For a more general introduction to statistical causal inference, <span class="citation">Pearl (2009)</span> serves well.</p>
 <hr>
 </div>
 <div id="methodology" class="section level2">
@@ -126,7 +133,7 @@
 <p>First, we’ll load the <code>methyvim</code> package and the example data contained in the <code>methyvimData</code> package that accompanies it:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">479253</span>)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(methyvim)</a></code></pre></div>
-<pre><code>## methyvim v1.1.0: Targeted Variable Importance for Differential Methylation Analysis</code></pre>
+<pre><code>## methyvim v1.2.0: Targeted Variable Importance for Differential Methylation Analysis</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(methyvimData)</a></code></pre></div>
 <p>Now, let’s load the data set and seed the RNG:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">data</span>(grsExample)</a>
@@ -153,7 +160,7 @@
 <p>The example data object is of class <code>GenomicRatioSet</code>, provided by the <code>minfi</code> package. The summary provided by the <code>print</code> method gives a wealth of information on the experiment that generated the data – since we are working with a simulated data set, we need not concern ourselves with much of this information.</p>
 <p>We can create an object of class <code>methytmle</code> from any <code>GenomicRatioSet</code> object simply invoking the S4 class constructor:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">mtmle &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methytmle-class.html">.methytmle</a></span>(grsExample)</a></code></pre></div>
-<p>Since the <code>methytmle</code> class builds upon the <code>GenomicRatioSet</code> class, it contains all of the slots of <code>GenomicRatio</code>s. The new class introduced in the <code>methyvim</code> package includes several new slots:</p>
+<p>Since the <code>methytmle</code> class builds upon the <code>GenomicRatioSet</code> class, it contains all of the slots of <code>GenomicRatioSet</code>. The new class introduced in the <code>methyvim</code> package includes several new slots:</p>
 <ul>
 <li>
 <code>call</code> - the form of the original call to the <code>methyvim</code> function.</li>
@@ -184,7 +191,7 @@
 <div id="super-learning-for-nonparametric-parameter-estimation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#super-learning-for-nonparametric-parameter-estimation" class="anchor"></a>Super Learning for nonparametric parameter estimation</h4>
-<p>Nonparametric and data-adaptive regressions (i.e., machine learning) may be used in the two regression steps outlined above. This is implemented using the Super Learner algorithm, which produces optimal combinations of such regression functions (i.e., stacked regressions) using cross-validation <span class="citation">(van der Laan, Polley, and Hubbard 2007, <span class="citation">@breiman1996stacked</span>)</span>.</p>
+<p>Nonparametric and data-adaptive regressions (i.e., machine learning) may be used in the two regression steps outlined above. This is implemented using the super learner algorithm, which produces optimal combinations of such regression functions (a variant of stacked regressions) using cross-validation <span class="citation">(van der Laan, Polley, and Hubbard 2007, <span class="citation">@breiman1996stacked</span>, <span class="citation">@wolpert1992stacked</span>)</span>.</p>
 <p><code>methyvim</code> makes performing such estimation for CpG sites using a given VIM essentially trivial:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">suppressMessages</span>(</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">  methyvim_ate_sl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
@@ -195,6 +202,8 @@
 <a class="sourceLine" id="cb9-7" data-line-number="7">)</a></code></pre></div>
 <pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
 ##  Proceed with caution.</code></pre>
+<p>As is clear from examining the object <code>methyvim_ate_sl</code>, the output resembles exactly that returned when examining objects of class <code>GenomicRatioSet</code> from the <code>minfi</code> R package. In particular, the returned <code>methytmle</code> object is merely a modified form (in particular, a subclass) of the input <code>GenomicRatioSet</code> object – thus, it contains all of the original slots, with all of the experimental data intact. Several extra pieces of information are contained within the output object as well_.</p>
+<p>We can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the S4 <code>show</code> method of the resultant object:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">methyvim_ate_sl</a></code></pre></div>
 <pre><code>## class: methytmle 
 ## dim: 400 210 
@@ -210,40 +219,24 @@
 ##   Method: NA
 ##   minfi version: NA
 ##   Manifest version: NA</code></pre>
-<p>As is clear from examining the object <code>methyvim_ate_sl</code>, the output resembles exactly that returned when examining objects of class <code>GenomicRatioSet</code> from the <code>minfi</code> R package. In particular, the returned <code>methytmle</code> object is merely a modified form (in particular, a subclass) of the input <code>GenomicRatioSet</code> object – thus, it contains all of the original slots, with all of the experimental data intact. Several extra pieces of information are contained within the output object as well_.</p>
-<p>We can take a look at the results produced from the estimation procedure by examining the <code>"vim"</code> <code>slot</code> of the <code>methytmle</code> object:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">slot</span>(methyvim_ate_sl, <span class="st">"vim"</span>))</a></code></pre></div>
-<pre><code>##                lwr_ci     est_ate    upr_ci    var_ate      pval
-## cg22913481 -0.3790600 -0.10205080 0.1749584 0.01997451 0.4702524
-## cg15131207 -0.3121142 -0.10416890 0.1037764 0.01125605 0.3261739
-## cg10613282 -0.4272500 -0.16315679 0.1009364 0.01815525 0.2259382
-## cg15857610 -0.3147497 -0.07203547 0.1706788 0.01533481 0.5607615
-## cg24775884 -0.4697035  0.03819374 0.5460910 0.06714901 0.8828230
-## cg22954484 -0.3291517  0.07646076 0.4820733 0.04282630 0.7117748
-##            n_neighbors n_neighbors_control max_cor_neighbors
-## cg22913481           0                   0                NA
-## cg15131207           0                   0                NA
-## cg10613282           0                   0                NA
-## cg15857610           5                   4         0.7720705
-## cg24775884           5                   2         0.8897566
-## cg22954484           5                   2         0.8643936</code></pre>
-<p>From the table displayed, we note that we have access to point estimates of the ATE (“est_ATE”) as well as lower and upper confidence interval bounds for each estimate (“lowerCI_ATE” and “upperCI_ATE”, respectively). Additional statistical information we have access to include the variance (“Var_ATE”) of the estimate as well as the p-value (“pval”) associated with each estimate (based on Wald-style testing procedures). Beyond these, key bioinformatical quantities (with respect to the algorithm outlined above) are also returned; these include the total number of neighbors of the target site, the number of neighboring sites controlled for when estimating the effect of exposure on DNA methylation, and, finally, the maximum correlation between the target site and any given site in its full set of neighbors.</p>
+<p>From the table displayed, we note that we have access to point estimates of the ATE (“est_ate”) as well as lower and upper confidence interval bounds for each estimate (“lwr_ci” and “upr_ci”, respectively). Additional statistical information we have access to include the variance (“var_ate”) of the estimate as well as the p-value (“pval”) associated with each point estimate (based on Wald-style testing procedures). Beyond these, key bioinformatical quantities, with respect to the algorithm outlined above, are also returned; these include the total number of neighbors of the target site (“n_neighbors”), the number of neighboring sites controlled for when estimating the effect of exposure on DNA methylation (“n_neighbors_control”), and, the maximum correlation between the target site and any given site in its full set of neighbors (“max_cor_neighbors”).</p>
 </div>
 <div id="generalized-linear-models-for-parameter-estimation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#generalized-linear-models-for-parameter-estimation" class="anchor"></a>Generalized linear models for parameter estimation</h4>
 <p>In cases where nonparametric regressions may not be preferred (e.g., where time constraints are of concern), generalized linear models (GLMs) may be used to fit the two regression steps required for estimating VIMs for the ATE.</p>
 <p><code>methyvim</code> makes performing such estimation for CpG sites using a given VIM essentially trivial:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">suppressMessages</span>(</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">  methyvim_ate_glm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">                               <span class="dt">var_int =</span> var_int, <span class="dt">vim =</span> <span class="st">"ate"</span>, <span class="dt">type =</span> <span class="st">"Mval"</span>,</a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">                               <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">                               <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
-<a class="sourceLine" id="cb15-6" data-line-number="6">                              )</a>
-<a class="sourceLine" id="cb15-7" data-line-number="7">)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">suppressMessages</span>(</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">  methyvim_ate_glm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">                               <span class="dt">var_int =</span> var_int, <span class="dt">vim =</span> <span class="st">"ate"</span>, <span class="dt">type =</span> <span class="st">"Mval"</span>,</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">                               <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">                               <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">                              )</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">)</a></code></pre></div>
 <pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
 ##  Proceed with caution.</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">methyvim_ate_glm</a></code></pre></div>
+<p>Just as before, we can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the S4 <code>show</code> method of the resultant object:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">methyvim_ate_glm</a></code></pre></div>
 <pre><code>## class: methytmle 
 ## dim: 400 210 
 ## metadata(0):
@@ -258,22 +251,6 @@
 ##   Method: NA
 ##   minfi version: NA
 ##   Manifest version: NA</code></pre>
-<p>Just as before, we can take a look at the results produced from the estimation procedure by examining the <code>"vim"</code> <code>slot</code> of the <code>methytmle</code> object:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">slot</span>(methyvim_ate_glm, <span class="st">"vim"</span>))</a></code></pre></div>
-<pre><code>##                lwr_ci     est_ate    upr_ci    var_ate      pval
-## cg22913481 -0.3790600 -0.10205080 0.1749584 0.01997451 0.4702524
-## cg15131207 -0.3121142 -0.10416890 0.1037764 0.01125605 0.3261739
-## cg10613282 -0.4272500 -0.16315679 0.1009364 0.01815525 0.2259382
-## cg15857610 -0.3529945 -0.07755972 0.1978751 0.01974811 0.5810055
-## cg24775884 -0.4180264  0.10738046 0.6327873 0.07185870 0.6887319
-## cg22954484 -0.2783139  0.14329571 0.5649053 0.04627099 0.5053086
-##            n_neighbors n_neighbors_control max_cor_neighbors
-## cg22913481           0                   0                NA
-## cg15131207           0                   0                NA
-## cg10613282           0                   0                NA
-## cg15857610           5                   4         0.7720705
-## cg24775884           5                   2         0.8897566
-## cg22954484           5                   2         0.8643936</code></pre>
 <p><em>Remark:</em> Here, the estimates are obtained via GLMs, making each of the regression steps less robust than if nonparametric regressions were used. It is expected that these estimates differ from those obtained previously.</p>
 <hr>
 </div>
@@ -288,14 +265,15 @@
 <a href="#super-learning-for-nonparametric-parameter-estimation-1" class="anchor"></a>Super Learning for nonparametric parameter estimation</h4>
 <p>Nonparametric and data-adaptive regressions (i.e., machine learning) may be used in the two regression steps required for estimating a VIM based on the RR. This is implemented using the Super Learner algorithm.</p>
 <p><code>methyvim</code> makes performing such estimation for CpG sites using a given VIM essentially trivial:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">methyvim_rr_sl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">                            <span class="dt">var_int =</span> var_int, <span class="dt">vim =</span> <span class="st">"rr"</span>, <span class="dt">type =</span> <span class="st">"Mval"</span>,</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">                            <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
-<a class="sourceLine" id="cb21-4" data-line-number="4">                            <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"sl"</span></a>
-<a class="sourceLine" id="cb21-5" data-line-number="5">                           )</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">methyvim_rr_sl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">                            <span class="dt">var_int =</span> var_int, <span class="dt">vim =</span> <span class="st">"rr"</span>, <span class="dt">type =</span> <span class="st">"Mval"</span>,</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">                            <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">                            <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"sl"</span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">                           )</a></code></pre></div>
 <pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
 ##  Proceed with caution.</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">methyvim_rr_sl</a></code></pre></div>
+<p>We can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the S4 <code>show</code> method of the resultant object:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">methyvim_rr_sl</a></code></pre></div>
 <pre><code>## class: methytmle 
 ## dim: 400 210 
 ## metadata(0):
@@ -310,36 +288,21 @@
 ##   Method: NA
 ##   minfi version: NA
 ##   Manifest version: NA</code></pre>
-<p>We can take a look at the results produced from the estimation procedure by examining the <code>"vim"</code> <code>slot</code> of the <code>methytmle</code> object:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">slot</span>(methyvim_rr_sl, <span class="st">"vim"</span>))</a></code></pre></div>
-<pre><code>##                 lwr_ci    est_logrr     upr_ci   var_logrr      pval
-## cg22913481 -0.15978435 -0.042980967 0.07382242 0.003551393 0.4707649
-## cg15131207 -0.10832796 -0.036151215 0.03602553 0.001356071 0.3262445
-## cg10613282 -0.18349779 -0.069866731 0.04376433 0.003361104 0.2281579
-## cg15857610 -0.07418616 -0.019775239 0.03463568 0.000770655 0.4762498
-## cg24775884 -0.08118004  0.007118649 0.09541734 0.002029534 0.8744447
-## cg22954484 -0.06784819  0.013927274 0.09570274 0.001740740 0.7385230
-##            n_neighbors n_neighbors_control max_cor_neighbors
-## cg22913481           0                   0                NA
-## cg15131207           0                   0                NA
-## cg10613282           0                   0                NA
-## cg15857610           5                   4         0.7720705
-## cg24775884           5                   2         0.8897566
-## cg22954484           5                   2         0.8643936</code></pre>
 </div>
 <div id="generalized-linear-models-for-parameter-estimation-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#generalized-linear-models-for-parameter-estimation-1" class="anchor"></a>Generalized linear models for parameter estimation</h4>
 <p>In cases where nonparametric regressions may not be preferred (e.g., where time constraints are of concern), generalized linear models (GLMs) may be used to fit the two regression steps required for estimating a VIMs for the ATE.</p>
 <p><code>methyvim</code> makes performing such estimation for CpG sites using a given VIM essentially trivial:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">methyvim_rr_glm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">                            <span class="dt">var_int =</span> var_int, <span class="dt">vim =</span> <span class="st">"rr"</span>, <span class="dt">type =</span> <span class="st">"Mval"</span>,</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3">                            <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
-<a class="sourceLine" id="cb27-4" data-line-number="4">                            <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
-<a class="sourceLine" id="cb27-5" data-line-number="5">                           )</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">methyvim_rr_glm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grsExample, <span class="dt">sites_comp =</span> <span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">                            <span class="dt">var_int =</span> var_int, <span class="dt">vim =</span> <span class="st">"rr"</span>, <span class="dt">type =</span> <span class="st">"Mval"</span>,</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">                            <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">                            <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">                           )</a></code></pre></div>
 <pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
 ##  Proceed with caution.</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">methyvim_rr_glm</a></code></pre></div>
+<p>Just as before, we can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the S4 <code>show</code> method of the resultant object:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">methyvim_rr_glm</a></code></pre></div>
 <pre><code>## class: methytmle 
 ## dim: 400 210 
 ## metadata(0):
@@ -354,22 +317,6 @@
 ##   Method: NA
 ##   minfi version: NA
 ##   Manifest version: NA</code></pre>
-<p>Just as before, we can take a look at the results produced from the estimation procedure by examining the <code>"vim"</code> <code>slot</code> of the <code>methytmle</code> object:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">slot</span>(methyvim_rr_glm, <span class="st">"vim"</span>))</a></code></pre></div>
-<pre><code>##                 lwr_ci   est_logrr     upr_ci    var_logrr      pval
-## cg22913481 -0.15978435 -0.04298097 0.07382242 0.0035513930 0.4707649
-## cg15131207 -0.10832796 -0.03615121 0.03602553 0.0013560711 0.3262445
-## cg10613282 -0.18349779 -0.06986673 0.04376433 0.0033611044 0.2281579
-## cg15857610 -0.07875116 -0.01680385 0.04514346 0.0009989246 0.5949544
-## cg24775884 -0.06927374  0.02147919 0.11223212 0.0021439230 0.6427278
-## cg22954484 -0.05545264  0.02848084 0.11241432 0.0018338269 0.5059996
-##            n_neighbors n_neighbors_control max_cor_neighbors
-## cg22913481           0                   0                NA
-## cg15131207           0                   0                NA
-## cg10613282           0                   0                NA
-## cg15857610           5                   4         0.7720705
-## cg24775884           5                   2         0.8897566
-## cg22954484           5                   2         0.8643936</code></pre>
 <p><em>Remark:</em> Here, the estimates are obtained via GLMs, making each of the regression steps less robust than if nonparametric regressions were used. It is expected that these estimates differ from those obtained previously.</p>
 <hr>
 </div>
@@ -380,11 +327,11 @@
 <a href="#data-analysis-with-methyvim" class="anchor"></a>Data Analysis with <code>methyvim</code>
 </h2>
 <p>In order to explore practical applications of the <code>methyvim</code> package, as well as the full set of utilities it provides, our toy example (of just <span class="math inline">\(10\)</span> CpG sites) is unfortunately insufficient. To proceed, we will use a publicly available example data set produced by the Illumina 450K array, from the <code>minfiData</code> R package. Now, let’s load the package and data set, and take a look</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">suppressMessages</span>(<span class="kw">library</span>(minfiData))</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="kw">data</span>(MsetEx)</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">mset &lt;-<span class="st"> </span><span class="kw">mapToGenome</span>(MsetEx)</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4">grs &lt;-<span class="st"> </span><span class="kw">ratioConvert</span>(mset)</a>
-<a class="sourceLine" id="cb33-5" data-line-number="5">grs</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">suppressMessages</span>(<span class="kw">library</span>(minfiData))</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="kw">data</span>(MsetEx)</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">mset &lt;-<span class="st"> </span><span class="kw">mapToGenome</span>(MsetEx)</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">grs &lt;-<span class="st"> </span><span class="kw">ratioConvert</span>(mset)</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">grs</a></code></pre></div>
 <pre><code>## class: GenomicRatioSet 
 ## dim: 485512 6 
 ## metadata(0):
@@ -403,60 +350,62 @@
 ##   Manifest version: 0.4.0</code></pre>
 <p>After loading the data, which comes in the form of a raw <code>MethylSet</code> object, we perform some further processing by mapping to the genome (with <code>mapToGenome</code>) and converting the values from the methylated and unmethylated channels to Beta-values (via <code>ratioConvert</code>). These two steps together produce an object of class <code>GenomicRatioSet</code>, like what we had worked with previously.</p>
 <p>For this example analysis, we’ll treat the condition of the patients as the exposure/treatment variable of interest. The <code>methyvim</code> function requires that this variable either be <code>numeric</code> or easily coercible to <code>numeric</code>. To facilitate this, we’ll simply convert the covariate (currently a <code>character</code>):</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">var_int &lt;-<span class="st"> </span>(<span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(<span class="kw">colData</span>(grs)<span class="op">$</span>status)) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="kw">table</span>(var_int)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">var_int &lt;-<span class="st"> </span>(<span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(<span class="kw">colData</span>(grs)<span class="op">$</span>status)) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw">table</span>(var_int)</a></code></pre></div>
 <pre><code>## var_int
 ## 0 1 
 ## 3 3</code></pre>
 <p><strong>n.b.</strong>, the re-coding process results in “normal” patients being assigned a value of 1 and cancer patients a 0.</p>
 <p>Now, we are ready to analyze the effects of cancer status on DNA methylation using this data set. To do this with a targeted minimum loss-based estimate of the Average Treatment Effect, we may proceed as follows:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">suppressMessages</span>(</a>
-<a class="sourceLine" id="cb37-2" data-line-number="2">  methyvim_cancer_ate &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grs, <span class="dt">var_int =</span> var_int,</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3">                                  <span class="dt">vim =</span> <span class="st">"ate"</span>, <span class="dt">type =</span> <span class="st">"Beta"</span>, <span class="dt">filter =</span> <span class="st">"limma"</span>,</a>
-<a class="sourceLine" id="cb37-4" data-line-number="4">                                  <span class="dt">filter_cutoff =</span> <span class="fl">0.20</span>, <span class="dt">obs_per_covar =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb37-5" data-line-number="5">                                  <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">sites_comp =</span> <span class="dv">125</span>,</a>
-<a class="sourceLine" id="cb37-6" data-line-number="6">                                  <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
-<a class="sourceLine" id="cb37-7" data-line-number="7">                                 )</a>
-<a class="sourceLine" id="cb37-8" data-line-number="8">)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">suppressMessages</span>(</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">  methyvim_cancer_ate &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grs, <span class="dt">var_int =</span> var_int,</a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">                                  <span class="dt">vim =</span> <span class="st">"ate"</span>, <span class="dt">type =</span> <span class="st">"Beta"</span>, <span class="dt">filter =</span> <span class="st">"limma"</span>,</a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">                                  <span class="dt">filter_cutoff =</span> <span class="fl">0.20</span>, <span class="dt">obs_per_covar =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">                                  <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">sites_comp =</span> <span class="dv">125</span>,</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6">                                  <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
+<a class="sourceLine" id="cb29-7" data-line-number="7">                                 )</a>
+<a class="sourceLine" id="cb29-8" data-line-number="8">)</a></code></pre></div>
 <pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
 ##  Proceed with caution.</code></pre>
 <p>Note that we set the <code>obs_per_covar</code> argument to a relatively low value (2, where the recommended default is 20) for the purposes of this example as the sample size is only 10. We do this only to exemplify the estimation procedure and it is important to point out that such low values for <code>obs_per_covar</code> will compromise the quality of inference obtained because this setting directly affects the definition of the target parameter.</p>
 <p>Further, note that here we apply the <code>glm</code> flavor of the <code>tmle_type</code> argument, which produces faster results by fitting models for the propensity score and outcome regressions using a limited number of parametric models. By contrast, the <code>sl</code> (for “Super Learning”) flavor fits these two regressions using highly nonparametric and data-adaptive procedures (i.e., via machine learning).</p>
-<p>Just as before, we can view a table of results by examining the <code>vim</code> slot of the produced <code>methytmle</code> object:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">slot</span>(methyvim_cancer_ate, <span class="st">"vim"</span>))</a></code></pre></div>
-<pre><code>##                 lwr_ci      est_ate        upr_ci      var_ate
-## cg14008030 -0.11956597 -0.031415962  0.0567340489 2.022705e-03
-## cg20253340 -0.08850637 -0.058866142 -0.0292259165 2.286919e-04
-## cg21870274 -0.09499057 -0.029118982  0.0367526091 1.129495e-03
-## cg17308840 -0.04626018 -0.007152452  0.0319552773 3.981191e-04
-## cg00645010 -0.02703443 -0.013895578 -0.0007567244 4.493687e-05
-## cg27534567  0.06745648  0.115711854  0.1639672225 6.061486e-04
-##                    pval n_neighbors n_neighbors_control max_cor_neighbors
-## cg14008030 4.848468e-01           0                   0                NA
-## cg20253340 9.917426e-05           0                   0                NA
-## cg21870274 3.862537e-01           2                   1         0.9443580
-## cg17308840 7.199943e-01           2                   1         0.9443580
-## cg00645010 3.818298e-02           2                   2         0.5236810
-## cg27534567 2.602936e-06           1                   0         0.9362968</code></pre>
+<p>Let’s examine the table of results by examining the <code>methytmle</code> object that was produced by our call to the <code>methyvim</code> wrapper function:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">methyvim_cancer_ate</a></code></pre></div>
+<pre><code>## class: methytmle 
+## dim: 485512 6 
+## metadata(0):
+## assays(2): Beta CN
+## rownames(485512): cg13869341 cg14008030 ... cg08265308 cg14273923
+## rowData names(0):
+## colnames(6): 5723646052_R02C02 5723646052_R04C01 ...
+##   5723646053_R05C02 5723646053_R06C02
+## colData names(13): Sample_Name Sample_Well ... Basename filenames
+## Annotation
+##   array: IlluminaHumanMethylation450k
+##   annotation: ilmn12.hg19
+## Preprocessing
+##   Method: Raw (no normalization or bg correction)
+##   minfi version: 1.21.2
+##   Manifest version: 0.4.0</code></pre>
 <p>Finally, we may compute FDR-corrected p-values, by applying a modified procedure for controlling the False Discovery Rate for multi-stage analyses (FDR-MSA) <span class="citation">(Tuglus and van der Laan 2009)</span>. We do this by simply applying the <code>fdr_msa</code> function:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">fdr_p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fdr_msa.html">fdr_msa</a></span>(<span class="dt">pvals =</span> <span class="kw">slot</span>(methyvim_cancer_ate, <span class="st">"vim"</span>)<span class="op">$</span>pval,</a>
-<a class="sourceLine" id="cb41-2" data-line-number="2">                 <span class="dt">total_obs =</span> <span class="kw">nrow</span>(methyvim_cancer_ate))</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">fdr_p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fdr_msa.html">fdr_msa</a></span>(<span class="dt">pvals =</span> methyvim_cancer_ate<span class="op">@</span>vim<span class="op">$</span>pval,</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">                 <span class="dt">total_obs =</span> <span class="kw">nrow</span>(methyvim_cancer_ate))</a></code></pre></div>
 <p>Having explored the results of our analysis numerically, we now proceed to use the visualization tools provided with the <code>methyvim</code> R package to further enhance our understanding of the results.</p>
 <div id="visualization-of-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#visualization-of-results" class="anchor"></a>Visualization of Results</h3>
 <p>While making allowance for users to explore the full set of results produced by the estimation procedure (by way of exposing these directly to the user), the <code>methyvim</code> package also provides <em>three</em> (3) visualization utilities that produce plots commonly used in examining the results of differential methylation analyses.</p>
 <p>A simple call to <code>plot</code> produces side-by-side histograms of the raw p-values computed as part of the estimation process and the corrected p-values obtained from using the FDR-MSA procedure.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw">plot</span>(methyvim_cancer_ate)</a></code></pre></div>
-<p><img src="using_methyvim_files/figure-html/methyvim-pvals-both-1.png" width="672"></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">plot</span>(methyvim_cancer_ate)</a></code></pre></div>
+<p><img src="using_methyvim_files/figure-html/methyvim-pvals-both-1.png" width="700"></p>
 <p><strong>Remark:</strong> The plots displayed above may also be generated separately by explicitly setting the argument “type” to <code>plot.methytmle</code>. For a plot of the raw p-values, specify <code>type = "raw_pvals"</code>, and for a plot of the FDR-corrected p-values, specify <code>type = "fdr_pvals"</code>.</p>
 <p>While histograms of the p-values may be generally useful in inspecting the results of the estimation procedure, a more common plot used in examining the results of differential methylation procedures is the volcano plot, which plots the parameter estimate along the x-axis and <span class="math inline">\(-\text{log}_{10}(\text{p-value})\)</span> along the y-axis. We implement such a plot in the <code>methyvolc</code> function:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="kw"><a href="../reference/methyvolc.html">methyvolc</a></span>(methyvim_cancer_ate)</a></code></pre></div>
-<p><img src="using_methyvim_files/figure-html/methyvim-volcano-1.png" width="672"></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="../reference/methyvolc.html">methyvolc</a></span>(methyvim_cancer_ate)</a></code></pre></div>
+<p><img src="using_methyvim_files/figure-html/methyvim-volcano-1.png" width="700"></p>
 <p>The purpose of such a plot is to ensure that very low (possibly statistically significant) p-values do not arise from cases of low variance. This appears to be the case in the plot above (notice that most parameter estimates are <em>near zero</em>, even in cases where the raw p-values are quite low).</p>
 <p>Yet another popular plot for visualizing effects in such settings is the heatmap, which plots estimates of the raw methylation effects (as measured by the assay) across subjects using a heat gradient. We implement this in the <code>methyheat</code> function:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw"><a href="../reference/methyheat.html">methyheat</a></span>(methyvim_cancer_ate)</a></code></pre></div>
-<p><img src="using_methyvim_files/figure-html/methyvim-heatmap-1.png" width="672"></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw"><a href="../reference/methyheat.html">methyheat</a></span>(methyvim_cancer_ate)</a></code></pre></div>
+<p><img src="using_methyvim_files/figure-html/methyvim-heatmap-1.png" width="700"></p>
 <p>Invoking <code>methyheat</code> in this manner produces a plot of the top sites (<span class="math inline">\(25\)</span>, by default) based on the raw p-value, using the raw methylation measures in the plot. This uses the exceptional <code>superheat</code> R package <span class="citation">(Barter and Yu 2017)</span>.</p>
 <hr>
 </div>
@@ -464,9 +413,9 @@
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session Information</h2>
-<pre><code>## R version 3.4.4 (2018-03-15)
-## Platform: x86_64-apple-darwin17.3.0 (64-bit)
-## Running under: macOS High Sierra 10.13.4
+<pre><code>## R version 3.5.0 (2018-04-23)
+## Platform: x86_64-apple-darwin17.5.0 (64-bit)
+## Running under: macOS High Sierra 10.13.5
 ## 
 ## Matrix products: default
 ## BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
@@ -476,96 +425,104 @@
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-##  [1] splines   stats4    parallel  methods   stats     graphics  grDevices
-##  [8] utils     datasets  base     
+##  [1] splines   stats4    parallel  stats     graphics  grDevices utils    
+##  [8] datasets  methods   base     
 ## 
 ## other attached packages:
 ##  [1] bindrcpp_0.2.2                                    
-##  [2] minfiData_0.24.0                                  
+##  [2] minfiData_0.26.0                                  
 ##  [3] IlluminaHumanMethylation450kanno.ilmn12.hg19_0.6.0
 ##  [4] IlluminaHumanMethylation450kmanifest_0.4.0        
-##  [5] arm_1.9-3                                         
+##  [5] arm_1.10-1                                        
 ##  [6] lme4_1.1-17                                       
-##  [7] Matrix_1.2-13                                     
-##  [8] MASS_7.3-49                                       
-##  [9] earth_4.6.2                                       
-## [10] plotmo_3.3.6                                      
+##  [7] Matrix_1.2-14                                     
+##  [8] MASS_7.3-50                                       
+##  [9] earth_4.6.3                                       
+## [10] plotmo_3.4.1                                      
 ## [11] TeachingDemos_2.10                                
-## [12] plotrix_3.7                                       
+## [12] plotrix_3.7-2                                     
 ## [13] gam_1.15                                          
-## [14] methyvimData_1.0.0                                
-## [15] methyvim_1.1.0                                    
-## [16] minfi_1.24.0                                      
-## [17] bumphunter_1.20.0                                 
+## [14] methyvimData_1.2.0                                
+## [15] methyvim_1.2.0                                    
+## [16] minfi_1.26.0                                      
+## [17] bumphunter_1.22.0                                 
 ## [18] locfit_1.5-9.1                                    
 ## [19] iterators_1.0.9                                   
 ## [20] foreach_1.4.4                                     
-## [21] Biostrings_2.46.0                                 
-## [22] XVector_0.18.0                                    
-## [23] SummarizedExperiment_1.8.1                        
-## [24] DelayedArray_0.4.1                                
-## [25] matrixStats_0.53.1                                
-## [26] Biobase_2.38.0                                    
-## [27] GenomicRanges_1.30.3                              
-## [28] GenomeInfoDb_1.14.0                               
-## [29] IRanges_2.12.0                                    
-## [30] S4Vectors_0.16.0                                  
-## [31] BiocGenerics_0.24.0                               
-## [32] tmle_1.3.0-1                                      
-## [33] SuperLearner_2.0-23-9000                          
-## [34] nnls_1.4                                          
+## [21] Biostrings_2.48.0                                 
+## [22] XVector_0.20.0                                    
+## [23] SummarizedExperiment_1.10.1                       
+## [24] DelayedArray_0.6.0                                
+## [25] BiocParallel_1.14.1                               
+## [26] matrixStats_0.53.1                                
+## [27] Biobase_2.40.0                                    
+## [28] GenomicRanges_1.32.3                              
+## [29] GenomeInfoDb_1.16.0                               
+## [30] IRanges_2.14.10                                   
+## [31] S4Vectors_0.18.2                                  
+## [32] BiocGenerics_0.26.0                               
+## [33] tmle_1.3.0-1                                      
+## [34] SuperLearner_2.0-23                               
+## [35] nnls_1.4                                          
+## [36] BiocStyle_2.8.1                                   
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] backports_1.1.2          plyr_1.8.4              
-##   [3] lazyeval_0.2.1           BiocParallel_1.12.0     
-##   [5] listenv_0.7.0            ggplot2_2.2.1           
-##   [7] digest_0.6.15            htmltools_0.3.6         
-##   [9] magrittr_1.5             memoise_1.1.0           
-##  [11] cluster_2.0.7            limma_3.34.9            
-##  [13] globals_0.11.0           readr_1.1.1             
-##  [15] annotate_1.56.1          doFuture_0.6.0          
-##  [17] siggenes_1.52.0          prettyunits_1.0.2       
+##   [3] lazyeval_0.2.1           listenv_0.7.0           
+##   [5] ggplot2_2.2.1.9000       digest_0.6.15           
+##   [7] htmltools_0.3.6          magrittr_1.5            
+##   [9] memoise_1.1.0            cluster_2.0.7-1         
+##  [11] limma_3.36.1             globals_0.12.0          
+##  [13] readr_1.1.1              annotate_1.58.0         
+##  [15] doFuture_0.6.0           pkgdown_1.1.0.9000      
+##  [17] siggenes_1.54.0          prettyunits_1.0.2       
 ##  [19] colorspace_1.3-2         blob_1.1.1              
-##  [21] dplyr_0.7.4              crayon_1.3.4            
-##  [23] RCurl_1.95-4.10          genefilter_1.60.0       
-##  [25] bindr_0.1.1              GEOquery_2.46.15        
-##  [27] survival_2.41-3          glue_1.2.0              
-##  [29] registry_0.5             gtable_0.2.0            
-##  [31] zlibbioc_1.24.0          superheat_0.1.0         
-##  [33] abind_1.4-5              scales_0.5.0.9000       
-##  [35] DBI_0.8                  rngtools_1.2.4          
-##  [37] Rcpp_0.12.16             xtable_1.8-2            
-##  [39] progress_1.1.2.9003      bit_1.1-12              
-##  [41] mclust_5.4               preprocessCore_1.40.0   
-##  [43] httr_1.3.1               RColorBrewer_1.1-2      
-##  [45] pkgconfig_2.0.1          reshape_0.8.7           
-##  [47] XML_3.98-1.10            labeling_0.3            
-##  [49] rlang_0.2.0.9000         AnnotationDbi_1.40.0    
-##  [51] munsell_0.4.3            tools_3.4.4             
-##  [53] RSQLite_2.1.0            ggdendro_0.1-20         
-##  [55] evaluate_0.10.1          stringr_1.3.0           
-##  [57] yaml_2.1.18              knitr_1.20              
-##  [59] bit64_0.9-7              beanplot_1.2            
-##  [61] purrr_0.2.4              future_1.8.0            
-##  [63] nlme_3.1-137             doRNG_1.6.6             
-##  [65] nor1mix_1.2-3            xml2_1.2.0              
-##  [67] biomaRt_2.34.2           compiler_3.4.4          
-##  [69] tibble_1.4.2             stringi_1.1.7           
-##  [71] GenomicFeatures_1.30.3   lattice_0.20-35         
-##  [73] nloptr_1.0.4             ggsci_2.8               
-##  [75] multtest_2.34.0          pillar_1.2.1            
-##  [77] data.table_1.10.5        bitops_1.0-6            
-##  [79] rtracklayer_1.38.3       R6_2.2.2                
-##  [81] RMySQL_0.10.14           gridExtra_2.3           
-##  [83] codetools_0.2-15         gtools_3.5.0            
-##  [85] assertthat_0.2.0         openssl_1.0.1           
-##  [87] pkgmaker_0.22            rprojroot_1.3-2         
-##  [89] GenomicAlignments_1.14.1 Rsamtools_1.30.0        
-##  [91] GenomeInfoDbData_1.0.0   hms_0.4.2               
-##  [93] quadprog_1.5-5           grid_3.4.4              
-##  [95] tidyr_0.8.0              coda_0.19-1             
-##  [97] base64_2.0               minqa_1.2.4             
-##  [99] rmarkdown_1.9.8          illuminaio_0.20.0</code></pre>
+##  [21] xfun_0.2.1               dplyr_0.7.5             
+##  [23] crayon_1.3.4             RCurl_1.95-4.10         
+##  [25] roxygen2_6.0.1.9000      genefilter_1.62.0       
+##  [27] bindr_0.1.1              GEOquery_2.48.0         
+##  [29] survival_2.42-3          glue_1.2.0              
+##  [31] registry_0.5             gtable_0.2.0            
+##  [33] zlibbioc_1.26.0          superheat_0.1.0         
+##  [35] Rhdf5lib_1.2.1           HDF5Array_1.8.0         
+##  [37] abind_1.4-5              scales_0.5.0            
+##  [39] DBI_1.0.0                rngtools_1.3.1          
+##  [41] bibtex_0.4.2             Rcpp_0.12.17            
+##  [43] xtable_1.8-2             progress_1.1.2          
+##  [45] bit_1.1-14               mclust_5.4              
+##  [47] preprocessCore_1.42.0    httr_1.3.1              
+##  [49] RColorBrewer_1.1-2       pkgconfig_2.0.1         
+##  [51] reshape_0.8.7            XML_3.98-1.11           
+##  [53] labeling_0.3             tidyselect_0.2.4        
+##  [55] rlang_0.2.1              AnnotationDbi_1.42.1    
+##  [57] munsell_0.5.0            tools_3.5.0             
+##  [59] RSQLite_2.1.1            ggdendro_0.1-20         
+##  [61] evaluate_0.10.1          stringr_1.3.1           
+##  [63] yaml_2.1.19              knitr_1.20              
+##  [65] bit64_0.9-7              fs_1.2.3                
+##  [67] beanplot_1.2             purrr_0.2.5             
+##  [69] future_1.8.1             nlme_3.1-137            
+##  [71] doRNG_1.6.6              nor1mix_1.2-3           
+##  [73] xml2_1.2.0               biomaRt_2.36.1          
+##  [75] compiler_3.5.0           tibble_1.4.2            
+##  [77] stringi_1.2.3            GenomicFeatures_1.32.0  
+##  [79] desc_1.2.0               lattice_0.20-35         
+##  [81] nloptr_1.0.4             commonmark_1.5          
+##  [83] ggsci_2.9                multtest_2.36.0         
+##  [85] pillar_1.2.3             data.table_1.11.5       
+##  [87] bitops_1.0-6             rtracklayer_1.40.2      
+##  [89] R6_2.2.2.9000            bookdown_0.7            
+##  [91] gridExtra_2.3            codetools_0.2-15        
+##  [93] gtools_3.5.0             assertthat_0.2.0        
+##  [95] rhdf5_2.24.0             openssl_1.0.1           
+##  [97] pkgmaker_0.27            rprojroot_1.3-2         
+##  [99] withr_2.1.2              GenomicAlignments_1.16.0
+## [101] Rsamtools_1.32.0         GenomeInfoDbData_1.1.0  
+## [103] hms_0.4.2                quadprog_1.5-5          
+## [105] grid_3.5.0               coda_0.19-1             
+## [107] minqa_1.2.4              tidyr_0.8.1             
+## [109] base64_2.0               rmarkdown_1.10          
+## [111] DelayedMatrixStats_1.2.0 illuminaio_0.22.0</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -573,7 +530,7 @@
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references">
 <div id="ref-aryee2014minfi">
-<p>Aryee, Martin J, Andrew E Jaffe, Hector Corrada-Bravo, Christine Ladd-Acosta, Andrew P Feinberg, Kasper D Hansen, and Rafael A Irizarry. 2014. “Minfi: A Flexible and Comprehensive Bioconductor Package for the Analysis of Infinium DNA Methylation Microarrays.” <em>Bioinformatics</em> 30 (10). Oxford University Press (OUP):1363–9. <a href="https://doi.org/10.1093/bioinformatics/btu049" class="uri">https://doi.org/10.1093/bioinformatics/btu049</a>.</p>
+<p>Aryee, Martin J, Andrew E Jaffe, Hector Corrada-Bravo, Christine Ladd-Acosta, Andrew P Feinberg, Kasper D Hansen, and Rafael A Irizarry. 2014. “Minfi: A Flexible and Comprehensive Bioconductor Package for the Analysis of Infinium DNA Methylation Microarrays.” <em>Bioinformatics</em> 30 (10). Oxford University Press (OUP): 1363–9. <a href="https://doi.org/10.1093/bioinformatics/btu049" class="uri">https://doi.org/10.1093/bioinformatics/btu049</a>.</p>
 </div>
 <div id="ref-barter2017superheat">
 <p>Barter, Rebecca L, and Bin Yu. 2017. “Superheat: An R Package for Creating Beautiful and Extendable Heatmaps for Visualizing Complex Data.”</p>
@@ -582,10 +539,10 @@
 <p>Benjamini, Yoav, and Yosef Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em>. JSTOR, 289–300.</p>
 </div>
 <div id="ref-breiman1996stacked">
-<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer:49–64.</p>
+<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64.</p>
 </div>
 <div id="ref-chambaz2012estimation">
-<p>Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” <em>Electronic Journal of Statistics</em> 6. NIH Public Access:1059.</p>
+<p>Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012. “Estimation of a Non-Parametric Variable Importance Measure of a Continuous Exposure.” <em>Electronic Journal of Statistics</em> 6. NIH Public Access: 1059.</p>
 </div>
 <div id="ref-dedeurwaerder2013comprehensive">
 <p>Dedeurwaerder, Sarah, Matthieu Defrance, Martin Bizet, Emilie Calonne, Gianluca Bontempi, and François Fuks. 2013. “A Comprehensive Overview of Infinium Humanmethylation450 Data Processing.” <em>Briefings in Bioinformatics</em>. Oxford Univ Press, bbt054.</p>
@@ -600,10 +557,10 @@
 <p>Pearl, Judea. 2009. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
 </div>
 <div id="ref-robertson2005dna">
-<p>Robertson, Keith D. 2005. “DNA Methylation and Human Disease.” <em>Nature Reviews. Genetics</em> 6 (8). Nature Publishing Group:597.</p>
+<p>Robertson, Keith D. 2005. “DNA Methylation and Human Disease.” <em>Nature Reviews. Genetics</em> 6 (8). Nature Publishing Group: 597.</p>
 </div>
 <div id="ref-tuglus2009modified">
-<p>Tuglus, Catherine, and Mark J. van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” <em>Statistical Applications in Genetics and Molecular Biology</em> 8 (1). Walter de Gruyter:1–15. <a href="https://doi.org/10.2202/1544-6115.1397" class="uri">https://doi.org/10.2202/1544-6115.1397</a>.</p>
+<p>Tuglus, Catherine, and Mark J. van der Laan. 2009. “Modified FDR Controlling Procedure for Multi-Stage Analyses.” <em>Statistical Applications in Genetics and Molecular Biology</em> 8 (1). Walter de Gruyter: 1–15. <a href="https://doi.org/10.2202/1544-6115.1397" class="uri">https://doi.org/10.2202/1544-6115.1397</a>.</p>
 </div>
 <div id="ref-vdl2007super">
 <p>van der Laan, Mark J, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1).</p>
@@ -611,9 +568,11 @@
 <div id="ref-vdl2011targeted">
 <p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
 </div>
-<div id="ref-vdl2017targeted">
-<p>———. 2017. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
+<div id="ref-vdl2018targeted">
+<p>———. 2018. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
 </div>
+<div id="ref-wolpert1992stacked">
+<p>Wolpert, David H. 1992. “Stacked Generalization.” <em>Neural Networks</em> 5 (2). Springer: 241–59.</p>
 </div>
 </div>
 </div>
@@ -649,6 +608,8 @@
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>
