@@ -62,7 +62,7 @@ as outlined by others in the computational biology community
 [@fortin2014functional, @dedeurwaerder2013comprehensive]. For a general
 discussion of the framework of targeted minimum loss-based estimation and the
 role this approach plays in statistical causal inference, the interested reader
-is invited to consult @vdl2011targeted and @vdl2017targeted. For a more general
+is invited to consult @vdl2011targeted and @vdl2018targeted. For a more general
 introduction to statistical causal inference, @pearl2009causality serves well.
 
 ---
@@ -199,8 +199,8 @@ mtmle <- .methytmle(grsExample)
 ```
 
 Since the `methytmle` class builds upon the `GenomicRatioSet` class, it contains
-all of the slots of `GenomicRatio`s. The new class introduced in the `methyvim`
-package includes several new slots:
+all of the slots of `GenomicRatioSet`. The new class introduced in the
+`methyvim` package includes several new slots:
 
 * `call` - the form of the original call to the `methyvim` function.
 * `screen_ind` - indices identifying CpG sites that pass the screening process.
@@ -248,10 +248,10 @@ the framework of targeted minimum loss-based estimation are discussed in
 #### Super Learning for nonparametric parameter estimation
 
 Nonparametric and data-adaptive regressions (i.e., machine learning) may be used
-in the two regression steps outlined above. This is implemented using the Super
-Learner algorithm, which produces optimal combinations of such regression
-functions (i.e., stacked regressions) using cross-validation [@vdl2007super,
-@breiman1996stacked].
+in the two regression steps outlined above. This is implemented using the super
+learner algorithm, which produces optimal combinations of such regression
+functions (a variant of stacked regressions) using cross-validation
+[@vdl2007super, @breiman1996stacked, @wolpert1992stacked].
 
 `methyvim` makes performing such estimation for CpG sites using a given VIM
 essentially trivial:
@@ -264,7 +264,6 @@ suppressMessages(
                               parallel = FALSE, tmle_type = "sl"
                              )
 )
-methyvim_ate_sl
 ```
 
 As is clear from examining the object `methyvim_ate_sl`, the output resembles
@@ -275,24 +274,26 @@ modified form (in particular, a subclass) of the input `GenomicRatioSet` object
 data intact. Several extra pieces of information are contained within the output
 object as well_.
 
-We can take a look at the results produced from the estimation procedure by
-examining the `"vim"` `slot` of the `methytmle` object:
+We can take a look at the results produced from the estimation procedure (stored
+in the `vim` `slot` of the `methytmle` object) simply by invoking the S4 `show`
+method of the resultant object:
 
 ```{r methyvim-ate-sl-print}
-head(slot(methyvim_ate_sl, "vim"))
+methyvim_ate_sl
 ```
 
 From the table displayed, we note that we have access to point estimates of the
-ATE ("est_ATE") as well as lower and upper confidence interval bounds for each
-estimate ("lowerCI_ATE" and "upperCI_ATE", respectively). Additional statistical
-information we have access to include the variance ("Var_ATE") of the estimate
-as well as the p-value ("pval") associated with each estimate (based on
-Wald-style testing procedures). Beyond these, key bioinformatical quantities
-(with respect to the algorithm outlined above) are also returned; these include
-the total number of neighbors of the target site, the number of neighboring
-sites controlled for when estimating the effect of exposure on DNA methylation,
-and, finally, the maximum correlation between the target site and any given site
-in its full set of neighbors.
+ATE ("est_ate") as well as lower and upper confidence interval bounds for each
+estimate ("lwr_ci" and "upr_ci", respectively). Additional statistical
+information we have access to include the variance ("var_ate") of the estimate
+as well as the p-value ("pval") associated with each point estimate (based on
+Wald-style testing procedures). Beyond these, key bioinformatical quantities,
+with respect to the algorithm outlined above, are also returned; these include
+the total number of neighbors of the target site ("n_neighbors"), the number of
+neighboring sites controlled for when estimating the effect of exposure on DNA
+methylation ("n_neighbors_control"), and, the maximum correlation between the
+target site and any given site in its full set of neighbors
+("max_cor_neighbors").
 
 #### Generalized linear models for parameter estimation
 
@@ -311,14 +312,14 @@ suppressMessages(
                                parallel = FALSE, tmle_type = "glm"
                               )
 )
-methyvim_ate_glm
 ```
 
 Just as before, we can take a look at the results produced from the estimation
-procedure by examining the `"vim"` `slot` of the `methytmle` object:
+procedure (stored in the `vim` `slot` of the `methytmle` object) simply by
+invoking the S4 `show` method of the resultant object:
 
 ```{r methyvim-ate-glm-print}
-head(slot(methyvim_ate_glm, "vim"))
+methyvim_ate_glm
 ```
 
 _Remark:_ Here, the estimates are obtained via GLMs, making each of the
@@ -358,16 +359,15 @@ methyvim_rr_sl <- methyvim(data_grs = grsExample, sites_comp = 25,
                             filter = "limma", filter_cutoff = 0.10,
                             parallel = FALSE, tmle_type = "sl"
                            )
-methyvim_rr_sl
 ```
 
-We can take a look at the results produced from the estimation procedure by
-examining the `"vim"` `slot` of the `methytmle` object:
+We can take a look at the results produced from the estimation procedure (stored
+in the `vim` `slot` of the `methytmle` object) simply by invoking the S4 `show`
+method of the resultant object:
 
 ```{r methyvim-rr-sl-print}
-head(slot(methyvim_rr_sl, "vim"))
+methyvim_rr_sl
 ```
-
 
 #### Generalized linear models for parameter estimation
 
@@ -384,14 +384,14 @@ methyvim_rr_glm <- methyvim(data_grs = grsExample, sites_comp = 25,
                             filter = "limma", filter_cutoff = 0.10,
                             parallel = FALSE, tmle_type = "glm"
                            )
-methyvim_rr_glm
 ```
 
 Just as before, we can take a look at the results produced from the estimation
-procedure by examining the `"vim"` `slot` of the `methytmle` object:
+procedure (stored in the `vim` `slot` of the `methytmle` object) simply by
+invoking the S4 `show` method of the resultant object:
 
 ```{r methyvim-rr-glm-print}
-head(slot(methyvim_rr_glm, "vim"))
+methyvim_rr_glm
 ```
 
 _Remark:_ Here, the estimates are obtained via GLMs, making each of the
@@ -461,11 +461,11 @@ outcome regressions using a limited number of parametric models. By contrast,
 the `sl` (for "Super Learning") flavor fits these two regressions using highly
 nonparametric and data-adaptive procedures (i.e., via machine learning).
 
-Just as before, we can view a table of results by examining the `vim` slot of
-the produced `methytmle` object:
+Let's examine the table of results by examining the `methytmle` object that was
+produced by our call to the `methyvim` wrapper function:
 
 ```{r vim-cancer-ate}
-head(slot(methyvim_cancer_ate, "vim"))
+methyvim_cancer_ate
 ```
 
 Finally, we may compute FDR-corrected p-values, by applying a modified procedure
@@ -473,7 +473,7 @@ for controlling the False Discovery Rate for multi-stage analyses (FDR-MSA)
 [@tuglus2009modified]. We do this by simply applying the `fdr_msa` function:
 
 ```{r fdr-msa}
-fdr_p <- fdr_msa(pvals = slot(methyvim_cancer_ate, "vim")$pval,
+fdr_p <- fdr_msa(pvals = methyvim_cancer_ate@vim$pval,
                  total_obs = nrow(methyvim_cancer_ate))
 ```
 
