@@ -28,7 +28,7 @@ abstract: |
   such estimates. The approach leverages variable importance measures derived
   from statistical parameters arising causal inference, defined in such a manner
   that they may be used to obtain targeted estimates of the relative importance
-  of individual CpG site with respect to a binary treatment assigned at the
+  of individual CpG sites with respect to a binary treatment assigned at the
   phenotype level. The procedure implemented is computationally efficient,
   incorporating a preliminary screening step to isolate a subset of sites for
   which there is cursory evidence of differential methylation as well as a
@@ -39,8 +39,8 @@ abstract: |
   differential methylation effects without the loss of interpretable statistical
   inference.
 keywords: DNA methylation, differential methylation, epigenetics, causal
-  inference, statistical variable importance, targeted minimum loss-based
-  estimation, machine learning
+  inference, statistical variable importance, machine learning, targeted minimum
+  loss-based estimation
 bibliography: references.bib
 output: BiocWorkflowTools::f1000_article
 ---
@@ -52,31 +52,38 @@ options(scipen=999)
 # Introduction
 
 DNA methylation is a fundamental epigenetic process known to play an important
-role in the regulation of gene expression. DNA methylation occurs at CpG sites
-and involves the addition of a methyl group ($\text{CH}_3$) to the fifth carbon
-of the cytosine ring structure to form 5-methylcytosine. Numerous biological and
-medical studies have implicated DNA methylation as playing a role in disease and
-development [@robertson2005dna]. Perhaps unsurprisingly then, biotechnologies
-have been developed to rigorously probe the molecular mechanisms of this
-epigenetic process. Modern assays, like the Illumina _Infinium_ Methylation chip
-technology, allow for quantitative interrogation of DNA methylation at a large
-set of CpG sites scattered across the genome at single-nucleotide resolution;
-moreover, much effort has been invested, by the bioinformatics community, in the
+role in the regulation of gene expression. DNA methylation mostly commonly
+occurs at CpG sites and involves the addition of a methyl group ($\text{CH}_3$)
+to the fifth carbon of the cytosine ring structure to form 5-methylcytosine.
+Numerous biological and medical studies have implicated DNA methylation as
+playing a role in disease and development [@robertson2005dna]. Perhaps
+unsurprisingly then, biotechnologies have been developed to rigorously probe the
+molecular mechanisms of this epigenetic process. Modern assays, like the
+Illumina _Infinium_ HumanMethylation BeadChip assay, allow for quantitative
+interrogation of DNA methylation, at single-nucleotide resolution, across a
+comprehensive set of CpG sites scattered across the genome; moreover, the
+computational biology community has invested significant effort in the
 development of tools for properly removing technological effects that may
 contaminate biological signatures measured by such assays
-[@fortin2014functional, dedeurwaerder2013comprehensive]. Despite these
+[@fortin2014functional, @dedeurwaerder2013comprehensive]. Despite these
 advances in both biological and bioninformatical techniques, most statistical
 methods available for differential analysis of data produced by such assays rely
-on over-simplified models that fail to incorporate many of the recent advances
-in machine learning. Generally, typical statistical estimation approaches do not
-readily extend to such high-dimensional data without restrictive modeling
-assumptions and the use of inferentially costly hypothesis testing corrections.
-When these standard assumptions are violated, estimates of the population-level
-effect of an exposure or treatment may suffer from large bias. Data-adaptive
-estimation procedures that utilize machine learning can control for confounding
-even in high-dimensional settings; however, interpretable statistical inference
-(i.e., confidence intervals and hypothesis tests) resulting from these
-data-adaptive estimates is challenging to obtain [@libbrecht2015machine].
+on over-simplified models that do not readily extend to such high-dimensional
+data structures without restrictive modeling assumptions and the use of
+inferentially costly hypothesis testing corrections. When these standard
+assumptions are violated, estimates of the population-level effect of an
+exposure or treatment may suffer from large bias. What's more, reliance on
+restrictive and misspecified statistical models naturally leads to biased effect
+estimates that are not only misleading in assessing effect sizes but also result
+in false discoveries as these biased estimates are subject to testing and
+inferential procedures. Such predictably unreliable methods serve only to
+produce findings that are later invalidated by replication studies and add still
+further complexity to discovering biological targets for potential therapeutics.
+Data-adaptive estimation procedures that utilize machine learning provide a way
+to overcome many of the problems common in classical methods, controlling for
+potential confounding even in high-dimensional settings; however, interpretable
+statistical inference (i.e., confidence intervals and hypothesis tests) from
+such data-adaptive estimates is challenging to obtain [@libbrecht2015machine].
 
 In this paper, we briefly present an alternative to such statistical analysis
 approaches in the form of a nonparametric estimation procedure that provides
@@ -94,8 +101,8 @@ point estimation and the construction of Wald-style confidence intervals
 [@vdl2011targeted, @vdl2018targeted]. As counterfactuals are contrary-to-fact --
 that is, defined in terms of missing data -- in the context of DNA methylation,
 we define the counterfactual outcomes under a binary treatment as the observed
-methylation (whether Beta- or M-) value a CpG site would have if all subjects
-were given the treatment and the methylation value a CpG site would have if
+methylation (whether Beta- or M-) values a CpG site would have if all subjects
+were given the treatment and the methylation values a CpG site would have if
 treatment were withheld from all subjects. Although these counterfactual
 outcomes are, of course, impossible to observe, they have statistical analogs
 that may be reliably estimated from observed data [@pearl2009causality]. We
@@ -105,7 +112,7 @@ description and analysis of the statistical methodology to work outside the
 scope of the present manuscript. This methodology assesses the individual
 importance of a given CpG site by utilizing state-of-the-art machine learning
 algorithms in the estimation of a targeted VIM, initially proposed and explored
-in [@tuglus2008targeted]. In the presnet work, we focus on a software package,
+in [@tuglus2008targeted]. In the present work, we focus on a software package,
 `methyvim`, that implements a variant of this methodology, specifically tailored
 to differential methylation analysis.
 
@@ -122,32 +129,36 @@ For a more general introduction to (statistical) causal inference,
 We consider an observed data structure $O = (W_k, A, Y_j)$, where $Y_j, j = 1,
 \ldots J$ represents a given CpG site of interest, $A \in \{0, 1\}$ represents a
 binary phenotype-level treatment, and $W_k, k = 1, \ldots K(j)$ is a matrix of
-the observed values of CpG sites in the same neighborhood as $j$. We consider
-the case of observing $n$ iid copies of $O$ (i.e., $O_1, \ldots, O_n$), where we
-take $O \sim \mathcal{P} \in \mathcal{M}$, which is to say that $O$ is governed
-by an unknown probability distribution $\mathcal{P}$, taken only to reside in a
-nonparametric statistical model $\mathcal{M}$ that places no restrictions on the
-data-generating process. We consider having access to measurements on a large
-number $G$ of CpG sites (e.g., 850,000, as measured by the Illumina
-MethylationEPIC BeadChip arrays), and as a matter of practicality, let $J \leq
-G$, so that $J$ indexes only those CpG sites that pass an arbitrary
-pre-screening procedure; note that the equality is only obtained in the case
-that all sites pass the pre-screening procedure. Further, we let $K(j)$ index
-the set of all CpG sites so that $k$, the realization of $K(j)$ for a given CpG
-site $j$, is a set of the CpG sites that neighbor the CpG site $j$, where the
-definition of a neighborhood is left as user-specified; thus, $W_k$ is a matrix
-of observed methylation values for the set of CpG sites $k$ that neighbor a
-particular target site $j$. We consider estimating a target parameter ($\psi_j$)
-as a variable importance measure of the effect of changing a treatment $A$ on
-the methylation of a CpG site $j$, accounting for the observed methylation at
-the set of sites $k$ that neighbor the site $j$. After a complete run of the
-procedure, we have access to $j$ VIM estimates $\psi_j$, each corresponding to
-the degree to which a given CpG site $j$ was responsive to a change in the
-binary treatment $A$, after controlling for any confounding exerted by its
-neighboring CpG sites. When machine learning estimators are employed in
+the observed values of CpG sites in the same neighborhood as $j$ as well as any
+potential phenotype-level confounders (e.g., sex, age). We consider having
+access to measurements on a large number $G$ of CpG sites (e.g., $850,000$, as
+measured by the Illumina MethylationEPIC BeadChip arrays), and as a matter of
+practicality, let $J \leq G$, so that $J$ indexes only those CpG sites that pass
+an arbitrary pre-screening procedure; note that equality is only obtained in the
+case that all sites pass the pre-screening procedure. Further, we let $K(j)$
+index the set of all CpG sites so that $k$, the realization of $K(j)$ for a
+given CpG site $j$, is a set of the CpG sites that neighbor the CpG site $j$,
+where the definition of a neighborhood is left as user-specified; thus, $W_k$ is
+a matrix of observed methylation values for the set of CpG sites $k$ that
+neighbor a particular target site $j$ as well as any potential phenotype-level
+confounders, where the latter does not vary between realizations of $K(j)$. As
+a variable importance measure, we see to estimate a target parameter ($\psi_j$)
+that quantifies the effect of changing a treatment $A$ on the methylation of a
+CpG site $j$, accounting for any potential confounding from phenotype-level
+covariates and the observed methylation at the set of sites $k$ that neighbor
+the site $j$. After a complete run of the procedure, we have access to $j$ VIM
+estimates $\psi_j$, each corresponding to the degree to which a given CpG site
+$j$ was responsive to a change in the binary treatment $A$, after controlling
+for potential confounding. When machine learning estimators are employed in
 estimating $\psi_j$, this produces a nonparametric variable importance measure
 of differential methylation, allowing for the identification of differentially
-methylated positions (DMPs).
+methylated positions (DMPs). We note that $\psi(j)$, for any given $j$, is a
+function of the _true_ data-generating distribution; so, to formalize, we
+consider observing $n$ iid copies of $O$ (i.e., $O_1, \ldots, O_n$), where we
+have $O \sim P \in \mathcal{M}$, which is to say that the random variable $O$ is
+governed by an unknown probability distribution $P$, assumed only to reside in a
+nonparametric statistical model $\mathcal{M}$ that places no restrictions on the
+data-generating process.
 
 ## Implementation
 
@@ -235,27 +246,28 @@ available_. Future releases will allow users to assess continuous-valued
 treatments by relying on parameters estimable through implementations available
 in the following software packages:
 
-* `tmle.npvi` - A nonparametric variable importance measure (NPVI)
-  [@chambaz2012estimation]. The effect of a continuous-valued exposure or
+* A nonparametric variable importance measure (NPVI) [@chambaz2012estimation]
+  (R package `tmle.npvi`). The effect of a continuous-valued exposure or
   treatment (the observed methylation at a target CpG site) on an outcome of
   interest is estimated, controlling for the observed methylation value at all
   other CpG sites in the same neighborhood as the target site. This uses a
   parameter that compares values of the treatment against a user-specified
-  reference value taken to be the null. In particular, the implementation to be
-  provided is designed to assess the effect of differential methylation at the
-  target CpG site on an outcome of interest (e.g., survival), providing a
+  reference value taken to be the null value. In particular, the implementation
+  to be provided is designed to assess the effect of differential methylation at
+  the target CpG site on an outcome of interest (e.g., survival), providing a
   nonparametric evaluation of the impact of methylation at the target site.
 
-* `txshift` - Variable importance using a causal parameter defined as the
-  counterfactual outcome under a posited shift of a continuous-value treatment
-  of interest using stochastic intervention policies [@munoz2012population,
-  @diaz2018stochastic, @hejazi2018txshift]. The value of an outcome of interest
-  under an unobserved value of the (continuous-valued) treatment, specified
-  through a user-provided _additive shift_ of the observed treatment, may be
-  data-adaptively estimated. This allows for the effect of changes/shifts in the
-  observed methylation at a CpG site on an outcome of interest to be evalauted,
-  providing a nonparametric evalution of the relative importance of a particular
-  target CpG site with respect to another variable measured in the same study.
+* The causal effect of shifting the value of an observed intervention, defined
+  as the counterfactual outcome under a posited shift of a continuous-value
+  treatment of interest using stochastic intervention policies
+  [@munoz2012population, @diaz2018stochastic, @hejazi2018txshift] (R package
+  `txshift`). The value of an outcome of interest under an unobserved value of
+  the (continuous-valued) treatment, specified through a user-provided
+  _additive shift_ of the observed treatment, may be data-adaptively estimated.
+  This allows for the effect of changes/shifts in the observed methylation at a
+  CpG site on an outcome of interest to be evaluated, providing a nonparametric
+  evalution of the relative importance of a particular target CpG site with
+  respect to another variable measured in the same study.
 
 #### Class `methytmle`
 
@@ -428,12 +440,17 @@ the assay) across subjects using a heat gradient. We implement this in the
 `methyheat` function:
 
 ```{r methyvim-heatmap}
-methyheat(methyvim_cancer_ate)
+methyheat(methyvim_cancer_ate, smooth.heat = TRUE, left.label = "none")
 ```
 
-Invoking `methyheat` in this manner produces a plot of the top sites ($25$, by
-default) based on the raw p-value, using the raw methylation measures in the
-plot. This uses the exceptional `superheat` R package [@barter2017superheat].
+__Remark__: Invoking `methyheat` in this manner produces a plot of the top sites
+($25$, by default) based on the raw p-value, using the raw methylation measures
+in the plot. This uses the exceptional `superheat` R package
+[@barter2017superheat], to which we can easily pass additional parameters. In
+particulat, we hide the CpG site labels that would appear by default on the left
+of the heatmap (by setting `left.label = "none"`) to emphasize that this is only
+an example and _not_ a scientific discovery.
+
 
 # Summary
 
