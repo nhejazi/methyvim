@@ -22,22 +22,24 @@ author:
       - Department of Statistics, University of California, Berkeley
     orcid: 0000-0003-1432-5511
 abstract: |
-  We present `methyvim`, an R package implementing a general algorithm for the
-  nonparametric estimation of treatment effects on DNA methylation at CpG sites
-  throughout the genome, complete with straightforward statistical inference for
-  such estimates. The approach leverages variable importance measures derived
-  from statistical parameters arising in causal inference, defined in such a
-  manner that they may be used to obtain targeted estimates of the relative
-  importance of individual CpG sites with respect to a binary treatment assigned
-  at the phenotype level. The procedure implemented is computationally
-  efficient, incorporating a preliminary screening step to isolate a subset of
-  sites for which there is cursory evidence of differential methylation as well
-  as a unique multiple testing correction to control the False Discovery Rate
-  with the same rigor as if all sites were tested. This technique for analysis
-  of differentially methylated positions provides an avenue to incorporate
-  flexible state-of-the-art machine learning algorithms into the estimation of
-  differential methylation effects without the loss of interpretable statistical
-  inference.
+  We present `methyvim`, an R package implementing an algorithm for the
+  nonparametric estimation of the effects of exposures on DNA methylation at CpG
+  sites throughout the genome, complete with straightforward statistical
+  inference for such estimates. The approach leverages variable importance
+  measures derived from statistical parameters arising in causal inference,
+  defined in such a manner that they may be used to obtain targeted estimates of
+  the relative importance of individual CpG sites with respect to a binary
+  treatment assigned at the phenotype level, thereby providing a new approach to
+  identifying differentially methylated positions. The procedure implemented is
+  computationally efficient, incorporating a preliminary screening step to
+  isolate a subset of sites for which there is cursory evidence of differential
+  methylation as well as a unique multiple testing correction to control the
+  False Discovery Rate with the same rigor as would be available if all sites
+  were subjected to testing. This novel technique for analysis of differentially
+  methylated positions provides an avenue for incorporating flexible
+  state-of-the-art data-adaptive regression procedures (i.e., machine learning)
+  into the estimation of differential methylation effects without the loss of
+  interpretable statistical inference for the estimated quantity.
 keywords: DNA methylation, differential methylation, epigenetics, causal
   inference, statistical variable importance, machine learning, targeted minimum
   loss-based estimation
@@ -127,142 +129,6 @@ inference, @pearl2009causality and @hernan2018causal may be of interest.
 
 # Methods
 
-## Data Structure
-
-We consider an observed data structure, on a single experimental subject (e.g.,
-a patient), $O = (W, A, (Y(j) : j))$, where $(Y(j) : j = 1, \ldots J)$ is the
-set of CpG sites measured by the assay in question, $A \in \{0, 1\}$ represents
-a binary phenotype-level treatment, and $W$ is a vector of the phenotype-level
-baseline covariates that are potential confounders (e.g., age, sex). We consider
-having access to measurements on a large number $J$ of CpG sites (e.g.,
-$850,000$, as measured by the Illumina _MethylationEPIC_ BeadChip arrays).
-Further, let $K: j \to S_j$ be a procedure that assigns to a given CpG site $j$
-a set of neighbors $S_j$ -- that is, $S_j$ is a collection of indices of the
-neighbors of $j$ just as $j$ indexes the full set of CpG sites; moreover, since
-$Y(j)$ is the measured methylation value for a given CpG site $j$, $Y(S_j)$ is
-the measured methylation values at the neighbors $S_j$ of $j$. Note that the
-definition of a neighborhood $\{j, S_j\}$ is left vague so as to facilitate the
-use of user-specified strategies in implementation. We consider the case of
-observing $n$ iid copies of $O$ (i.e., $O_1, \ldots, O_n$), where $O \sim P \in
-\mathcal{M}$, which is to say that the random variable $O$ is governed by an
-unknown probability distribution $P$, assumed only to reside in a nonparametric
-statistical model $\mathcal{M}$ that places no restrictions on the
-data-generating process.
-
-## Variable Importance Measure
-
-With the data structure above in hand, we let the estimand of interest be a
-$j$-specific variable importance measure (VIM) $\Psi_j(P)$, which is defined
-through the _true_ (and unknown) probability distribution $P$. As a motivating
-example, consider the case where $\Psi_j(P)$ is
-\begin{equation}\label{vim_param}
-  \Psi_j(P) = \mathbb{E}_P(\mathbb{E}_P(Y(j) \mid A = 1, W, Y(S_j)) -
-    \mathbb{E}_P \mathbb{E}_P(Y(j) \mid A = 0, W, Y(S_j)),
-\end{equation}
-where $Y(S_j)$ is the subvector of $Y$ that contains the measured methylation
-values of the _neighboring sites_ of $j$ (but not site $j$ itself). This
-parameter of interest is a variant of the _average treatment effect_, which has
-been the subject of much attention in statistical causal inference **CITATION
-NEEDED**. As a measure of variable importance, we seek to estimate this target
-parameter ($\Psi_j(P)$), which quantifies the effect of changing a treatment $A$
-on the methylation $Y(j)$ of a CpG site $j$, accounting for any potential
-confounding from phenotype-level covariates $W$ and observed methylation
-$Y(S_j)$ at the neighboring sites $S_j$ of $j$. We propose a procedure that
-estimates this target parameter $\Psi_j(P)$ across all CpG sites of interest
-$j: 1, \ldots, J$. When data-adaptive regression procedures (i.e., machine
-learning) are employed in estimating $\Psi_j(P)$, this produces a nonparametric
-variable importance measure of differential methylation, allowing for the
-identification of differentially methylated positions (DMPs) while avoiding many
-assumptions common in the use of standard parametric regression procedures. We
-propose estimating $\Psi_j(P)$ via targeted minimum loss-based estimation, which
-allows for data-adaptive regression procedures to be employed in a
-straightforward manner.
-
-## Pre-Screening Procedure
-
-As a matter of practicality, we consider only estimating the target VIM
-$\Psi_j(P)$ at a subset of CpG sites, so that $j: 1, \ldots J$ does not, in fact
-span the full set of assayed CpG sites. In order to determine this subset of CpG
-sites, we propose the use of a pre-screening procedure, which need be nothing
-more than a method for differential methylation analysis that is computationally
-less demanding than the method proposed here. Formally, let the pre-screening
-procedure $\theta(j): j \to \{0, 1\}$, which is to say that $\theta$ takes as
-input a CpG site $j$ and returns a binary decision rule of whether to include
-CpG site $j$ in a subset to be evaluated further or not. Details on the
-implementation of pre-screening approaches is available in the sequel.
-
-## Reducing Neighbors via Clustering
-
-Due to the data-adaptive nature of the regression procedures employed in
-evaluating the target VIM $\Psi_j(P)$ via targeted minimum loss-based
-estimation, it is possible the a given CpG site $j$ may have _too many_
-neighbors $S_j$ to be controlled for in the estimation procedure. Heuristically,
-the inclusion of too many neighbors when controlling for potential confounders
-may lead to instability in the estimates produced. In such cases, we propose and
-implement the use of a clustering technique (e.g., Partitioning Around Medoids)
-to select a _representative_ subset of neighbors. Formally, there is likely no
-best choice of a specific clustering algorithm, so we leave this aspect of the
-proposed algorithm as flexible for the user [@kleinberg2003impossibility].
-
-## Targeted Minimum Loss-Based Estimation and Inference
-
-Given the choice of target parameter $\Psi_j(P)$, we propose the use of targeted
-minimum loss-based estimation (TMLE) to construct and evaluate an estimator
-$\psi_{n, j}$ of $\Psi_j(P)$. In the case of our motivating example, where the
-target VIM is the average treatment effect, we make use of a TML estimator of
-this parameter, which has been implemented for a general case in the
-[`tmle`](https://CRAN.R-project.org/package=tmle) R package [@gruber2011tmle].
-Generally speaking, a TML estimator is constructed from a few simple components:
-(1) an estimator of the propensity score [@rosenbaum1983central] (often denoted
-by $g(A, W)$), (2) an estimator of the outcome regression (often denoted $Q(A,
-W)$), and (3) a targeting step applied to the initial estimator constructed from
-the aforementioned components [@gruber2009targeted]. In the sequel, we describe
-a few of the key mathematical properties of TML estimators relevant for
-statistical inference, deferring extended discussion of the technical details to
-@vdl2011targeted and @vdl2018targeted; moreover, as a matter of practicality, we
-make use of the [`tmle`](https://CRAN.R-project.org/package=tmle)  R package of
-@gruber2011tmle as a backend for computing estimators of relevant target
-parameters in our software package, so the interested user is encouraged to
-discuss the documentation of that software package for further details.
-
-As noted previously, data-adaptive regression techniques may be used in the
-construction of TML estimators. This is done by generating a stacked regression
-model from a given set of machine learning algorithms via the Super Learner
-algorithm [@wolpert1992stacked, breiman1996stacked, vdl2007super], which ensures
-that the resulting ensemble learner satisifies important optimality properties
-with respect to cross-validation [@vdl2004asymptotic, @dudoit2005asymptotics,
-@vdl2003unified]. Importantly, TML estimators are well suited for inference,
-having an asymptotically normal limiting distribution
-[@tsiatis2007semiparametric, @vdl2006targeted] $\sqrt{n}(\psi_{n, j} -
-\Psi_j(P)) \sim N(0, \sigma_{\text{EIF}}^2)$, where $\sigma_{\text{EIF}}^2$ is
-the variance of the efficient influence function of the target parameter
-evaluated at the observed data. This allows for confidence intervals to be
-constructed and and hypothesis tests (i.e., $H_{0, j}: \Psi_j(P) = 0$) to be
-performed in a straightforward manner.
-
-## Correction for Multiple Testing
-
-Given that we seek to estimate $\Psi_j(P)$ for a possibly large number of CpG
-sites $(j: 1, \ldots J)$, the need to perform corrections for multiple testing
-is clear. In order to curb the potential for false discoveries, we recommend the
-use of the Benjamini and Hochberg procedure for controlling the False Discovery
-Rate (FDR) [@benjamini1995controlling]; however, as the proposed procedure
-involves a pre-screening step, naive application of the Benjamini and Hochberg
-procedure (BH) is invalid -- instead, we rely on a modification of the procedure
-to control the FDR, with established theoretical guarantees when pre-screening
-is employed [@tuglus2009modified]. In brief, the modified marginal Benjamini and
-Hochberg procedure to control the FDR under pre-screening works by applying the
-standard BH procedure to a padded vector of p-values -- that is, letting $J$ be
-the number of CpG sites tested and $K$ the number of CpG sites filtered out (so
-that $J + K = P$, where $P$ is the original dimension of the genomic assay), the
-modified marginal BH procedure is the application of the original BH procedure
-to a vector of p-values, composed of the $J$ p-values from performing $J$
-hypothesis tests (of the form $H_{0, j}: \Psi_j(P) = 0$) and $K$ additional
-p-values automatically set to $1$ (for the hypothesis tests not performed on
-account of pre-screening). This procedure is guaranteed to control the FDR at
-the same desired rate when pre-screening is performed whereas naive application
-of the BH procedure fails to do so.
-
 ## Implementation
 
 The core functionality of this package is made available via the eponymous
@@ -271,8 +137,10 @@ compute targeted estimates of VIMs, defined in such a way that the VIMs
 represent parameters of scientific interest in computational biology
 experiments; moreover, these VIMs are defined such that they may be estimated in
 a manner that is very nearly assumption-free, that is, within a _fully
-nonparametric statistical model_. __The statistical algorithm consists in the
-several major steps elaborated upon above and summarized below__:
+nonparametric statistical model_. The statistical algorithm consists in the
+several major steps summarized below. Additional methodological details on the
+use of targeted minimum loss-based estimation in this problem setting is
+provided in a brief appendix (see section __Appendix__).
 
 1. _Pre-screening_ of genomic sites is used to isolate a subset of sites for
    which there is cursory evidence of differential methylation. Currently, the
@@ -298,12 +166,13 @@ several major steps elaborated upon above and summarized below__:
 
 #### Parameters of Interest
 
-For the CpG sites that pass the pre-screening step, a user-specified target
+For CpG sites that pass the pre-screening step, a user-specified target
 parameter of interest is estimated independently at each site. _In all cases,
 an estimator of the parameter of interest is constructed via targeted minimum
 loss-based estimation_.
 
-For discrete-valued treatments or exposures:
+Two popular target causal parameters for discrete-valued treatments or
+exposures are
 
 * The average treatment effect (ATE): The effect of a binary exposure or
   treatment on the observed methylation at a target CpG site is estimated,
@@ -331,6 +200,7 @@ Technical details on the nature of these regressions are discussed in
 framework of targeted minimum loss-based estimation are discussed in
 @vdl2011targeted.
 
+<!--
 #### Future Work
 
 Support for continuous-valued treatments or exposures is _planned and ongoing_
@@ -361,6 +231,8 @@ following software packages:
   CpG site on an outcome of interest to be evaluated, providing a nonparametric
   evalution of the relative importance of a particular target CpG site with
   respect to another variable measured in the same study.
+
+-->
 
 #### Class `methytmle`
 
@@ -598,6 +470,163 @@ Institutes of Health under Award Number T32-LM012417, by P42-ES004705, and
 by R01-ES021369. RP was supported by P42-ES004705. The content of this work is
 solely the responsibility of the authors and does not necessarily represent the
 official views of the various funding sources and agencies.
+
+# Appendix
+
+## Data Structure
+
+We consider an observed data structure, on a single experimental subject (e.g.,
+a patient), $O = (W, A, (Y(j) : j))$, where $(Y(j) : j = 1, \ldots J)$ is the
+set of CpG sites measured by the assay in question, $A \in \{0, 1\}$ represents
+a binary phenotype-level treatment, and $W$ is a vector of the phenotype-level
+baseline covariates that are potential confounders (e.g., age, sex). We consider
+having access to measurements on a large number $J$ of CpG sites (e.g.,
+$850,000$, as measured by the Illumina _MethylationEPIC_ BeadChip arrays).
+Further, let $K: j \to S_j$ be a procedure that assigns to a given CpG site $j$
+a set of neighbors $S_j$ -- that is, $S_j$ is a collection of indices of the
+neighbors of $j$ just as $j$ indexes the full set of CpG sites; moreover, since
+$Y(j)$ is the measured methylation value for a given CpG site $j$, $Y(S_j)$ is
+the measured methylation values at the neighbors $S_j$ of $j$. Note that the
+definition of a neighborhood $\{j, S_j\}$ is left vague so as to facilitate the
+use of user-specified strategies in implementation. We consider the case of
+observing $n$ iid copies of $O$ (i.e., $O_1, \ldots, O_n$), where $O \sim P \in
+\mathcal{M}$, which is to say that the random variable $O$ is governed by an
+unknown probability distribution $P$, assumed only to reside in a nonparametric
+statistical model $\mathcal{M}$ that places no restrictions on the
+data-generating process.
+
+## Variable Importance Measure
+
+With the data structure above in hand, we let the estimand of interest be a
+$j$-specific variable importance measure (VIM) $\Psi_j(P)$, which is defined
+through the _true_ (and unknown) probability distribution $P$. As a motivating
+example, consider the case where $\Psi_j(P)$ is
+\begin{equation}\label{vim_param}
+  \Psi_j(P) = \mathbb{E}_P(\mathbb{E}_P(Y(j) \mid A = 1, W, Y(S_j)) -
+    \mathbb{E}_P \mathbb{E}_P(Y(j) \mid A = 0, W, Y(S_j)),
+\end{equation}
+where $Y(S_j)$ is the subvector of $Y$ that contains the measured methylation
+values of the _neighboring sites_ of $j$ (but not site $j$ itself). This
+parameter of interest is a variant of the _average treatment effect_, which has
+been the subject of much attention in statistical causal inference
+[@holland1986statistics, @hahn1998role, @hirano2003efficient]. As a measure of
+variable importance, we seek to estimate this target parameter ($\Psi_j(P)$),
+which quantifies the effect of changing a treatment $A$ on the methylation
+$Y(j)$ of a CpG site $j$, accounting for any potential confounding from
+phenotype-level covariates $W$ and observed methylation $Y(S_j)$ at the
+neighboring sites $S_j$ of $j$. We propose a procedure that estimates this
+target parameter $\Psi_j(P)$ across all CpG sites of interest $j: 1, \ldots, J$.
+When data-adaptive regression procedures (i.e., machine learning) are employed
+in estimating $\Psi_j(P)$, this produces a nonparametric variable importance
+measure of differential methylation, allowing for the identification of
+differentially methylated positions (DMPs) while avoiding many assumptions
+common in the use of standard parametric regression procedures. We propose
+estimating $\Psi_j(P)$ via targeted minimum loss-based estimation, which allows
+for data-adaptive regression procedures to be employed in a straightforward
+manner using the Super Learner algorithm for ensemble modeling [@vdl2007super,
+@wolpert1992stacked, @breiman1996stacked, @gruber2009targeted,
+@vdl2011targeted].
+
+## Pre-Screening Procedure
+
+As a matter of practicality, we consider only estimating the target VIM
+$\Psi_j(P)$ at a subset of CpG sites, so that $j: 1, \ldots J$ does not, in fact
+span the full set of assayed CpG sites. In order to determine this subset of CpG
+sites, we propose the use of a pre-screening procedure, which need be nothing
+more than a method for differential methylation analysis that is computationally
+less demanding than the method proposed here. Formally, let the pre-screening
+procedure $\theta(j): j \to \{0, 1\}$, which is to say that $\theta$ takes as
+input a CpG site $j$ and returns a binary decision rule of whether to include
+CpG site $j$ in a subset to be evaluated further or not. As an example, one
+might consider employing a classical differential methylation analysis
+procedure, such as the linear modeling approach of the
+[`limma`](https://bioconductor.org/packages/limma) R package
+[@smyth2004linear, @robinson2014statistical], using only CpG sites that pass a
+reasonable cutoff based on the linear model (e.g., magnitude of t-statistics,
+p-values) for the subsequent analysis steps in the `methyvim` pipeline. Details
+on the implementation of pre-screening approaches is provided in the sequel.
+
+## Reducing Neighbors via Clustering
+
+Due to the data-adaptive nature of the regression procedures employed in
+evaluating the target VIM $\Psi_j(P)$ via targeted minimum loss-based
+estimation, it is possible the a given CpG site $j$ may have _too many_
+neighbors $S_j$ to be controlled for in the estimation procedure. Heuristically,
+the inclusion of too many neighbors when controlling for potential confounders
+may lead to instability in the estimates produced. In such cases, we propose and
+implement the use of a clustering technique (e.g., partitioning around medoids)
+to select a _representative_ subset of neighbors. Formally, there is likely no
+best choice of a specific clustering algorithm, so we leave this aspect of the
+proposed algorithm as flexible for the user [@kleinberg2003impossibility]. Note
+that the goal of employing a clustering procedure in `methyvim` is to obtain a
+smaller but still highly representative set of neighbors $S(j)$, so as to allow
+for estimates of $\Psi_j(P)$ to account for as much confounding from neighboring
+sites as is allowed by the available data.
+
+## Targeted Minimum Loss-Based Estimation and Statistical Inference
+
+Given the choice of target parameter $\Psi_j(P)$, we propose the use of targeted
+minimum loss-based estimation (TMLE) to construct and evaluate an estimator
+$\psi_{n, j}$ of $\Psi_j(P)$. In the case of our motivating example, where the
+target VIM is based on the average treatment effect, we make use of a TML
+estimator of this parameter, which has been implemented for a general case in
+the [`tmle`](https://CRAN.R-project.org/package=tmle) R package
+[@gruber2011tmle]; users of `methyvim` may wish to consult the documentation of
+that software package as a supplement. Generally speaking, a TML estimator is
+constructed from a few simple components: (1) an estimator of the propensity
+score [@rosenbaum1983central], often denoted by $g(A \mid W)$; (2) an estimator
+of the outcome regression, often denoted $Q(A, W)$; and (3) a targeting step
+applied to the initial estimators constructed from the aforementioned components
+[@gruber2009targeted]. While we describe a few of the key properties of TML
+estimators in the sequel, extended technical discussion is deferred to more
+comprehensive work [@vdl2011targeted, @vdl2018targeted]. In order to construct
+an estimate $\psi_{n, j}$ of $\Psi_j(P)$, it is necessary to accurately estimate
+to nuisance parameters, these being the propensity score ($g(A \mid W)$) and the
+outcome regression ($Q(A, W)$); moreover, data-adaptive regression procedures
+may be used to obtain consistent estimates of these quantities through the
+creation of a stacked regression model via the Super Learner algorithm
+[@wolpert1992stacked, @breiman1996stacked, @vdl2007super], which ensures
+that the resulting ensemble learner satisfies important optimality properties
+with respect to cross-validation [@vdl2004asymptotic, @dudoit2005asymptotics,
+@vdl2003unified]. After constructing such estimates, an iterative procedure
+(i.e., the targeting step) may be used to combine these individual estimates
+into an estimate of the target parameter $\Psi_j(P)$.
+
+Importantly, TML estimators are well-suited for statistical inference, having an
+asymptotically normal limiting distribution [@tsiatis2007semiparametric,
+@vdl2006targeted], which allows for a closed-form expression of the variance
+to be derived:
+\begin{equation}\label{eqn:lim_psi}
+  \sqrt{n}(\psi_{n, j} - \Psi_j(P)) \sim N(0, \sigma_{\text{EIF}}^2),
+\end{equation}
+where $\sigma_{\text{EIF}}^2$ is the variance of the efficient influence
+function, with respect to a nonparametric statistical model, of the target
+parameter evaluated at the observed data. Such a convenience allows for
+confidence intervals and hypothesis tests to be constructed (i.e.,
+$H_{0, j}: \Psi_j(P) = 0$) in a straightforward manner.
+
+## Correction for Multiple Testing
+
+Given that we seek to estimate $\Psi_j(P)$ for a possibly large number of CpG
+sites $(j: 1, \ldots J)$, the need to perform corrections for multiple testing
+is clear. In order to curb the potential for false discoveries, we recommend the
+use of the Benjamini and Hochberg procedure for controlling the False Discovery
+Rate (FDR) [@benjamini1995controlling]; however, as the proposed procedure
+involves a pre-screening step, naive application of the Benjamini and Hochberg
+procedure (BH) is invalid -- instead, we rely on a modification of the procedure
+to control the FDR, with established theoretical guarantees when pre-screening
+is employed [@tuglus2009modified]. In brief, the modified marginal Benjamini and
+Hochberg procedure to control the FDR under pre-screening works by applying the
+standard BH procedure to a padded vector of p-values -- that is, letting $J$ be
+the number of CpG sites tested and $K$ the number of CpG sites filtered out (so
+that $J + K = P$, where $P$ is the original dimension of the genomic assay), the
+modified marginal BH procedure is the application of the original BH procedure
+to a vector of p-values, composed of the $J$ p-values from performing $J$
+hypothesis tests (of the form $H_{0, j}: \Psi_j(P) = 0$) and $K$ additional
+p-values automatically set to $1$ (for the hypothesis tests not performed on
+account of pre-screening). This procedure is guaranteed to control the FDR at
+the same desired rate when pre-screening is performed whereas naive application
+of the BH procedure fails to do so.
 
 # References
 
