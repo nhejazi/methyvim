@@ -13,13 +13,13 @@ citEntry(
     number       = "",
     author       = "Nima S. Hejazi, Rachael V. Phillips, Alan E. Hubbard, Mark
                     J. van der Laan",
-    title        = "methyvim: Targeted and model-free analysis of differential
-                    methylation in R",
+    title        = "methyvim: Targeted, Robust, and Model-free Differential
+                    Methylation Analysis in R",
     journal      = "",
     textVersion  = paste("Hejazi, NS, Phillips, RV, Hubbard, AE, and van der
                           Laan, MJ (2018).",
-                         "methyvim: Targeted and model-free analysis of
-                          differential methylation in R",
+                         "methyvim: Targeted, Robust, and Model-free
+                          Differential Methylation Analysis in R",
                          "(forthcoming)",
                          "")
 )

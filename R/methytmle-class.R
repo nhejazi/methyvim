@@ -7,6 +7,7 @@
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #'  RangedSummarizedExperiment
 #' @importClassesFrom S4Vectors Vector Annotated
+#' @import BiocGenerics
 #'
 #' @export .methytmle
 #' @exportClass methytmle

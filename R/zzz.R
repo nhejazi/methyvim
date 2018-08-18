@@ -2,7 +2,6 @@
   packageStartupMessage(paste0(
     "methyvim v",
     utils::packageDescription("methyvim")$Version,
-    ": Targeted Variable Importance for ",
-    "Differential Methylation Analysis"
+    ": Targeted, Robust, and Model-free Differential Methylation Analysis"
   ))
 }

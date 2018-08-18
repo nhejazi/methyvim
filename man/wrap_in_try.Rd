@@ -13,5 +13,5 @@ wrap_in_try(fun, ...)
 }
 \description{
 Function factory that generates versions of functions wrapped in \code{try}.
-Originally fround in and borrowed from package \code{origami}.
+Originally found in and borrowed from package \code{origami}.
 }
