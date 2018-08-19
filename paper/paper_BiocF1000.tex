@@ -89,7 +89,7 @@
 \begin{document}
 \pagestyle{front}
 
-\title{\texttt{methyvim}: Targeted, Robust, and Model-free Analysis of Differential Methylation in R}
+\title{\texttt{methyvim}: Targeted, Robust, and Model-free Differential Methylation Analysis in R}
 
 \author[1,2]{Nima S. Hejazi\thanks{\ttfamily nhejazi@berkeley.edu}}
 \author[1]{Rachael V. Phillips}
@@ -124,7 +124,7 @@ interpretable statistical inference for the estimated quantity.
 \end{abstract}
 
 \section*{Keywords}
-DNA methylation, differential methylation, epigenetics, causal inference, statistical variable importance, machine learning, targeted minimum loss-based estimation
+DNA methylation, differential methylation, epigenetics, causal inference, variable importance, machine learning, targeted loss-based estimation
 
 
 \clearpage
@@ -401,7 +401,7 @@ simply invoking the S4 class constructor \texttt{.methytmle}:
 \end{Shaded}
 
 \begin{verbatim}
-## methyvim v1.3.1: Targeted Variable Importance for Differential Methylation Analysis
+## methyvim v1.3.1: Targeted, Robust, and Model-free Differential Methylation Analysis
 \end{verbatim}
 
 \begin{Shaded}
@@ -468,6 +468,10 @@ estimate of the Average Treatment Effect.
 \NormalTok{                               )}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Loading required package: nnls
+\end{verbatim}
 
 Note that we set the \texttt{obs\_per\_covar} argument to a relatively low value (just 2,
 even though the recommended value, and default, is 20) for the purposes of this
@@ -620,10 +624,6 @@ the assay) across subjects using a heat gradient. We implement this in the
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## [1] 0.1 0.3 0.6 0.8 1.0
-\end{verbatim}
-
 \begin{center}\includegraphics{paper_BiocF1000_files/figure-latex/methyvim-heatmap-1} \end{center}
 
 \textbf{Remark}: Invoking \texttt{methyheat} in this manner produces a plot of the top sites
@@ -706,70 +706,71 @@ neighbors of \(j\) just as \(j\) indexes the full set of CpG sites; moreover, si
 the measured methylation values at the neighbors \(S_j\) of \(j\). Note that the
 definition of a neighborhood \(\{j, S_j\}\) is left vague so as to facilitate the
 use of user-specified strategies in implementation. We consider the case of
-observing \(n\) iid copies of \(O\) (i.e., \(O_1, \ldots, O_n\)), where \(O \sim P \in \mathcal{M}\), which is to say that the random variable \(O\) is governed by an
-unknown probability distribution \(P\), assumed only to reside in a nonparametric
-statistical model \(\mathcal{M}\) that places no restrictions on the
+observing \(n\) iid copies of \(O\) (i.e., \(O_1, \ldots, O_n\)), where \(O \sim P_0 \in \mathcal{M}\), which is to say that the random variable \(O\) is governed by an
+unknown probability distribution \(P_0\), assumed only to reside in a
+nonparametric statistical model \(\mathcal{M}\) that places no restrictions on the
 data-generating process.
 
 \hypertarget{variable-importance-measure}{%
 \subsection{Variable Importance Measure}\label{variable-importance-measure}}
 
 With the data structure above in hand, we let the estimand of interest be a
-\(j\)-specific variable importance measure (VIM) \(\Psi_j(P)\), which is defined
-through the \emph{true} (and unknown) probability distribution \(P\). As a motivating
-example, consider the case where \(\Psi_j(P)\) is
+\(j\)-specific variable importance measure (VIM) \(\Psi_j(P_0)\), which is defined
+through the \emph{true} (and unknown) probability distribution \(P_0\). As a motivating
+example, consider the case where \(\Psi_j(P_0)\) is
 \begin{equation}\label{vim_param}
-  \Psi_j(P) = \mathbb{E}_P(\mathbb{E}_P(Y(j) \mid A = 1, W, Y(S_j)) -
-    \mathbb{E}_P \mathbb{E}_P(Y(j) \mid A = 0, W, Y(S_j)),
+  \Psi_j(P_0) = \mathbb{E}_{P_0}(\mathbb{E}_{P_0}(Y(j) \mid A = 1, W, Y(S_j)) -
+    \mathbb{E}_{P_0} \mathbb{E}_{P_0}(Y(j) \mid A = 0, W, Y(S_j)),
 \end{equation}
 where \(Y(S_j)\) is the subvector of \(Y\) that contains the measured methylation
 values of the \emph{neighboring sites} of \(j\) (but not site \(j\) itself). This
 parameter of interest is a variant of the \emph{average treatment effect}, which has
 been the subject of much attention in statistical causal inference
 \citep[\citet{hahn1998role}, \citet{hirano2003efficient}]{holland1986statistics}. As a measure of
-variable importance, we seek to estimate this target parameter (\(\Psi_j(P)\)),
+variable importance, we seek to estimate this target parameter (\(\Psi_j(P_0)\)),
 which quantifies the effect of changing a treatment \(A\) on the methylation
 \(Y(j)\) of a CpG site \(j\), accounting for any potential confounding from
 phenotype-level covariates \(W\) and observed methylation \(Y(S_j)\) at the
-neighboring sites \(S_j\) of \(j\). We propose a procedure that estimates this
-target parameter \(\Psi_j(P)\) across all CpG sites of interest \(j: 1, \ldots, J\).
-When data-adaptive regression procedures (i.e., machine learning) are employed
-in estimating \(\Psi_j(P)\), this produces a nonparametric variable importance
-measure of differential methylation, allowing for the identification of
-differentially methylated positions (DMPs) while avoiding many assumptions
+neighboring sites \(S_j\) of \(j\). Importantly, the use of such well-defined
+parameters as variable importance measures allows the construction of
+inferential procedures (e.g., confidence intervals and hypothesis tests) for the
+estimate \citep{vdl2006statistical}. We propose a procedure that estimates this
+target parameter \(\Psi_j(P_0)\) across all CpG sites of interest \(j: 1, \ldots, J\). When data-adaptive regression procedures (i.e., machine learning) are
+employed in estimating \(\Psi_j(P_0)\), this produces a nonparametric variable
+importance measure of differential methylation, allowing for the identification
+of differentially methylated positions (DMPs) while avoiding many assumptions
 common in the use of standard parametric regression procedures. We propose
 estimating \(\Psi_j(P)\) via targeted minimum loss-based estimation, which allows
 for data-adaptive regression procedures to be employed in a straightforward
-manner using the Super Learner algorithm for ensemble modeling \citep[
-\citet{wolpert1992stacked}, \citet{breiman1996stacked}, \citet{gruber2009targeted},
+manner using the Super Learner algorithm for the construction of ensemble models
+\citep[\citet{wolpert1992stacked}, \citet{breiman1996stacked}, \citet{gruber2009targeted},
 \citet{vdl2011targeted}]{vdl2007super}.
 
 \hypertarget{pre-screening-procedure}{%
 \subsection{Pre-Screening Procedure}\label{pre-screening-procedure}}
 
 As a matter of practicality, we consider only estimating the target VIM
-\(\Psi_j(P)\) at a subset of CpG sites, so that \(j: 1, \ldots J\) does not, in fact
-span the full set of assayed CpG sites. In order to determine this subset of CpG
-sites, we propose the use of a pre-screening procedure, which need be nothing
-more than a method for differential methylation analysis that is computationally
-less demanding than the method proposed here. Formally, let the pre-screening
-procedure \(\theta(j): j \to \{0, 1\}\), which is to say that \(\theta\) takes as
-input a CpG site \(j\) and returns a binary decision rule of whether to include
-CpG site \(j\) in a subset to be evaluated further or not. As an example, one
-might consider employing a classical differential methylation analysis
-procedure, such as the linear modeling approach of the
+\(\Psi_j(P_0)\) at a subset of CpG sites, so that \(j: 1, \ldots J\) does not, in
+fact span the full set of assayed CpG sites. In order to determine this subset
+of CpG sites, we propose the use of a pre-screening procedure, which need be
+nothing more than a method for differential methylation analysis that is
+computationally less demanding than the method proposed here. Formally, let the
+pre-screening procedure \(\theta(j): j \to \{0, 1\}\), which is to say that
+\(\theta\) takes as input a CpG site \(j\) and returns a binary decision rule of
+whether to include CpG site \(j\) in a subset to be evaluated further or not. As
+an example, one might consider employing a classical differential methylation
+analysis procedure, such as the linear modeling approach of the
 \href{https://bioconductor.org/packages/limma}{\texttt{limma}} R package
 \citep[\citet{robinson2014statistical}]{smyth2004linear}, using only CpG sites that pass a
 reasonable cutoff based on the linear model (e.g., magnitude of t-statistics,
-p-values) for the subsequent analysis steps in the \texttt{methyvim} pipeline. Details
-on the implementation of pre-screening approaches is provided in the sequel.
+p-values) for the subsequent analysis steps in the \texttt{methyvim} pipeline.
 
 \hypertarget{reducing-neighbors-via-clustering}{%
 \subsection{Reducing Neighbors via Clustering}\label{reducing-neighbors-via-clustering}}
 
 Due to the data-adaptive nature of the regression procedures employed in
-evaluating the target VIM \(\Psi_j(P)\) via targeted minimum loss-based
-estimation, it is possible the a given CpG site \(j\) may have \emph{too many}
+evaluating the target VIM \(\Psi_j(P_0)\) via targeted minimum loss-based
+estimation, it is possible that a given CpG site \(j\) may have \emph{too many}
 neighbors \(S_j\) to be controlled for in the estimation procedure. Heuristically,
 the inclusion of too many neighbors when controlling for potential confounders
 may lead to instability in the estimates produced. In such cases, we propose and
@@ -779,56 +780,85 @@ best choice of a specific clustering algorithm, so we leave this aspect of the
 proposed algorithm as flexible for the user \citep{kleinberg2003impossibility}. Note
 that the goal of employing a clustering procedure in \texttt{methyvim} is to obtain a
 smaller but still highly representative set of neighbors \(S(j)\), so as to allow
-for estimates of \(\Psi_j(P)\) to account for as much confounding from neighboring
-sites as is allowed by the available data.
+for estimates of \(\Psi_j(P_0)\) to account for as much confounding from
+neighboring sites as is allowed by the available data.
 
 \hypertarget{targeted-minimum-loss-based-estimation-and-statistical-inference}{%
 \subsection{Targeted Minimum Loss-Based Estimation and Statistical Inference}\label{targeted-minimum-loss-based-estimation-and-statistical-inference}}
 
-Given the choice of target parameter \(\Psi_j(P)\), we propose the use of targeted
-minimum loss-based estimation (TMLE) to construct and evaluate an estimator
-\(\psi_{n, j}\) of \(\Psi_j(P)\). In the case of our motivating example, where the
-target VIM is based on the average treatment effect, we make use of a TML
-estimator of this parameter, which has been implemented for a general case in
-the \href{https://CRAN.R-project.org/package=tmle}{\texttt{tmle}} R package
+Given the choice of target parameter \(\Psi_j(P_0)\), we propose the use of
+targeted minimum loss-based estimation (TMLE) to construct and evaluate an
+estimator \(\psi_{n, j}\) of \(\Psi_j(P_0)\). In the case of our motivating example,
+where the target VIM is based on the average treatment effect, we make use of a
+TML estimator of this parameter, which has been implemented for a general case
+in the \href{https://CRAN.R-project.org/package=tmle}{\texttt{tmle}} R package
 \citep{gruber2011tmle}; users of \texttt{methyvim} may wish to consult the documentation of
 that software package as a supplement. Generally speaking, a TML estimator is
 constructed from a few simple components: (1) an estimator of the propensity
-score \citep{rosenbaum1983central}, often denoted by \(g(A \mid W)\); (2) an estimator
-of the outcome regression, often denoted \(Q(A, W)\); and (3) a targeting step
-applied to the initial estimators constructed from the aforementioned components
+score \citep{rosenbaum1983central}, often denoted \(g(A \mid W)\); (2) an estimator of
+the outcome regression, often denoted \(\bar{Q}(A, W)\); and (3) a targeting step
+that revises the initial estimators of the aforementioned components such that
+the resultant estimator satisfies a set of score-like equations
 \citep{gruber2009targeted}. While we describe a few of the key properties of TML
 estimators in the sequel, extended technical discussion is deferred to more
 comprehensive work \citep[\citet{vdl2018targeted}]{vdl2011targeted}. In order to construct
-an estimate \(\psi_{n, j}\) of \(\Psi_j(P)\), it is necessary to accurately estimate
-to nuisance parameters, these being the propensity score (\(g(A \mid W)\)) and the
-outcome regression (\(Q(A, W)\)); moreover, data-adaptive regression procedures
-may be used to obtain consistent estimates of these quantities through the
-creation of a stacked regression model via the Super Learner algorithm
-\citep[\citet{breiman1996stacked}, \citet{vdl2007super}]{wolpert1992stacked}, which ensures
-that the resulting ensemble learner satisfies important optimality properties
-with respect to cross-validation \citep[\citet{dudoit2005asymptotics},
-\citet{vdl2003unified}]{vdl2004asymptotic}. After constructing such estimates, an iterative procedure
-(i.e., the targeting step) may be used to combine these individual estimates
-into an estimate of the target parameter \(\Psi_j(P)\).
+an estimate \(\psi_{n, j}\) of \(\Psi_j(P_0)\), it is necessary to accurately
+estimate two nuisance parameters, these being the propensity score
+(\(g(A \mid W)\)) and the outcome regression (\(\bar{Q}(A, W)\)); moreover,
+data-adaptive regression procedures may be used to obtain consistent estimates
+of these quantities through the creation of a stacked regression model via the
+Super Learner algorithm \citep[\citet{breiman1996stacked},
+\citet{vdl2007super}]{wolpert1992stacked}, which ensures that the resulting ensemble model satisfies
+important optimality properties with respect to cross-validation
+\citep[\citet{dudoit2005asymptotics}, \citet{vdl2003unified}]{vdl2004asymptotic}. To use our
+running example, one would construct a TML estimator of the average treatment
+effect (ATE) as a variable importance measure in the following short series of
+steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Construct initial estimates of the propensity score \(g(A \mid W)\) and outcome
+  regression \(\bar{Q}(A, W)\). As noted previously, the Super Learner algorithm
+  may be employed to construct such estimates.
+\item
+  Update these initial estimates (e.g., iteratively) so as to solve the
+  efficient influence function estimation equation of the parameter of interest
+  relative to a nonparametric statistical model.
+\item
+  In the efficient influence function for the ATE, \(\text{EIF}(P_0)(O) = H_n(Y - \bar{Q}(A, W))\), the auxiliary term \(H_n\) may be denoted as
+  \(H_n = \frac{\mathbb{I}(A = 1)}{g(1 \mid W)} - \frac{\mathbb{I}(A = 0)}{g(0 \mid W)}\). Note that the exact form of the
+  efficient influence function and auxiliary covariate varies with the target
+  parameter of interest.
+\item
+  The TML estimator of the parameter of interest is constructed by a procedure
+  that updates the initial estimators such that the empirical mean of the
+  efficient influence function estimating equation(s) is nearly zero (with
+  respect to an error proportional to the sample size, i.e.,
+  \(\frac{1}{\sqrt{n}}\)).
+\end{enumerate}
 
 Importantly, TML estimators are well-suited for statistical inference, having an
 asymptotically normal limiting distribution \citep[
 \citet{vdl2006targeted}]{tsiatis2007semiparametric}, which allows for a closed-form expression of the variance
 to be derived:
 \begin{equation}\label{eqn:lim_psi}
-  \sqrt{n}(\psi_{n, j} - \Psi_j(P)) \sim N(0, \sigma_{\text{EIF}}^2),
+  \sqrt{n}(\psi_{n, j} - \Psi_j(P_0)) \sim N(0, \sigma_{\text{EIF}}^2),
 \end{equation}
 where \(\sigma_{\text{EIF}}^2\) is the variance of the efficient influence
 function, with respect to a nonparametric statistical model, of the target
 parameter evaluated at the observed data. Such a convenience allows for
 confidence intervals and hypothesis tests to be constructed (i.e.,
-\(H_{0, j}: \Psi_j(P) = 0\)) in a straightforward manner.
+\(H_{0, j}: \Psi_j(P_0) = 0\)) in a straightforward manner. What's more, under
+standard regularity conditions, and with consistent estimation of the propensity
+score and outcome regression, the TML estimator is asymptotically efficient and
+achieve the lowest possible variance among a large class of estimators
+\citep{bickel1993efficient}.
 
 \hypertarget{correction-for-multiple-testing}{%
 \subsection{Correction for Multiple Testing}\label{correction-for-multiple-testing}}
 
-Given that we seek to estimate \(\Psi_j(P)\) for a possibly large number of CpG
+Given that we seek to estimate \(\Psi_j(P_0)\) for a possibly large number of CpG
 sites \((j: 1, \ldots J)\), the need to perform corrections for multiple testing
 is clear. In order to curb the potential for false discoveries, we recommend the
 use of the Benjamini and Hochberg procedure for controlling the False Discovery
@@ -843,7 +873,7 @@ the number of CpG sites tested and \(K\) the number of CpG sites filtered out (s
 that \(J + K = P\), where \(P\) is the original dimension of the genomic assay), the
 modified marginal BH procedure is the application of the original BH procedure
 to a vector of p-values, composed of the \(J\) p-values from performing \(J\)
-hypothesis tests (of the form \(H_{0, j}: \Psi_j(P) = 0\)) and \(K\) additional
+hypothesis tests (of the form \(H_{0, j}: \Psi_j(P_0) = 0\)) and \(K\) additional
 p-values automatically set to \(1\) (for the hypothesis tests not performed on
 account of pre-screening). This procedure is guaranteed to control the FDR at
 the same desired rate when pre-screening is performed whereas naive application
