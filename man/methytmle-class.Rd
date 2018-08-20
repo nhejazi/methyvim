@@ -4,12 +4,28 @@
 \name{methytmle-class}
 \alias{methytmle-class}
 \alias{.methytmle}
+\alias{param}
+\alias{vim}
 \title{Constructor for class methytmle}
+\usage{
+param(object)
+
+vim(object)
+}
+\arguments{
+\item{object}{S4 object of class \code{methytmle}.}
+
+\item{object}{S4 object of class \code{methytmle}.}
+}
 \value{
 \code{methytmle} object, subclassed from \code{GenomicRatioSet}.
 }
 \description{
 Constructor for class methytmle
+
+Accessor for Parameter Information
+
+Accessor for Variable Importance Measure Information
 }
 \examples{
 library(methyvimData)
@@ -17,4 +33,6 @@ suppressMessages(library(SummarizedExperiment))
 data(grsExample)
 # cast the GenomicRatioSet to class methytmle
 methy_tmle <- .methytmle(grsExample)
+methy_tmle
 }
+\keyword{internal}

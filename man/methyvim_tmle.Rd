@@ -5,10 +5,10 @@
 \title{Differential Methylation with Classical Target Parameters}
 \usage{
 methyvim_tmle(target_site, methytmle_screened, var_of_interest,
-  type = c("Beta", "Mval"), corr, obs_per_covar, target_param = c("ate",
-  "rr"), g_lib = c("SL.mean", "SL.glm", "SL.glm.interaction"),
-  Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
-  family = c("gaussian", "binomial"), return_ic = FALSE)
+  type = c("Beta", "Mval"), corr, obs_per_covar,
+  target_param = c("ate", "rr"), g_lib = c("SL.mean", "SL.glm",
+  "SL.glm.interaction"), Q_lib = c("SL.mean", "SL.glm", "SL.gam",
+  "SL.earth"), family = c("gaussian", "binomial"), return_ic = FALSE)
 }
 \arguments{
 \item{target_site}{Numeric indicating the column containing the screened

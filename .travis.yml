@@ -20,13 +20,16 @@ r:
 
 before_install:
   - Rscript -e 'update.packages(ask = FALSE)'
+  - Rscript -e "source('https://bioconductor.org/biocLite.R'); biocLite()"
 
 r_packages:
   - devtools
   - covr
+  - BiocManager
 
 r_github_packages:
   - r-lib/devtools
+  - r-lib/sessioninfo
   - jimhester/covr
   - nhejazi/methyvimData
 

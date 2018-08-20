@@ -7,9 +7,12 @@
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #'  RangedSummarizedExperiment
 #' @importClassesFrom S4Vectors Vector Annotated
+#' @import BiocGenerics
 #'
 #' @export .methytmle
 #' @exportClass methytmle
+#'
+#' @rdname methytmle-class
 #'
 #' @examples
 #' library(methyvimData)
@@ -17,6 +20,7 @@
 #' data(grsExample)
 #' # cast the GenomicRatioSet to class methytmle
 #' methy_tmle <- .methytmle(grsExample)
+#' methy_tmle
 #
 .methytmle <- methods::setClass(
   Class = "methytmle",
@@ -46,19 +50,33 @@ methods::setMethod("show", "methytmle", function(object) {
 
 ################################################################################
 
-#' @importFrom methods setGeneric setMethod
+#' Accessor for Parameter Information
+#'
+#' @param object S4 object of class \code{methytmle}.
+#'
+#' @rdname methytmle-class
+#'
+#' @keywords internal
 #
-methods::setGeneric("param", function(object) standardGeneric("param"))
-methods::setMethod("param", "methytmle", function(object) {
+param <- function(object) {
+  stopifnot(class(object) == "methytmle")
   object@param
-})
+}
 
 ################################################################################
 
-#' @importFrom methods setGeneric setMethod
+#' Accessor for Variable Importance Measure Information
+#'
+#' @param object S4 object of class \code{methytmle}.
+#'
+#' @rdname methytmle-class
+#'
+#' @keywords internal
+#'
+#' @export
 #
-methods::setGeneric("vim", function(object) standardGeneric("vim"))
-methods::setMethod("vim", "methytmle", function(object) {
+vim <- function(object) {
+  stopifnot(class(object) == "methytmle")
   object@vim
-})
+}
 

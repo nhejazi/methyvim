@@ -70,7 +70,7 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #' Wrap a Function in a Try Statement
 #'
 #' Function factory that generates versions of functions wrapped in \code{try}.
-#' Originally fround in and borrowed from package \code{origami}.
+#' Originally found in and borrowed from package \code{origami}.
 #'
 #' @param fun A \code{function} to be wrapped in a \code{try} statement.
 #' @param ... Additional arguments passed to the previous argument \code{fun}.

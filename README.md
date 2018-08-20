@@ -20,8 +20,7 @@ Downloads](http://bioconductor.org/shields/downloads/methyvim.svg)](https://bioc
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/79256902.svg)](https://zenodo.org/badge/latestdoi/79256902)
 
-> Targeted Data-Adaptive Estimation and Inference for Differential
-> Methylation Analysis
+> Targeted, Robust, and Model-free Differential Methylation Analysis
 
 **Author:** [Nima Hejazi](https://nimahejazi.org)
 
@@ -186,8 +185,8 @@ After using the `methyvim` R package, please cite the following:
       volume = {},
       author = {Hejazi, Nima S and Phillips, Rachael V and Hubbard, Alan E
         and {van der Laan}, Mark J},
-      title = {methyvim: Targeted and model-free differential methylation
-        analysis in R},
+      title = {methyvim: Targeted, Robust, and Model-free Differential
+        Methylation Analysis in {R}},
       journal = {}
     }
 ```

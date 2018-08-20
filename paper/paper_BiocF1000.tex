@@ -89,7 +89,7 @@
 \begin{document}
 \pagestyle{front}
 
-\title{\texttt{methyvim}: Targeted and Model-free Differential Methylation Analysis in R}
+\title{\texttt{methyvim}: Targeted, Robust, and Model-free Differential Methylation Analysis in R}
 
 \author[1,2]{Nima S. Hejazi\thanks{\ttfamily nhejazi@berkeley.edu}}
 \author[1]{Rachael V. Phillips}
@@ -103,24 +103,28 @@
 \thispagestyle{front}
 
 \begin{abstract}
-We present \texttt{methyvim}, a general algorithm for the nonparametric estimation of
-treatment/exposure effects on DNA methylation at CpG sites, complete with
-straightforward statistical inference for such estimates. This approach
-leverages variable importance measures, a class of parameters that arise in
-causal inference and are defined in such a manner that they provide targeted
-estimates of the relative importance of individual CpG site with respect to
-a binary exposure/treatment assigned at the level of subjects. Additionally,
-this procedure is computationally efficient; incorporating a preliminary
-screening step to isolate a subset of sites for which there is cursory
-evidence of differential methylation and a multiple testing correction step
-to control the False Discovery Rate as if all sites were tested. This
-technique for analysis of differentially methylated positions provides an
-avenue to move beyond linear models without the loss of interpretable
-statistical inference.
+We present \texttt{methyvim}, an R package implementing an algorithm for the
+nonparametric estimation of the effects of exposures on DNA methylation at CpG
+sites throughout the genome, complete with straightforward statistical
+inference for such estimates. The approach leverages variable importance
+measures derived from statistical parameters arising in causal inference,
+defined in such a manner that they may be used to obtain targeted estimates of
+the relative importance of individual CpG sites with respect to a binary
+treatment assigned at the phenotype level, thereby providing a new approach to
+identifying differentially methylated positions. The procedure implemented is
+computationally efficient, incorporating a preliminary screening step to
+isolate a subset of sites for which there is cursory evidence of differential
+methylation as well as a unique multiple testing correction to control the
+False Discovery Rate with the same rigor as would be available if all sites
+were subjected to testing. This novel technique for analysis of differentially
+methylated positions provides an avenue for incorporating flexible
+state-of-the-art data-adaptive regression procedures (i.e., machine learning)
+into the estimation of differential methylation effects without the loss of
+interpretable statistical inference for the estimated quantity.
 \end{abstract}
 
 \section*{Keywords}
-DNA methylation, differential methylation, epigenetics, causal inference, statistical variable importance, targeted minimum loss-based estimation, machine learning
+DNA methylation, differential methylation, epigenetics, causal inference, variable importance, machine learning, targeted loss-based estimation
 
 
 \clearpage
@@ -130,62 +134,82 @@ DNA methylation, differential methylation, epigenetics, causal inference, statis
 \section{Introduction}\label{introduction}}
 
 DNA methylation is a fundamental epigenetic process known to play an important
-role in the regulation of gene expression. DNA CpG methylation involves the
-addition of a methyl group (\(\text{CH}_3\)) to the fifth carbon of the cytosine
-ring structure to form 5-methylcytosine. Numerous biological and medical studies
-have implicated DNA CpG methylation as playing a role in disease and
-development \citep{robertson2005dna}. Perhaps unsurprisingly then, biotechnologies
-have been developed to study the molecular mechanisms of this epigenetic
-process. Modern assays, like the Illumina \emph{Infinium} Methylation assay,
-allow for quantitative interrogation of DNA methylation of CpG sites scattered
-across the genome at single-nucleotide resolution; moreover, much effort
-has been invested, by the bioinformatics community, in the development of tools
-for properly removing technological effects that may contaminate biological
-signatures measured by such assays. Despite these advances in both biological
-and bioninformatical techniques, most statistical methods available for
-differential analysis of data produced by such assays rely on over-simplified
-(often generalized linear) models. This is because typical statistical
-estimation approaches are not achievable for such high-dimensional data without
-restrictive modeling assumptions. When these assumptions are violated, estimates
-of the population-level effect of an exposure or treatment may have large bias.
-Data-adaptive estimation procedures that utilize machine learning can control
-for high-dimensional confounders when estimating treatment/exposure effects.
-However, interpretable statistical inference (i.e.~confidence intervals,
-hypothesis tests) resulting from these data-adaptive estimates is challenging
-\citep{libbrecht2015machine}.
+role in the regulation of gene expression. DNA methylation mostly commonly
+occurs at CpG sites and involves the addition of a methyl group (\(\text{CH}_3\))
+to the fifth carbon of the cytosine ring structure to form 5-methylcytosine.
+Numerous biological and medical studies have implicated DNA methylation as
+playing a role in disease and development \citep{robertson2005dna}. Perhaps
+unsurprisingly then, biotechnologies have been developed to rigorously probe the
+molecular mechanisms of this epigenetic process. Modern assays, like the
+Illumina \emph{Infinium} HumanMethylation BeadChip assay, allow for quantitative
+interrogation of DNA methylation, at single-nucleotide resolution, across a
+comprehensive set of CpG sites scattered across the genome; moreover, the
+computational biology community has invested significant effort in the
+development of tools for properly removing technological effects that may
+contaminate biological signatures measured by such assays
+\citep[\citet{dedeurwaerder2013comprehensive}]{fortin2014functional}. Despite these
+advances in both biological and bioninformatical techniques, most statistical
+methods available for differential analysis of data produced by such assays rely
+on over-simplified models that do not readily extend to such high-dimensional
+data structures without restrictive modeling assumptions and the use of
+inferentially costly hypothesis testing corrections. When these standard
+assumptions are violated, estimates of the population-level effect of an
+exposure or treatment may suffer from large bias. What's more, reliance on
+restrictive and misspecified statistical models naturally leads to biased effect
+estimates that are not only misleading in assessing effect sizes but also result
+in false discoveries as these biased estimates are subject to testing and
+inferential procedures. Such predictably unreliable methods serve only to
+produce findings that are later invalidated by replication studies and add still
+further complexity to discovering biological targets for potential therapeutics.
+Data-adaptive estimation procedures that utilize machine learning provide a way
+to overcome many of the problems common in classical methods, controlling for
+potential confounding even in high-dimensional settings; however, interpretable
+statistical inference (i.e., confidence intervals and hypothesis tests) from
+such data-adaptive estimates is challenging to obtain \citep{libbrecht2015machine}.
 
-In this paper, we present an alternative such statistical analysis approaches in
-the form of nonparametric estimation procedures that provide simple and well
-interpretable statistical inference. Inspired by concepts of counterfactual
-effects from the causal inference literature and machine learning algorithms, we
+In this paper, we briefly present an alternative to such statistical analysis
+approaches in the form of a nonparametric estimation procedure that provides
+simple and readily interpretable statistical inference, discussing at length a
+recent implementation of the methodology in the \texttt{methyvim} R package. Inspired
+by recent advances in statistical causal inference and machine learning, we
 provide a computationally efficient technique for obtaining targeted estimates
-of nonparametric \emph{variable importance measures} (\textbf{VIM}) for a pre-screened set
-of CpGs, controlling for the False Discovery Rate (FDR) as if all sites were
-tested. Under counterfactual assumptions, these estimators have asymptotic
-normal sampling distributions and thus provide reliable inference.
-Counterfactuals are ``counter''-fact, defined in terms of an unrealistic yet ideal
-experiment. In the context of DNA methylation and for a binary treatment, we
-define the counterfactual outcomes as the observed methylation value (whether
-Beta- or M-values) a CpG site would have if all subjects were treated and the
-methylation value a CpG site would have if all subjects were not treated. Of
-course, these counterfactual outcomes are impossible to observe but they are
-very helpful for us to asses the importance of a CpG site relative to a subjects
-treatment/exposure and they can be statistically estimated
-\citep{vdl2006statistical}. Our VIM definition uses the concepts of counterfactuals
-and the framework for estimation is built on \emph{targeted maximum likelihood
-estimation} or \emph{targeted minimum loss-based estimation} (\textbf{TMLE})
-\citep{vdl2006targeted}. This methodology targets the individual importance of each
-CpG site by taking advantage of the prediction power of machine learning
-algorithms. The mathematical properties of this approach have been explored in
-\citep{tuglus2008targeted} and we focus on our contribution to it's application,
-\texttt{methyvim}, an R package that make this technique for differential methylation
-analysis easily accessible.
+of nonparametric \emph{variable importance measures} (VIMs) \citep{vdl2006statistical},
+estimated at a set of pre-screened CpG sites, controlling for the False
+Discovery Rate (FDR) as if all sites were tested. Under standard assumptions
+(e.g., identifiability, strong ignorability) \citep{pearl2009causality}, targeted
+minimum loss-based estimators of regular asymptotically linear estimators have
+sampling distributions that are asymptotically normal, allowing for reliable
+point estimation and the construction of Wald-style confidence intervals
+\citep[\citet{vdl2018targeted}]{vdl2011targeted}. In the context of DNA methylation studies,
+we define the counterfactual outcomes under a binary treatment as the observed
+methylation (whether Beta- or M-) values a CpG site would have if all subjects
+were administered the treatment and the methylation values a CpG site would have
+if treatment were withheld from all subjects. Although these counterfactual
+outcomes are, of course, impossible to observe, they do have statistical analogs
+that may be reliably estimated (i.e., identified) from observed data under a
+small number of untestable assumptions \citep{pearl2009causality}. We describe an
+algorithm that incorporates, in its final step, the use \emph{targeted minimum
+loss-based estimators} (\textbf{TMLE}) \citep{vdl2006targeted} of a given VIM of interest,
+though we defer rigorous and detailed descriptions of this aspect of the
+statistical methodology to work outside the scope of the present manuscript
+\citep[\citet{vdl2011targeted}, \citet{vdl2018targeted}]{vdl2006targeted}. The proposed methodology
+assesses the individual importance of a given CpG site, as a proposed measure of
+differential methylation, by utilizing state-of-the-art machine learning
+algorithms in deriving targeted estimates and robust inference of a VIM, as
+considered more broadly for biomarkers in \citet{bembom2009biomarker} and
+\citet{tuglus2011targeted}. In the present work, we focus on the \texttt{methyvim} software
+package, available through the Bioconductor project \citep[
+\citet{huber2015orchestrating}]{gentleman2004bioconductor} for the R language and environment for statistical
+computing \citep{R}, which implements a particular realization of this methodology
+specifically tailored for the analysis and identification of differentially
+methylated positions (DMPs).
 
-For a general discussion of the framework of targeted minimum loss-based
-estimation and the role this approach plays in statistical causal inference, the
-interested reader is invited to consult \citet{vdl2011targeted} and \citet{vdl2017targeted}.
-For a more general introduction to (statistical) causal inference,
-\citet{pearl2009causality} and \citet{hernan2018causal} may be of interest.
+For an extended discussion of the general framework of targeted minimum
+loss-based estimation and detailed accounts of how this approach may be brought
+to bear in developing answers to complex scientific problems through tatistical
+and causal inference, the interested reader is invited to consult
+\citet{vdl2011targeted} and \citet{vdl2018targeted}. For a more general introduction to causal
+inference, \citet{pearl2009causality} and \citet{hernan2018causal} may be of interest.
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
@@ -199,56 +223,47 @@ compute targeted estimates of VIMs, defined in such a way that the VIMs
 represent parameters of scientific interest in computational biology
 experiments; moreover, these VIMs are defined such that they may be estimated in
 a manner that is very nearly assumption-free, that is, within a \emph{fully
-nonparametric statistical model}. \textbf{The statistical algorithm consists in
-several major steps}:
+nonparametric statistical model}. The statistical algorithm consists in the
+several major steps summarized below. Additional methodological details on the
+use of targeted minimum loss-based estimation in this problem setting is
+provided in a brief appendix (see section \textbf{Appendix}).
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  Pre-screening of genomic sites is used to isolate a subset of sites for
-  which there is cursory evidence of differential methylation. For the sake of
-  computational feasibility, targeted minimum loss-based estimates of VIMs are
-  computed only for this subset of sites. Currently, the available screening
-  approach adapts core routines from the
-  \href{http://bioconductor.org/packages/limma}{\texttt{limma}} R
-  package. Future releases will support functionality from other packages
-  (e.g., \href{https://CRAN.R-project.org/package=randomForest}{\texttt{randomForest}},
-  \href{https://CRAN.R-project.org/package=tmle.npvi}{\texttt{tmle.npvi}}). Following the
+  \emph{Pre-screening} of genomic sites is used to isolate a subset of sites for
+  which there is cursory evidence of differential methylation. Currently, the
+  available screening approach adapts core routines from the
+  \href{http://bioconductor.org/packages/limma}{\texttt{limma}} R package. Following the
   style of the function for performing screening via \texttt{limma}, users may write
   their own screening functions and are invited to contribute such functions to
-  the core software package by opening pull requests at the GitHub repository.
+  the core software package by opening pull requests at the GitHub repository:
+  \url{https://github.com/nhejazi/methyvim}.
 \item
   Nonparametric estimates of VIMs, for the specified target parameter, are
   computed at each of the CpG sites passing the screening step. The VIMs are
-  defined in such a way that the estimated effects is of an exposure/treatment
-  on the methylation status of a target CpG site, controlling for the observed
+  defined in such a way that the estimated effects is of an binary treatment on
+  the methylation status of a target CpG site, controlling for the observed
   methylation status of the neighbors of that site. Currently, routines are
   adapted from the \href{https://CRAN.R-project.org/package=tmle}{\texttt{tmle}} R package.
-  Future releases will support doubly-robust estimates of these VIMs (via the
-  \href{https://cran.r-project.org/package=drtmle}{\texttt{drtmle}} package)
-  and add parameters for continuous treatments/exposures (via the
-  \href{https://CRAN.R-project.org/package=tmle.npvi}{\texttt{tmle.npvi}} package).
 \item
-  Since pre-screening is performed prior to estimating VIMs, we make use of a
-  multiple testing correction uniquely suited to such settings. Due to the
-  multiple testing nature of the estimation problem, a variant of the Benjamini
-  \& Hochberg procedure for controlling the False Discovery Rate (FDR) is
-  applied \citep{benjamini1995controlling}. Specifically, we apply the ``modified
-  marginal Benjamini \& Hochberg step-up False Discovery Rate controlling
-  procedure for multi-stage analyses'' (FDR-MSA), which is guaranteed to
-  control the FDR as if all sites were tested (i.e., without screening)
-  \citep{tuglus2009modified}.
+  Since pre-screening is performed prior to estimating VIMs, we apply the
+  modified marginal Benjamini and Hochberg step-up False Discovery Rate
+  controlling procedure for multi-stage analyses (FDR-MSA), which is
+  well-suited for avoiding false positive discoveries when testing is only
+  performed on a subset of potential targets.
 \end{enumerate}
 
 \hypertarget{parameters-of-interest}{%
 \paragraph{Parameters of Interest}\label{parameters-of-interest}}
 
-For the CpG sites that passed the pre-screening step, the user chooses the
-parameter of interest that will be computed at each site. \emph{In all cases, an
-estimator of the parameter of interest is constructed via targeted minimum
+For CpG sites that pass the pre-screening step, a user-specified target
+parameter of interest is estimated independently at each site. \emph{In all cases,
+an estimator of the parameter of interest is constructed via targeted minimum
 loss-based estimation}.
 
-For discrete-valued treatments or exposures:
+Two popular target causal parameters for discrete-valued treatments or
+exposures are
 
 \begin{itemize}
 \item
@@ -278,25 +293,6 @@ Technical details on the nature of these regressions are discussed in
 \citet{hernan2018causal}, and details for estimating these regressions in the
 framework of targeted minimum loss-based estimation are discussed in
 \citet{vdl2011targeted}.
-
-Support for continuous-valued treatments or exposures is \emph{planned but not yet
-available}, though work is underway to incorporate into our methodology the
-following
-
-\begin{itemize}
-\item
-  A nonparametric variable importance measure (NPVI) \citep{chambaz2012estimation}:
-  The effect of continuous-valued exposure or treatment (the observed
-  methylation at a target CpG site) on an outcome of interest is estimated,
-  controlling for the observed methylation at all other CpG sites in the same
-  neighborhood as the target (treatment) site, based on a parameter that
-  compares values of the treatment against a reference value taken to be the
-  null. In particular, the implementation provided is designed to assess the
-  effect of differential methylation at the target CpG site on a (typically)
-  phenotype-level outcome of interest (e.g., survival), in effect providing an
-  nonparametric evaluation of the impact of methylation at the target site on
-  said outcome.
-\end{itemize}
 
 \hypertarget{class-methytmle}{%
 \paragraph{\texorpdfstring{Class \texttt{methytmle}}{Class methytmle}}\label{class-methytmle}}
@@ -331,9 +327,14 @@ package includes several new slots:
   parameter.
 \end{itemize}
 
-We refer the reader to the package vignette, ``\texttt{methyvim}: Targeted Data-Adaptive
-Estimation and Inference for Differential Methylation Analysis,'' included in any
-distribution of the software package, for further details.
+The \texttt{show} method of the \texttt{methytmle} class summarizes a selection of the above
+information for the user while masking some of the wealth of information given
+when calling the same method for \texttt{GenomicRatioSet}. All information contained in
+\texttt{GenomicRatioSet} objects is preserved in \texttt{methytmle} objects, so as to easen
+interoperability with other differential methylation software for experienced
+users. We refer the reader to the package vignette, ``\texttt{methyvim}: Targeted
+Data-Adaptive Estimation and Inference for Differential Methylation Analysis,''
+included in any distribution of the software package, for further details.
 
 \hypertarget{operation}{%
 \subsection{Operation}\label{operation}}
@@ -360,7 +361,10 @@ values from the methylated and unmethylated channels to Beta-values
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{suppressMessages}\NormalTok{(}\KeywordTok{library}\NormalTok{(minfiData))}
+\KeywordTok{suppressMessages}\NormalTok{(}
+  \CommentTok{# numerous messages displayed at time of loading}
+  \KeywordTok{library}\NormalTok{(minfiData)}
+\NormalTok{)}
 \KeywordTok{data}\NormalTok{(MsetEx)}
 \NormalTok{mset <-}\StringTok{ }\KeywordTok{mapToGenome}\NormalTok{(MsetEx)}
 \NormalTok{grs <-}\StringTok{ }\KeywordTok{ratioConvert}\NormalTok{(mset)}
@@ -388,7 +392,7 @@ values from the methylated and unmethylated channels to Beta-values
 \end{verbatim}
 
 We can create an object of class \texttt{methytmle} from any \texttt{GenomicRatioSet} object
-simply invoking the S4 class constructor:
+simply invoking the S4 class constructor \texttt{.methytmle}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -397,14 +401,38 @@ simply invoking the S4 class constructor:
 \end{Shaded}
 
 \begin{verbatim}
-## methyvim v1.1.0: Targeted Variable Importance for Differential Methylation Analysis
+## methyvim v1.3.1: Targeted, Robust, and Model-free Differential Methylation Analysis
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{mtmle <-}\StringTok{ }\KeywordTok{.methytmle}\NormalTok{(grs)}
+\NormalTok{grs_mtmle <-}\StringTok{ }\KeywordTok{.methytmle}\NormalTok{(grs)}
+\NormalTok{grs_mtmle}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## class: methytmle 
+## dim: 485512 6 
+## metadata(0):
+## assays(2): Beta CN
+## rownames(485512): cg13869341 cg14008030 ... cg08265308 cg14273923
+## rowData names(0):
+## colnames(6): 5723646052_R02C02 5723646052_R04C01 ...
+##   5723646053_R05C02 5723646053_R06C02
+## colData names(13): Sample_Name Sample_Well ... Basename filenames
+## Annotation
+##   array: IlluminaHumanMethylation450k
+##   annotation: ilmn12.hg19
+## Preprocessing
+##   Method: Raw (no normalization or bg correction)
+##   minfi version: 1.21.2
+##   Manifest version: 0.4.0
+## Target Parameter: 
+## Results: 
+## Object of class "data.frame"
+## data frame with 0 columns and 0 rows
+\end{verbatim}
 
 Additionally, a \texttt{GenomicRatioSet} can be created from a matrix with the
 function \texttt{makeGenomicRatioSetFromMatrix} provided by the \texttt{minfi} package.
@@ -432,28 +460,25 @@ estimate of the Average Treatment Effect.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{suppressMessages}\NormalTok{(}
-\NormalTok{  methyvim_cancer_ate <-}\StringTok{ }\KeywordTok{methyvim}\NormalTok{(}\DataTypeTok{data_grs =}\NormalTok{ grs, }\DataTypeTok{var_int =}\NormalTok{ var_int,}
-                                  \DataTypeTok{vim =} \StringTok{"ate"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"Beta"}\NormalTok{, }\DataTypeTok{filter =} \StringTok{"limma"}\NormalTok{,}
-                                  \DataTypeTok{filter_cutoff =} \FloatTok{0.20}\NormalTok{, }\DataTypeTok{obs_per_covar =} \DecValTok{2}\NormalTok{,}
-                                  \DataTypeTok{parallel =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sites_comp =} \DecValTok{125}\NormalTok{,}
-                                  \DataTypeTok{tmle_type =} \StringTok{"glm"}
-\NormalTok{                                 )}
-\NormalTok{)}
+\NormalTok{methyvim_cancer_ate <-}\StringTok{ }\KeywordTok{methyvim}\NormalTok{(}\DataTypeTok{data_grs =}\NormalTok{ grs, }\DataTypeTok{var_int =}\NormalTok{ var_int,}
+                                \DataTypeTok{vim =} \StringTok{"ate"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"Beta"}\NormalTok{, }\DataTypeTok{filter =} \StringTok{"limma"}\NormalTok{,}
+                                \DataTypeTok{filter_cutoff =} \FloatTok{0.20}\NormalTok{, }\DataTypeTok{obs_per_covar =} \DecValTok{2}\NormalTok{,}
+                                \DataTypeTok{parallel =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sites_comp =} \DecValTok{250}\NormalTok{,}
+                                \DataTypeTok{tmle_type =} \StringTok{"glm"}
+\NormalTok{                               )}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
-##  Proceed with caution.
+## Loading required package: nnls
 \end{verbatim}
 
-Note that we set the \texttt{obs\_per\_covar} argument to a relatively low value (2,
-where the recommended default is 20) for the purposes of this example as the
-sample size is only 10. We do this only to exemplify the estimation procedure
-and it is important to point out that such low values for \texttt{obs\_per\_covar} will
-compromise the quality of inference obtained because this setting directly
-affects the definition of the target parameter.
+Note that we set the \texttt{obs\_per\_covar} argument to a relatively low value (just 2,
+even though the recommended value, and default, is 20) for the purposes of this
+example as the sample size is only 10. We do this only to exemplify the
+estimation procedure and it is important to point out that such low values for
+\texttt{obs\_per\_covar} will compromise the quality of inference obtained because this
+setting directly affects the definition of the target parameter.
 
 Further, note that here we apply the \texttt{glm} flavor of the \texttt{tmle\_type} argument,
 which produces faster results by fitting models for the propensity score and
@@ -464,29 +489,60 @@ Obtaining the estimates via GLMs results in each of the regression steps
 being less robust than if nonparametric regressions were used.
 
 We can view a table of results by examining the \texttt{vim} slot of the produced
-\texttt{methytmle} object.
+object, most easily displayed by simply printing the resultant object:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{head}\NormalTok{(}\KeywordTok{slot}\NormalTok{(methyvim_cancer_ate, }\StringTok{"vim"}\NormalTok{))}
+\NormalTok{methyvim_cancer_ate}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##                 lwr_ci      est_ate       upr_ci      var_ate         pval
-## cg14008030 -0.11956597 -0.031415962  0.056734049 2.022705e-03 4.848468e-01
-## cg20253340 -0.08850637 -0.058866142 -0.029225917 2.286919e-04 9.917426e-05
-## cg21870274 -0.09499057 -0.029118982  0.036752609 1.129495e-03 3.862537e-01
-## cg17308840 -0.04626018 -0.007152452  0.031955277 3.981191e-04 7.199943e-01
-## cg00645010 -0.02697515 -0.013809263 -0.000643373 4.512199e-05 3.980386e-02
-## cg27534567  0.06745648  0.115711854  0.163967223 6.061486e-04 2.602936e-06
-##            n_neighbors n_neighbors_control max_cor_neighbors
-## cg14008030           0                   0                NA
-## cg20253340           0                   0                NA
-## cg21870274           2                   1         0.9443580
-## cg17308840           2                   1         0.9443580
-## cg00645010           2                   2         0.5236810
-## cg27534567           1                   0         0.9362968
+## class: methytmle 
+## dim: 485512 6 
+## metadata(0):
+## assays(2): Beta CN
+## rownames(485512): cg13869341 cg14008030 ... cg08265308 cg14273923
+## rowData names(0):
+## colnames(6): 5723646052_R02C02 5723646052_R04C01 ...
+##   5723646053_R05C02 5723646053_R06C02
+## colData names(13): Sample_Name Sample_Well ... Basename filenames
+## Annotation
+##   array: IlluminaHumanMethylation450k
+##   annotation: ilmn12.hg19
+## Preprocessing
+##   Method: Raw (no normalization or bg correction)
+##   minfi version: 1.21.2
+##   Manifest version: 0.4.0
+## Target Parameter: Average Treatment Effect
+## Results: 
+##                   lwr_ci       est_ate        upr_ci      var_ate
+## cg14008030 -1.195660e-01 -0.0314159619  0.0567340489 2.022705e-03
+## cg20253340 -8.850637e-02 -0.0588661418 -0.0292259165 2.286919e-04
+## cg21870274 -9.499057e-02 -0.0291189817  0.0367526091 1.129495e-03
+## cg17308840 -4.626018e-02 -0.0071524518  0.0319552773 3.981191e-04
+## cg00645010 -2.677328e-02 -0.0134655543 -0.0001578256 4.609945e-05
+## cg27534567  6.745648e-02  0.1157118536  0.1639672225 6.061486e-04
+## cg08258224  1.365045e-01  0.3050884951  0.4736724770 7.398105e-03
+## cg20275697 -3.021026e-01 -0.1231299608  0.0558427144 8.337989e-03
+## cg24373735 -4.283533e-02  0.0076666975  0.0581687266 6.639043e-04
+## cg12445832 -6.082411e-02  0.0150395574  0.0909032203 1.498151e-03
+## cg01097950 -4.392159e-02  0.0658323796  0.1755863507 3.135656e-03
+## cg01782097 -1.082072e-02  0.0010232901  0.0128672954 3.651615e-05
+##                    pval n_neighbors n_neighbors_control max_cor_neighbors
+## cg14008030 4.848468e-01           0                   0                NA
+## cg20253340 9.917426e-05           0                   0                NA
+## cg21870274 3.862537e-01           2                   1        0.94435796
+## cg17308840 7.199943e-01           2                   1        0.94435796
+## cg00645010 4.734007e-02           2                   2        0.52368097
+## cg27534567 2.602936e-06           1                   0        0.93629683
+## cg08258224 3.895914e-04           1                   0        0.93629683
+## cg20275697 1.775155e-01           0                   0                NA
+## cg24373735 7.660489e-01           0                   0                NA
+## cg12445832 6.976022e-01           0                   0                NA
+## cg01097950 2.397377e-01           0                   0                NA
+## cg01782097 8.655302e-01           1                   1       -0.39410834
+##  [ reached getOption("max.print") -- omitted 238 rows ]
 \end{verbatim}
 
 Finally, we may compute FDR-corrected p-values, by applying a modified procedure
@@ -495,7 +551,7 @@ for controlling the False Discovery Rate for multi-stage analyses (FDR-MSA)
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{fdr_p <-}\StringTok{ }\KeywordTok{fdr_msa}\NormalTok{(}\DataTypeTok{pvals =} \KeywordTok{slot}\NormalTok{(methyvim_cancer_ate, }\StringTok{"vim"}\NormalTok{)}\OperatorTok{$}\NormalTok{pval,}
+\NormalTok{fdr_p <-}\StringTok{ }\KeywordTok{fdr_msa}\NormalTok{(}\DataTypeTok{pvals =} \KeywordTok{vim}\NormalTok{(methyvim_cancer_ate)}\OperatorTok{$}\NormalTok{pval,}
                  \DataTypeTok{total_obs =} \KeywordTok{nrow}\NormalTok{(methyvim_cancer_ate))}
 \end{Highlighting}
 \end{Shaded}
@@ -564,31 +620,34 @@ the assay) across subjects using a heat gradient. We implement this in the
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{methyheat}\NormalTok{(methyvim_cancer_ate)}
+\KeywordTok{methyheat}\NormalTok{(methyvim_cancer_ate, }\DataTypeTok{smooth.heat =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{left.label =} \StringTok{"none"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{center}\includegraphics{paper_BiocF1000_files/figure-latex/methyvim-heatmap-1} \end{center}
 
-Invoking \texttt{methyheat} in this manner produces a plot of the top sites (\(25\), by
-default) based on the raw p-value, using the raw methylation measures in the
-plot. This uses the exceptional \texttt{superheat} R package \citep{barter2017superheat}.
+\textbf{Remark}: Invoking \texttt{methyheat} in this manner produces a plot of the top sites
+(\(25\), by default) based on the raw p-value, using the raw methylation measures
+in the plot. This uses the exceptional \texttt{superheat} R package
+\citep{barter2017superheat}, to which we can easily pass additional parameters. In
+particulat, we hide the CpG site labels that would appear by default on the left
+of the heatmap (by setting \texttt{left.label\ =\ "none"}) to emphasize that this is only
+an example and \emph{not} a scientific discovery.
 
 \hypertarget{summary}{%
 \section{Summary}\label{summary}}
 
-Here we introduce the R package \texttt{methyvim}, an algorithm for differential
-methylation analysis that moves beyond linear models. Additionally, this
-estimation procedure produces straightforward statistical inference. Inspired by
-concepts of counterfactual effects from the causal inference literature and
-machine learning algorithms, we provide a computationally efficient technique
-for obtaining targeted estimates of nonparametric variable importance measures
-for a pre-screened set of CpGs, controlling for the False Discovery Rate as if
-all sites were tested, and the estimation framework is built on targeted
-minimum loss-based estimation. By taking advantage of the prediction power of
-machine learning algorithms, this methodology targets the individual importance
-of each CpG site, providing a fully nonparametric statistical model for the
-analysis of differential methylation.
+Here we introduce the R package \texttt{methyvim}, an implementation of a general
+algorithm for differential methylation analysis that allows for recent advances
+in causal inference and machine learning to be leveraged in computational
+biology settings. The estimation procedure produces straightforward statistical
+inference and takes great care to ensure computationally efficiency of the
+technique for obtaining targeted estimates of nonparametric variable importance
+measures. The software package includes techniques for pre-screening a set of
+CpG sites, controlling for the False Discovery Rate as if all sites were tested,
+and for visualzing the results of the analyses in a variety of ways. The anatomy
+of the software package is dissected and the design described in detail. The
+\texttt{methyvim} R package is available via the Bioconductor project.
 
 \hypertarget{software-availability}{%
 \section{Software availability}\label{software-availability}}
@@ -597,8 +656,10 @@ Latest source code (development version): \url{https://github.com/nhejazi/methyv
 
 Bioconductor (stable release): \url{https://bioconductor.org/packages/methyvim}
 
-Archived source code as at time of
-publication: \url{https://github.com/nhejazi/methyvim}
+Archived source code as at time of publication:
+\url{https://github.com/nhejazi/methyvim/releases/tag/f1000}
+
+Documentation (development version): \url{https://code.nimahejazi.org/methyvim}
 
 Software license: The MIT License, copyright Nima S. Hejazi
 
@@ -607,13 +668,14 @@ Software license: The MIT License, copyright Nima S. Hejazi
 
 NH designed and implemented the software package, applied the tool to the use
 cases presented, and co-drafted the present manuscript. RP helped in designing
-the software and co-drafted the present article. AH and ML served as advisors
-for the development of this software and general statistical algorithm.
+the software and co-drafted the present manuscript. AH and ML served as advisors
+for the development of this software and the general statistical algorithm it
+implements.
 
 \hypertarget{competing-interests}{%
 \section{Competing interests}\label{competing-interests}}
 
-No competing interests were disclosed.
+No competing interests were disclosed at the time of publication.
 
 \hypertarget{grant-information}{%
 \section{Grant information}\label{grant-information}}
@@ -624,7 +686,200 @@ by R01-ES021369. RP was supported by P42-ES004705. The content of this work is
 solely the responsibility of the authors and does not necessarily represent the
 official views of the various funding sources and agencies.
 
+\hypertarget{appendix}{%
+\section{Appendix}\label{appendix}}
+
+\hypertarget{data-structure}{%
+\subsection{Data Structure}\label{data-structure}}
+
+We consider an observed data structure, on a single experimental subject (e.g.,
+a patient), \(O = (W, A, (Y(j) : j))\), where \((Y(j) : j = 1, \ldots J)\) is the
+set of CpG sites measured by the assay in question, \(A \in \{0, 1\}\) represents
+a binary phenotype-level treatment, and \(W\) is a vector of the phenotype-level
+baseline covariates that are potential confounders (e.g., age, sex). We consider
+having access to measurements on a large number \(J\) of CpG sites (e.g.,
+\(850,000\), as measured by the Illumina \emph{MethylationEPIC} BeadChip arrays).
+Further, let \(K: j \to S_j\) be a procedure that assigns to a given CpG site \(j\)
+a set of neighbors \(S_j\) -- that is, \(S_j\) is a collection of indices of the
+neighbors of \(j\) just as \(j\) indexes the full set of CpG sites; moreover, since
+\(Y(j)\) is the measured methylation value for a given CpG site \(j\), \(Y(S_j)\) is
+the measured methylation values at the neighbors \(S_j\) of \(j\). Note that the
+definition of a neighborhood \(\{j, S_j\}\) is left vague so as to facilitate the
+use of user-specified strategies in implementation. We consider the case of
+observing \(n\) iid copies of \(O\) (i.e., \(O_1, \ldots, O_n\)), where \(O \sim P_0 \in \mathcal{M}\), which is to say that the random variable \(O\) is governed by an
+unknown probability distribution \(P_0\), assumed only to reside in a
+nonparametric statistical model \(\mathcal{M}\) that places no restrictions on the
+data-generating process.
+
+\hypertarget{variable-importance-measure}{%
+\subsection{Variable Importance Measure}\label{variable-importance-measure}}
+
+With the data structure above in hand, we let the estimand of interest be a
+\(j\)-specific variable importance measure (VIM) \(\Psi_j(P_0)\), which is defined
+through the \emph{true} (and unknown) probability distribution \(P_0\). As a motivating
+example, consider the case where \(\Psi_j(P_0)\) is
+\begin{equation}\label{vim_param}
+  \Psi_j(P_0) = \mathbb{E}_{P_0}(\mathbb{E}_{P_0}(Y(j) \mid A = 1, W, Y(S_j)) -
+    \mathbb{E}_{P_0} \mathbb{E}_{P_0}(Y(j) \mid A = 0, W, Y(S_j)),
+\end{equation}
+where \(Y(S_j)\) is the subvector of \(Y\) that contains the measured methylation
+values of the \emph{neighboring sites} of \(j\) (but not site \(j\) itself). This
+parameter of interest is a variant of the \emph{average treatment effect}, which has
+been the subject of much attention in statistical causal inference
+\citep[\citet{hahn1998role}, \citet{hirano2003efficient}]{holland1986statistics}. As a measure of
+variable importance, we seek to estimate this target parameter (\(\Psi_j(P_0)\)),
+which quantifies the effect of changing a treatment \(A\) on the methylation
+\(Y(j)\) of a CpG site \(j\), accounting for any potential confounding from
+phenotype-level covariates \(W\) and observed methylation \(Y(S_j)\) at the
+neighboring sites \(S_j\) of \(j\). Importantly, the use of such well-defined
+parameters as variable importance measures allows the construction of
+inferential procedures (e.g., confidence intervals and hypothesis tests) for the
+estimate \citep{vdl2006statistical}. We propose a procedure that estimates this
+target parameter \(\Psi_j(P_0)\) across all CpG sites of interest \(j: 1, \ldots, J\). When data-adaptive regression procedures (i.e., machine learning) are
+employed in estimating \(\Psi_j(P_0)\), this produces a nonparametric variable
+importance measure of differential methylation, allowing for the identification
+of differentially methylated positions (DMPs) while avoiding many assumptions
+common in the use of standard parametric regression procedures. We propose
+estimating \(\Psi_j(P)\) via targeted minimum loss-based estimation, which allows
+for data-adaptive regression procedures to be employed in a straightforward
+manner using the Super Learner algorithm for the construction of ensemble models
+\citep[\citet{wolpert1992stacked}, \citet{breiman1996stacked}, \citet{gruber2009targeted},
+\citet{vdl2011targeted}]{vdl2007super}.
+
+\hypertarget{pre-screening-procedure}{%
+\subsection{Pre-Screening Procedure}\label{pre-screening-procedure}}
+
+As a matter of practicality, we consider only estimating the target VIM
+\(\Psi_j(P_0)\) at a subset of CpG sites, so that \(j: 1, \ldots J\) does not, in
+fact span the full set of assayed CpG sites. In order to determine this subset
+of CpG sites, we propose the use of a pre-screening procedure, which need be
+nothing more than a method for differential methylation analysis that is
+computationally less demanding than the method proposed here. Formally, let the
+pre-screening procedure \(\theta(j): j \to \{0, 1\}\), which is to say that
+\(\theta\) takes as input a CpG site \(j\) and returns a binary decision rule of
+whether to include CpG site \(j\) in a subset to be evaluated further or not. As
+an example, one might consider employing a classical differential methylation
+analysis procedure, such as the linear modeling approach of the
+\href{https://bioconductor.org/packages/limma}{\texttt{limma}} R package
+\citep[\citet{robinson2014statistical}]{smyth2004linear}, using only CpG sites that pass a
+reasonable cutoff based on the linear model (e.g., magnitude of t-statistics,
+p-values) for the subsequent analysis steps in the \texttt{methyvim} pipeline.
+
+\hypertarget{reducing-neighbors-via-clustering}{%
+\subsection{Reducing Neighbors via Clustering}\label{reducing-neighbors-via-clustering}}
+
+Due to the data-adaptive nature of the regression procedures employed in
+evaluating the target VIM \(\Psi_j(P_0)\) via targeted minimum loss-based
+estimation, it is possible that a given CpG site \(j\) may have \emph{too many}
+neighbors \(S_j\) to be controlled for in the estimation procedure. Heuristically,
+the inclusion of too many neighbors when controlling for potential confounders
+may lead to instability in the estimates produced. In such cases, we propose and
+implement the use of a clustering technique (e.g., partitioning around medoids)
+to select a \emph{representative} subset of neighbors. Formally, there is likely no
+best choice of a specific clustering algorithm, so we leave this aspect of the
+proposed algorithm as flexible for the user \citep{kleinberg2003impossibility}. Note
+that the goal of employing a clustering procedure in \texttt{methyvim} is to obtain a
+smaller but still highly representative set of neighbors \(S(j)\), so as to allow
+for estimates of \(\Psi_j(P_0)\) to account for as much confounding from
+neighboring sites as is allowed by the available data.
+
+\hypertarget{targeted-minimum-loss-based-estimation-and-statistical-inference}{%
+\subsection{Targeted Minimum Loss-Based Estimation and Statistical Inference}\label{targeted-minimum-loss-based-estimation-and-statistical-inference}}
+
+Given the choice of target parameter \(\Psi_j(P_0)\), we propose the use of
+targeted minimum loss-based estimation (TMLE) to construct and evaluate an
+estimator \(\psi_{n, j}\) of \(\Psi_j(P_0)\). In the case of our motivating example,
+where the target VIM is based on the average treatment effect, we make use of a
+TML estimator of this parameter, which has been implemented for a general case
+in the \href{https://CRAN.R-project.org/package=tmle}{\texttt{tmle}} R package
+\citep{gruber2011tmle}; users of \texttt{methyvim} may wish to consult the documentation of
+that software package as a supplement. Generally speaking, a TML estimator is
+constructed from a few simple components: (1) an estimator of the propensity
+score \citep{rosenbaum1983central}, often denoted \(g(A \mid W)\); (2) an estimator of
+the outcome regression, often denoted \(\bar{Q}(A, W)\); and (3) a targeting step
+that revises the initial estimators of the aforementioned components such that
+the resultant estimator satisfies a set of score-like equations
+\citep{gruber2009targeted}. While we describe a few of the key properties of TML
+estimators in the sequel, extended technical discussion is deferred to more
+comprehensive work \citep[\citet{vdl2018targeted}]{vdl2011targeted}. In order to construct
+an estimate \(\psi_{n, j}\) of \(\Psi_j(P_0)\), it is necessary to accurately
+estimate two nuisance parameters, these being the propensity score
+(\(g(A \mid W)\)) and the outcome regression (\(\bar{Q}(A, W)\)); moreover,
+data-adaptive regression procedures may be used to obtain consistent estimates
+of these quantities through the creation of a stacked regression model via the
+Super Learner algorithm \citep[\citet{breiman1996stacked},
+\citet{vdl2007super}]{wolpert1992stacked}, which ensures that the resulting ensemble model satisfies
+important optimality properties with respect to cross-validation
+\citep[\citet{dudoit2005asymptotics}, \citet{vdl2003unified}]{vdl2004asymptotic}. To use our
+running example, one would construct a TML estimator of the average treatment
+effect (ATE) as a variable importance measure in the following short series of
+steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Construct initial estimates of the propensity score \(g(A \mid W)\) and outcome
+  regression \(\bar{Q}(A, W)\). As noted previously, the Super Learner algorithm
+  may be employed to construct such estimates.
+\item
+  Update these initial estimates (e.g., iteratively) so as to solve the
+  efficient influence function estimation equation of the parameter of interest
+  relative to a nonparametric statistical model.
+\item
+  In the efficient influence function for the ATE, \(\text{EIF}(P_0)(O) = H_n(Y - \bar{Q}(A, W))\), the auxiliary term \(H_n\) may be denoted as
+  \(H_n = \frac{\mathbb{I}(A = 1)}{g(1 \mid W)} - \frac{\mathbb{I}(A = 0)}{g(0 \mid W)}\). Note that the exact form of the
+  efficient influence function and auxiliary covariate varies with the target
+  parameter of interest.
+\item
+  The TML estimator of the parameter of interest is constructed by a procedure
+  that updates the initial estimators such that the empirical mean of the
+  efficient influence function estimating equation(s) is nearly zero (with
+  respect to an error proportional to the sample size, i.e.,
+  \(\frac{1}{\sqrt{n}}\)).
+\end{enumerate}
+
+Importantly, TML estimators are well-suited for statistical inference, having an
+asymptotically normal limiting distribution \citep[
+\citet{vdl2006targeted}]{tsiatis2007semiparametric}, which allows for a closed-form expression of the variance
+to be derived:
+\begin{equation}\label{eqn:lim_psi}
+  \sqrt{n}(\psi_{n, j} - \Psi_j(P_0)) \sim N(0, \sigma_{\text{EIF}}^2),
+\end{equation}
+where \(\sigma_{\text{EIF}}^2\) is the variance of the efficient influence
+function, with respect to a nonparametric statistical model, of the target
+parameter evaluated at the observed data. Such a convenience allows for
+confidence intervals and hypothesis tests to be constructed (i.e.,
+\(H_{0, j}: \Psi_j(P_0) = 0\)) in a straightforward manner. What's more, under
+standard regularity conditions, and with consistent estimation of the propensity
+score and outcome regression, the TML estimator is asymptotically efficient and
+achieve the lowest possible variance among a large class of estimators
+\citep{bickel1993efficient}.
+
+\hypertarget{correction-for-multiple-testing}{%
+\subsection{Correction for Multiple Testing}\label{correction-for-multiple-testing}}
+
+Given that we seek to estimate \(\Psi_j(P_0)\) for a possibly large number of CpG
+sites \((j: 1, \ldots J)\), the need to perform corrections for multiple testing
+is clear. In order to curb the potential for false discoveries, we recommend the
+use of the Benjamini and Hochberg procedure for controlling the False Discovery
+Rate (FDR) \citep{benjamini1995controlling}; however, as the proposed procedure
+involves a pre-screening step, naive application of the Benjamini and Hochberg
+procedure (BH) is invalid -- instead, we rely on a modification of the procedure
+to control the FDR, with established theoretical guarantees when pre-screening
+is employed \citep{tuglus2009modified}. In brief, the modified marginal Benjamini and
+Hochberg procedure to control the FDR under pre-screening works by applying the
+standard BH procedure to a padded vector of p-values -- that is, letting \(J\) be
+the number of CpG sites tested and \(K\) the number of CpG sites filtered out (so
+that \(J + K = P\), where \(P\) is the original dimension of the genomic assay), the
+modified marginal BH procedure is the application of the original BH procedure
+to a vector of p-values, composed of the \(J\) p-values from performing \(J\)
+hypothesis tests (of the form \(H_{0, j}: \Psi_j(P_0) = 0\)) and \(K\) additional
+p-values automatically set to \(1\) (for the hypothesis tests not performed on
+account of pre-screening). This procedure is guaranteed to control the FDR at
+the same desired rate when pre-screening is performed whereas naive application
+of the BH procedure fails to do so.
+
 \renewcommand\refname{References}
-{\small\bibliography{paper\_BiocF1000.bib}}
+{\small\bibliography{references.bib}}
 
 \end{document}
