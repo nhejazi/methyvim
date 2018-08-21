@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![Bioc Time](http://bioconductor.org/shields/years-in-bioc/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
 [![Bioc Downloads](http://bioconductor.org/shields/downloads/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/79256902.svg)](https://zenodo.org/badge/latestdoi/79256902)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1401298.svg)](https://doi.org/10.5281/zenodo.1401298)
 
 > Targeted, Robust, and Model-free Differential Methylation Analysis
 
