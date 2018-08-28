@@ -12,6 +12,8 @@ Status](https://img.shields.io/codecov/c/github/nhejazi/methyvim/master.svg)](ht
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![BioC
+status](http://www.bioconductor.org/shields/build/release/bioc/methyvim.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/methyvim)
 [![Bioc
 Time](http://bioconductor.org/shields/years-in-bioc/methyvim.svg)](https://bioconductor.org/packages/release/bioc/html/methyvim.html)
 [![Bioc
