@@ -3,23 +3,21 @@ citHeader("Please cite the paper below for the 'methyvim' software package
            articles describing the statistical techniques being relied upon.")
 
 citEntry(
-    entry        = "Misc",
-    doi          = "",
-    url          = "",
+    entry        = "Article",
+    doi          = "10.12688/f1000research.16047.1",
+    url          = "https://dx.doi.org/10.12688/f1000research.16047.1",
     year         = "2018",
-    month        = "",
-    publisher    = "forthcoming",
-    volume       = "",
-    number       = "",
+    month        = "September",
+    publisher    = "Faculty of 1000 Ltd",
+    volume       = "7",
+    number       = "1424",
     author       = "Nima S. Hejazi, Rachael V. Phillips, Alan E. Hubbard, Mark
                     J. van der Laan",
-    title        = "methyvim: Targeted, Robust, and Model-free Differential
-                    Methylation Analysis in R",
-    journal      = "",
-    textVersion  = paste("Hejazi, NS, Phillips, RV, Hubbard, AE, and van der
-                          Laan, MJ (2018).",
-                         "methyvim: Targeted, Robust, and Model-free
-                          Differential Methylation Analysis in R",
-                         "(forthcoming)",
-                         "")
+    title        = "methyvim: Targeted, robust, and model-free differential
+                    methylation analysis in R",
+    journal      = "F1000Research",
+    textVersion  = paste("Hejazi, NS, Phillips, RV, Hubbard, AE, and van der Laan, MJ (2018).",
+                         "methyvim: Targeted, robust, and model-free differential methylation analysis in R",
+                         "F1000Research, 7(1424).")
 )
+

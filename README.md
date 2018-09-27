@@ -179,17 +179,17 @@ After using the `methyvim` R package, please cite the following:
 
 ``` 
     @article{hejazi2018methyvim,
-      doi = {},
-      url = {},
-      year  = {2018},
-      month = {},
-      publisher = {},
-      volume = {},
+      doi = {10.12688/f1000research.16047.1},
+      url = {https://dx.doi.org/10.12688/f1000research.16047.1},
+      year = {2018},
+      publisher = {Faculty of 1000 Ltd},
+      volume = {7},
+      number = {1424},
       author = {Hejazi, Nima S and Phillips, Rachael V and Hubbard, Alan E
         and {van der Laan}, Mark J},
-      title = {methyvim: Targeted, Robust, and Model-free Differential
-        Methylation Analysis in {R}},
-      journal = {}
+      title = {{methyvim}: Targeted, robust, and model-free differential
+        methylation analysis in {R}},
+      journal = {F1000Research}
     }
 ```
 
