@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">methyvim</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.5.0</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <h1>Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</h1>
                         <h4 class="author">Nima Hejazi</h4>
             
-            <h4 class="date">2018-09-27</h4>
+            <h4 class="date">2018-10-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/nhejazi/methyvim/blob/master/vignettes/using_methyvim.Rmd"><code>vignettes/using_methyvim.Rmd</code></a></small>
       <div class="hidden name"><code>using_methyvim.Rmd</code></div>
@@ -97,7 +97,7 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>DNA methylation is a fundamental epigenetic process known to play an important role in the regulation of gene expression. DNA CpG methylation involves the addition of a methyl group (<span class="math inline">\(\text{CH}_3\)</span>) to the fifth carbon of the cytosine ring structure to form 5-methylcytosine. Numerous biological and medical studies have implicated DNA CpG methylation as playing a role in disease and development <span class="citation">(Robertson 2005)</span>. Perhaps unsurprisingly then, biotechnologies have been developed to study the molecular mechanisms of this epigenetic process. Modern assays, like the Illumina <em>Infinium</em> Methylation assay, allow for quantitative interrogation of DNA methylation of CpG sites scattered across the genome at single-nucleotide resolution; moreover, much effort has been invested, by the bioinformatics community, in the development of tools for properly removing technological effects that may contaminate biological signatures measured by such assays. Despite these advances in both biological and bioninformatical techniques, most statistical methods available for the analysis of data produced by such assays rely on over-simplified (often generalized linear) models.</p>
 <p>Here, we present an alternative to such statistical analysis approaches, in the form of nonparametric estimation procedures inspired by machine learning and causal inference. Specifically, we provide a technique for obtaining estimates of nonparametric <em>variable importance measures</em> (<strong>VIM</strong>), parameters with rich scientific interpretations under the standard (untestable) assumptions used in statistical causal inference, defining a limited set of VIMs specifically with respect to the type of data commonly produced by DNA methylation assays. For VIMs defined in such a manner, targeted minimum loss-based estimates may be readily computed based on the data made available by DNA methylation assays. Our contribution, <code>methyvim</code> is an R package that provides facilities for performing differential methylation analyses within exactly this scope.</p>
-<p>As the substantive contribution of our work is an estimation procedure, we focus on data produced by 450k and 850k (EPIC) arrays made by Illumina and assume that data has been subjected to proper quality control and normalizaton procedures, as outlined by others in the computational biology community <span class="citation">(Fortin et al. 2014, <span class="citation">@dedeurwaerder2013comprehensive</span>)</span>. For a general discussion of the framework of targeted minimum loss-based estimation and the role this approach plays in statistical causal inference, the interested reader is invited to consult <span class="citation">van der Laan and Rose (2011)</span> and <span class="citation">van der Laan and Rose (2018)</span>. For a more general introduction to statistical causal inference, <span class="citation">Pearl (2009)</span> serves well.</p>
+<p>As the substantive contribution of our work is an estimation procedure, we focus on data produced by 450k and 850k (EPIC) arrays made by Illumina and assume that data has been subjected to proper quality control and normalizaton procedures, as outlined by others in the computational biology community <span class="citation">(Fortin et al. 2014, <span class="citation">@dedeurwaerder2013comprehensive</span>)</span>. For a general discussion of the framework of targeted minimum loss-based estimation and the role this approach plays in statistical causal inference, the interested reader is invited to consult <span class="citation">van der Laan and Rose (2011)</span> and <span class="citation">van der Laan and Rose (2018)</span>. For a more general introduction to statistical causal inference, <span class="citation">Pearl (2000)</span> serves well.</p>
 <hr>
 </div>
 <div id="methodology" class="section level2">
@@ -847,11 +847,11 @@
 ##  [5] arm_1.10-1                                        
 ##  [6] lme4_1.1-18-1                                     
 ##  [7] Matrix_1.2-14                                     
-##  [8] MASS_7.3-50                                       
+##  [8] MASS_7.3-51                                       
 ##  [9] earth_4.6.3                                       
 ## [10] plotmo_3.5.0                                      
 ## [11] TeachingDemos_2.10                                
-## [12] plotrix_3.7-3                                     
+## [12] plotrix_3.7-4                                     
 ## [13] gam_1.16                                          
 ## [14] methyvimData_1.2.0                                
 ## [15] methyvim_1.3.1                                    
@@ -863,13 +863,13 @@
 ## [21] Biostrings_2.48.0                                 
 ## [22] XVector_0.20.0                                    
 ## [23] SummarizedExperiment_1.10.1                       
-## [24] DelayedArray_0.6.5                                
+## [24] DelayedArray_0.6.6                                
 ## [25] BiocParallel_1.14.2                               
 ## [26] matrixStats_0.54.0                                
 ## [27] Biobase_2.40.0                                    
-## [28] GenomicRanges_1.32.6                              
+## [28] GenomicRanges_1.32.7                              
 ## [29] GenomeInfoDb_1.16.0                               
-## [30] IRanges_2.14.10                                   
+## [30] IRanges_2.14.12                                   
 ## [31] S4Vectors_0.18.3                                  
 ## [32] BiocGenerics_0.26.0                               
 ## [33] tmle_1.3.0-1                                      
@@ -880,60 +880,61 @@
 ## loaded via a namespace (and not attached):
 ##   [1] backports_1.1.2          plyr_1.8.4              
 ##   [3] lazyeval_0.2.1           listenv_0.7.0           
-##   [5] ggplot2_3.0.0            digest_0.6.17           
+##   [5] ggplot2_3.1.0            digest_0.6.18           
 ##   [7] htmltools_0.3.6          magrittr_1.5            
 ##   [9] memoise_1.1.0            cluster_2.0.7-1         
-##  [11] limma_3.36.2             globals_0.12.3          
+##  [11] limma_3.36.5             globals_0.12.4          
 ##  [13] readr_1.1.1              annotate_1.58.0         
 ##  [15] doFuture_0.6.0           pkgdown_1.1.0           
 ##  [17] siggenes_1.54.0          prettyunits_1.0.2       
 ##  [19] colorspace_1.3-2         blob_1.1.1              
-##  [21] xfun_0.3                 dplyr_0.7.6             
+##  [21] xfun_0.4                 dplyr_0.7.7             
 ##  [23] crayon_1.3.4             RCurl_1.95-4.11         
 ##  [25] roxygen2_6.1.0.9000      genefilter_1.62.0       
 ##  [27] bindr_0.1.1              GEOquery_2.48.0         
-##  [29] survival_2.42-6          glue_1.3.0              
+##  [29] survival_2.43-1          glue_1.3.0              
 ##  [31] registry_0.5             gtable_0.2.0            
 ##  [33] zlibbioc_1.26.0          superheat_1.0.0         
 ##  [35] Rhdf5lib_1.2.1           HDF5Array_1.8.1         
 ##  [37] abind_1.4-5              scales_1.0.0            
 ##  [39] DBI_1.0.0                rngtools_1.3.1          
-##  [41] bibtex_0.4.2             Rcpp_0.12.18            
+##  [41] bibtex_0.4.2             Rcpp_0.12.19            
 ##  [43] xtable_1.8-3             progress_1.2.0          
 ##  [45] bit_1.1-14               mclust_5.4.1            
 ##  [47] preprocessCore_1.42.0    httr_1.3.1              
 ##  [49] RColorBrewer_1.1-2       pkgconfig_2.0.2         
-##  [51] reshape_0.8.7            XML_3.99-0              
-##  [53] labeling_0.3             tidyselect_0.2.4        
-##  [55] rlang_0.2.2              AnnotationDbi_1.42.1    
+##  [51] reshape_0.8.8            XML_3.99-0              
+##  [53] labeling_0.3             tidyselect_0.2.5        
+##  [55] rlang_0.3.0.1            AnnotationDbi_1.42.1    
 ##  [57] munsell_0.5.0            tools_3.5.1             
 ##  [59] RSQLite_2.1.1            ggdendro_0.1-20         
-##  [61] evaluate_0.11            stringr_1.3.1           
+##  [61] evaluate_0.12            stringr_1.3.1           
 ##  [63] yaml_2.2.0               knitr_1.20              
 ##  [65] bit64_0.9-7              fs_1.2.6                
 ##  [67] beanplot_1.2             purrr_0.2.5             
-##  [69] future_1.9.0             nlme_3.1-137            
+##  [69] future_1.10.0            nlme_3.1-137            
 ##  [71] doRNG_1.7.1              nor1mix_1.2-3           
 ##  [73] xml2_1.2.0               biomaRt_2.36.1          
 ##  [75] compiler_3.5.1           tibble_1.4.2            
-##  [77] stringi_1.2.4            GenomicFeatures_1.32.2  
-##  [79] desc_1.2.0               lattice_0.20-35         
-##  [81] nloptr_1.0.4             commonmark_1.5          
-##  [83] ggsci_2.9                multtest_2.36.0         
-##  [85] pillar_1.3.0             data.table_1.11.6       
-##  [87] bitops_1.0-6             rtracklayer_1.40.4      
-##  [89] R6_2.2.2                 bookdown_0.7            
-##  [91] gridExtra_2.3            codetools_0.2-15        
-##  [93] gtools_3.8.1             assertthat_0.2.0        
-##  [95] rhdf5_2.24.0             openssl_1.0.2           
-##  [97] pkgmaker_0.27            rprojroot_1.3-2         
-##  [99] withr_2.1.2              GenomicAlignments_1.16.0
-## [101] Rsamtools_1.32.2         GenomeInfoDbData_1.1.0  
-## [103] hms_0.4.2                quadprog_1.5-5          
-## [105] grid_3.5.1               coda_0.19-1             
-## [107] minqa_1.2.4              tidyr_0.8.1             
-## [109] base64_2.0               rmarkdown_1.10          
-## [111] DelayedMatrixStats_1.2.0 illuminaio_0.22.0</code></pre>
+##  [77] stringi_1.2.4            GenomicFeatures_1.32.3  
+##  [79] desc_1.2.0               forcats_0.3.0           
+##  [81] lattice_0.20-35          nloptr_1.2.1            
+##  [83] commonmark_1.6           ggsci_2.9               
+##  [85] multtest_2.36.0          pillar_1.3.0            
+##  [87] data.table_1.11.9        bitops_1.0-6            
+##  [89] rtracklayer_1.40.6       R6_2.3.0                
+##  [91] bookdown_0.7.21          gridExtra_2.3           
+##  [93] codetools_0.2-15         gtools_3.8.1            
+##  [95] assertthat_0.2.0         rhdf5_2.24.0            
+##  [97] openssl_1.0.2            pkgmaker_0.27           
+##  [99] rprojroot_1.3-2          withr_2.1.2             
+## [101] GenomicAlignments_1.16.0 Rsamtools_1.32.3        
+## [103] GenomeInfoDbData_1.1.0   hms_0.4.2               
+## [105] quadprog_1.5-5           grid_3.5.1              
+## [107] coda_0.19-2              minqa_1.2.4             
+## [109] tidyr_0.8.2              base64_2.0              
+## [111] rmarkdown_1.10           DelayedMatrixStats_1.2.0
+## [113] illuminaio_0.22.0</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -964,8 +965,8 @@
 <div id="ref-hernan2018causal">
 <p>Hernan, Miguel A, and James M Robins. n.d. <em>Causal Inference</em>. Chapman &amp; Hall/Crc Texts in Statistical Science. Taylor &amp; Francis.</p>
 </div>
-<div id="ref-pearl2009causality">
-<p>Pearl, Judea. 2009. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
+<div id="ref-pearl2000causality">
+<p>Pearl, Judea. 2000. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
 </div>
 <div id="ref-robertson2005dna">
 <p>Robertson, Keith D. 2005. “DNA Methylation and Human Disease.” <em>Nature Reviews. Genetics</em> 6 (8). Nature Publishing Group: 597.</p>

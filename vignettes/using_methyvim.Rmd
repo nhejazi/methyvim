@@ -63,7 +63,7 @@ as outlined by others in the computational biology community
 discussion of the framework of targeted minimum loss-based estimation and the
 role this approach plays in statistical causal inference, the interested reader
 is invited to consult @vdl2011targeted and @vdl2018targeted. For a more general
-introduction to statistical causal inference, @pearl2009causality serves well.
+introduction to statistical causal inference, @pearl2000causality serves well.
 
 ---
 
