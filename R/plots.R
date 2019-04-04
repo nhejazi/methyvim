@@ -33,15 +33,15 @@ utils::globalVariables(c(
 #' library(methyvimData)
 #' data(grsExample)
 #' var_int <- as.numeric(colData(grsExample)[, 1])
-# TMLE procedure for the ATE parameter over M-values with Limma filtering
+#' # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
-#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
-#'           parallel = FALSE, tmle_type = "glm"
-#'          )
+#'   methyvim(
+#'     data_grs = grsExample, sites_comp = 25, var_int = var_int,
+#'     vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+#'     parallel = FALSE, tmle_type = "glm"
+#'   )
 #' )
 #' plot(methyvim_out_ate)
-#
 plot.methytmle <- function(x, ..., type = "both") {
   # get corrected p-values and add them to output object
   pval_fdr <- fdr_msa(pvals = x@vim$pval, total_obs = nrow(x))
@@ -121,15 +121,15 @@ plot.methytmle <- function(x, ..., type = "both") {
 #' library(methyvimData)
 #' data(grsExample)
 #' var_int <- as.numeric(colData(grsExample)[, 1])
-# TMLE procedure for the ATE parameter over M-values with Limma filtering
+#' # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
-#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
-#'           parallel = FALSE, tmle_type = "glm"
-#'          )
+#'   methyvim(
+#'     data_grs = grsExample, sites_comp = 25, var_int = var_int,
+#'     vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+#'     parallel = FALSE, tmle_type = "glm"
+#'   )
 #' )
 #' methyheat(methyvim_out_ate, type = "raw")
-#
 methyheat <- function(x, ..., n_sites = 25, type = "raw") {
   # need observations in influence curve space to plot on heatmap
   if (type == "ic" & sum(dim(x@ic)) == 0) {
@@ -210,15 +210,15 @@ methyheat <- function(x, ..., n_sites = 25, type = "raw") {
 #' library(methyvimData)
 #' data(grsExample)
 #' var_int <- as.numeric(colData(grsExample)[, 1])
-# TMLE procedure for the ATE parameter over M-values with Limma filtering
+#' # TMLE procedure for the ATE parameter over M-values with Limma filtering
 #' methyvim_out_ate <- suppressWarnings(
-#'  methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
-#'           vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
-#'           parallel = FALSE, tmle_type = "glm"
-#'          )
+#'   methyvim(
+#'     data_grs = grsExample, sites_comp = 25, var_int = var_int,
+#'     vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+#'     parallel = FALSE, tmle_type = "glm"
+#'   )
 #' )
 #' methyvolc(methyvim_out_ate)
-#
 methyvolc <- function(x, param_bound = 2.0, pval_bound = 0.2) {
   # get corrected p-values
   pval_fdr <- fdr_msa(pvals = x@vim$pval, total_obs = nrow(x))

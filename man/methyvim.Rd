@@ -123,10 +123,12 @@ library(methyvimData)
 suppressMessages(library(SummarizedExperiment))
 data(grsExample)
 var_int <- colData(grsExample)[, 1]
+# TMLE procedure for the ATE parameter over M-values with Limma filtering
 methyvim_out_ate <- suppressWarnings(
- methyvim(data_grs = grsExample, sites_comp = 1, var_int = var_int,
-          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
-          parallel = FALSE, tmle_type = "sl"
-         )
+  methyvim(
+    data_grs = grsExample, sites_comp = 1, var_int = var_int,
+    vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.05,
+    parallel = FALSE, tmle_type = "sl"
+  )
 )
 }

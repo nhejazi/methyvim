@@ -27,7 +27,6 @@
 #'
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom minfi getBeta getM
-#
 limma_screen <- function(methytmle, var_int, type, cutoff = 0.05) {
   stopifnot(class(methytmle) == "methytmle")
 

@@ -23,7 +23,6 @@
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom BiocGenerics start
 #' @importFrom IRanges ranges
-#
 cluster_sites <- function(methytmle, window_size = 1000) {
   gr <- SummarizedExperiment::rowRanges(methytmle)
   pos <- BiocGenerics::start(IRanges::ranges(gr))

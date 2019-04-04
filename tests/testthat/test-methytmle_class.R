@@ -42,4 +42,3 @@ test_that("accessor function 'vim' for methytmle class acts appropriately", {
   methy_tmle@vim <- example_vim
   expect_identical(vim(methy_tmle), example_vim)
 })
-

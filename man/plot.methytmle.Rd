@@ -31,11 +31,13 @@ suppressMessages(library(SummarizedExperiment))
 library(methyvimData)
 data(grsExample)
 var_int <- as.numeric(colData(grsExample)[, 1])
+# TMLE procedure for the ATE parameter over M-values with Limma filtering
 methyvim_out_ate <- suppressWarnings(
- methyvim(data_grs = grsExample, sites_comp = 25, var_int = var_int,
-          vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
-          parallel = FALSE, tmle_type = "glm"
-         )
+  methyvim(
+    data_grs = grsExample, sites_comp = 25, var_int = var_int,
+    vim = "ate", type = "Mval", filter = "limma", filter_cutoff = 0.1,
+    parallel = FALSE, tmle_type = "glm"
+  )
 )
 plot(methyvim_out_ate)
 }

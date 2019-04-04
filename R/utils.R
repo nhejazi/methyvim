@@ -30,7 +30,6 @@
 #' @importFrom BiocParallel register bpprogressbar DoparParam
 #' @importFrom future plan multiprocess sequential
 #' @importFrom doFuture registerDoFuture
-#
 set_parallel <- function(parallel = c(TRUE, FALSE),
                          future_param = NULL,
                          bppar_type = NULL) {
@@ -74,7 +73,6 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #'
 #' @param fun A \code{function} to be wrapped in a \code{try} statement.
 #' @param ... Additional arguments passed to the previous argument \code{fun}.
-#
 wrap_in_try <- function(fun, ...) {
   wrapped <- function(...)
     try({
@@ -82,4 +80,3 @@ wrap_in_try <- function(fun, ...) {
     }, silent = TRUE)
   return(wrapped)
 }
-
