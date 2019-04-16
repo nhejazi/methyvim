@@ -1,6 +1,6 @@
 Package: methyvim
 Title: Targeted, Robust, and Model-free Differential Methylation Analysis
-Version: 1.5.0
+Version: 1.5.2
 Authors@R: c(
   person("Nima", "Hejazi", email = "nh@nimahejazi.org",
          role = c("aut", "cre", "cph"),
@@ -70,7 +70,7 @@ Suggests:
   minfiData,
   methyvimData
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1
 biocViews:
   Clustering,
   DNAMethylation,

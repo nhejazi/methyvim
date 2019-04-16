@@ -201,7 +201,7 @@ National Institutes of Health: [T32 LM012417-02](https://projectreporter.nih.gov
 
 ## License
 
-&copy; 2017-2018 [Nima S. Hejazi](https://nimahejazi.org)
+&copy; 2017-2019 [Nima S. Hejazi](https://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license. See file
 `LICENSE` for details.

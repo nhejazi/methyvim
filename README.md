@@ -217,7 +217,7 @@ ES004705-29](https://projectreporter.nih.gov/project_info_details.cfm?aid=926035
 
 ## License
 
-© 2017-2018 [Nima S. Hejazi](https://nimahejazi.org)
+© 2017-2019 [Nima S. Hejazi](https://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license.
 See file `LICENSE` for details.

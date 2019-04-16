@@ -23,7 +23,6 @@
 #' @keywords internal
 #'
 #' @importFrom gtools quantcut
-#
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
 
