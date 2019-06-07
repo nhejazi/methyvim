@@ -25,6 +25,7 @@ test_that("registers future::sequential for parallel=FALSE", {
 
 # test: registers backends similarly to BiocParallel
 test_that("registers BiocParallel::SnowParam when so asked", {
+  skip_on_os("windows")
   methyvim:::set_parallel(parallel = TRUE, bppar_type = "SnowParam")
   expect_true("SnowParam" %in% names(registered()))
 })
@@ -36,6 +37,7 @@ test_that("registers BiocParallel::MulticoreParam when so asked", {
 })
 
 test_that("registers BiocParallel::BatchJobsParam when so asked", {
+  skip_on_os("windows")
   methyvim:::set_parallel(parallel = TRUE, bppar_type = "BatchJobsParam")
   expect_true("BatchJobsParam" %in% names(registered()))
 })
