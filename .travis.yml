@@ -9,6 +9,7 @@ env:
 language: r
 sudo: required
 cache: packages
+cran: https://cran.rstudio.com
 
 warnings_are_errors: true
 r_build_args: '--no-manual'
@@ -27,9 +28,8 @@ r_packages:
   - BiocManager
 
 r_github_packages:
-  - r-lib/devtools@2d012d1
+  - r-lib/covr
   - r-lib/sessioninfo
-  - jimhester/covr
   - nhejazi/methyvimData
 
 bioc_packages:
@@ -47,7 +47,7 @@ bioc_packages:
   - minfiData
 
 after_success:
-  ## coverage
+  # coverage
   - travis_wait 80 Rscript -e "covr::codecov(line_exclusions = list('R/plots.R', 'R/utils.R'))"
   - R CMD BiocCheck .
 
@@ -58,4 +58,3 @@ notifications:
   email:
     on_success: change
     on_failure: change
-

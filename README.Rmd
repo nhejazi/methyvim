@@ -102,7 +102,7 @@ multi-stage analyses (FDR-MSA) [@tuglus2009modified].
 For a general discussion of the framework of targeted minimum loss-based
 estimation, the many applications of this methodology, and the role the
 framework plays in statistical causal inference, the recommended references are
-@vdl2011targeted and @vdl2018targeted. @hernan2018causal and @pearl2009causality
+@vdl2011targeted and @vdl2018targeted. @hernan2018causal and @pearl2000causality
 may be of interest to those desiring a more general introduction to statistical
 causal inference.
 
@@ -115,7 +115,7 @@ For standard use, install from
 [`BiocManager`](https://CRAN.R-project.org/package=BiocManager):
 
 ```{r bioc-installation, eval = FALSE}
-if (!("BiocManager" %in% installed.packages())) {
+if (!requireNamespace("BiocManager", quietly=TRUE)) {
   install.packages("BiocManager")
 }
 BiocManager::install("methyvim")
@@ -201,7 +201,7 @@ National Institutes of Health: [T32 LM012417-02](https://projectreporter.nih.gov
 
 ## License
 
-&copy; 2017-2018 [Nima S. Hejazi](https://nimahejazi.org)
+&copy; 2017-2019 [Nima S. Hejazi](https://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license. See file
 `LICENSE` for details.

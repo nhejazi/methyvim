@@ -21,7 +21,6 @@
 #' # cast the GenomicRatioSet to class methytmle
 #' methy_tmle <- .methytmle(grsExample)
 #' methy_tmle
-#
 .methytmle <- methods::setClass(
   Class = "methytmle",
   slots = list(
@@ -39,7 +38,6 @@
 ################################################################################
 
 #' @importFrom methods setMethod callNextMethod
-#
 methods::setMethod("show", "methytmle", function(object) {
   methods::callNextMethod()
   cat("Target Parameter: ")
@@ -57,7 +55,6 @@ methods::setMethod("show", "methytmle", function(object) {
 #' @rdname methytmle-class
 #'
 #' @keywords internal
-#
 param <- function(object) {
   stopifnot(class(object) == "methytmle")
   object@param
@@ -74,9 +71,7 @@ param <- function(object) {
 #' @keywords internal
 #'
 #' @export
-#
 vim <- function(object) {
   stopifnot(class(object) == "methytmle")
   object@vim
 }
-

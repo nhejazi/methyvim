@@ -109,7 +109,7 @@ For a general discussion of the framework of targeted minimum loss-based
 estimation, the many applications of this methodology, and the role the
 framework plays in statistical causal inference, the recommended
 references are van der Laan and Rose (2011) and van der Laan and Rose
-(2018). Hernan and Robins (2018) and Pearl (2009) may be of interest to
+(2018). Hernan and Robins (2018) and Pearl (2000) may be of interest to
 those desiring a more general introduction to statistical causal
 inference.
 
@@ -122,7 +122,7 @@ For standard use, install from
 [`BiocManager`](https://CRAN.R-project.org/package=BiocManager):
 
 ``` r
-if (!("BiocManager" %in% installed.packages())) {
+if (!requireNamespace("BiocManager", quietly=TRUE)) {
   install.packages("BiocManager")
 }
 BiocManager::install("methyvim")
@@ -217,7 +217,7 @@ ES004705-29](https://projectreporter.nih.gov/project_info_details.cfm?aid=926035
 
 ## License
 
-© 2017-2018 [Nima S. Hejazi](https://nimahejazi.org)
+© 2017-2019 [Nima S. Hejazi](https://nimahejazi.org)
 
 The contents of this repository are distributed under the MIT license.
 See file `LICENSE` for details.
@@ -253,9 +253,9 @@ Hernan, Miguel A, and James M Robins. 2018. *Causal Inference*. Chapman
 
 </div>
 
-<div id="ref-pearl2009causality">
+<div id="ref-pearl2000causality">
 
-Pearl, Judea. 2009. *Causality: Models, Reasoning, and Inference*.
+Pearl, Judea. 2000. *Causality: Models, Reasoning, and Inference*.
 Cambridge University Press.
 
 </div>
