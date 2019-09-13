@@ -28,7 +28,8 @@ knitr::opts_chunk$set(
 
 > Targeted, Robust, and Model-free Differential Methylation Analysis
 
-__Author:__ [Nima Hejazi](https://nimahejazi.org)
+__Author:__ [Nima Hejazi](https://nimahejazi.org) and [Mark van der
+  Laan](https://vanderlaan-lab.org)
 
 ---
 
