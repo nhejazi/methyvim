@@ -24,7 +24,8 @@ license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://openso
 
 > Targeted, Robust, and Model-free Differential Methylation Analysis
 
-**Author:** [Nima Hejazi](https://nimahejazi.org)
+**Author:** [Nima Hejazi](https://nimahejazi.org) and [Mark van der
+Laan](https://vanderlaan-lab.org)
 
 -----
 

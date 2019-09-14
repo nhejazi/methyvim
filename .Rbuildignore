@@ -9,9 +9,7 @@
 ^README\.Rmd$
 ^README\.html$
 ^README-.*\.png$
-^README-refs\.bib$
 ^Makefile$
 ^docs$
 ^paper$
-^sandbox$
 
