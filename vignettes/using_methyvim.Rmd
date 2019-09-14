@@ -5,7 +5,7 @@ author: "Nima Hejazi"
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document
-bibliography: vignette-refs.bib
+bibliography: ../inst/REFERENCES.bib
 abstract: |
   We present a general algorithm for the nonparametric estimation of effects of
   DNA methylation at CpG sites scattered across the genome, complete with honest
