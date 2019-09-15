@@ -24,7 +24,7 @@ license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://openso
 
 > Targeted, Robust, and Model-free Differential Methylation Analysis
 
-**Author:** [Nima Hejazi](https://nimahejazi.org) and [Mark van der
+**Authors:** [Nima Hejazi](https://nimahejazi.org) and [Mark van der
 Laan](https://vanderlaan-lab.org)
 
 -----
@@ -32,13 +32,11 @@ Laan](https://vanderlaan-lab.org)
 ## What’s `methyvim`?
 
 `methyvim` is an R package that provides facilities for differential
-methylation analysis based on *variable importance measures* (VIMs), a
-class of statistically estimable target parameters that arise in causal
-inference.
+methylation analysis based on *variable importance measures* (VIMs),
+statistical target parameters inspired by causal inference.
 
-The statistical methodology implemented computes targeted minimum
-loss-based estimates of several well-characterized variable importance
-measures:
+The statistical methodology implemented computes targeted minimum loss
+estimates of several well-characterized variable importance measures:
 
 For discrete-valued treatments or exposures:
 
@@ -61,7 +59,7 @@ For discrete-valued treatments or exposures:
     observed at the target site had all observations received the
     treatment versus the scenario in which none received the treatment.
 
-For continous-valued treatments or exposures:
+For continuous-valued treatments or exposures (*WIP: support planned*):
 
   - A *nonparametric variable importance measure* (NPVI) (Chambaz,
     Neuvial, and van der Laan 2012): The effect of continous-valued
@@ -76,11 +74,8 @@ For continous-valued treatments or exposures:
     survival), in effect providing an nonparametric evaluation of the
     impact of methylation at the target site on said outcome.
 
-*In all cases, an estimator of the target parameter is constructed via
-targeted minimum loss-based estimation.*
-
 These methods allow differential methylation effects to be quantified in
-a manner that is largely free of assumptions, especially of the variety
+a manner that is largely assumption-free, especially of the variety
 exploited in parametric models. **The statistical algorithm consists in
 several major steps:**
 
@@ -106,13 +101,11 @@ several major steps:**
     procedure for multi-stage analyses (FDR-MSA) (Tuglus and van der
     Laan 2009).
 
-For a general discussion of the framework of targeted minimum loss-based
-estimation, the many applications of this methodology, and the role the
-framework plays in statistical causal inference, the recommended
-references are van der Laan and Rose (2011) and van der Laan and Rose
-(2018). Hernan and Robins (2018) and Pearl (2000) may be of interest to
-those desiring a more general introduction to statistical causal
-inference.
+For a general discussion of the framework of targeted minimum loss
+estimation and its myriad applications, the canonical references are van
+der Laan and Rose (2011) and van der Laan and Rose (2018). Hernan and
+Robins (2018) and Pearl (2000) may be of interest to those desiring a
+more general introduction to statistical causal inference.
 
 -----
 

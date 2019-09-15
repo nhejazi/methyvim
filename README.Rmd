@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 
 > Targeted, Robust, and Model-free Differential Methylation Analysis
 
-__Author:__ [Nima Hejazi](https://nimahejazi.org) and [Mark van der
+__Authors:__ [Nima Hejazi](https://nimahejazi.org) and [Mark van der
   Laan](https://vanderlaan-lab.org)
 
 ---
@@ -36,11 +36,11 @@ __Author:__ [Nima Hejazi](https://nimahejazi.org) and [Mark van der
 ## What's `methyvim`?
 
 `methyvim` is an R package that provides facilities for differential methylation
-analysis based on _variable importance measures_ (VIMs), a class of
-statistically estimable target parameters that arise in causal inference.
+analysis based on _variable importance measures_ (VIMs), statistical target
+parameters inspired by causal inference.
 
-The statistical methodology implemented computes targeted minimum loss-based
-estimates of several well-characterized variable importance measures:
+The statistical methodology implemented computes targeted minimum loss estimates
+of several well-characterized variable importance measures:
 
 For discrete-valued treatments or exposures:
 
@@ -60,7 +60,7 @@ For discrete-valued treatments or exposures:
   been observed at the target site had all observations received the treatment
   versus the scenario in which none received the treatment.
 
-For continous-valued treatments or exposures:
+For continuous-valued treatments or exposures (_WIP: support planned_):
 
 * A _nonparametric variable importance measure_ (NPVI) [@chambaz2012estimation]:
   The effect of continous-valued exposure or treatment (the observed methylation
@@ -73,39 +73,34 @@ For continous-valued treatments or exposures:
   of interest (e.g., survival), in effect providing an nonparametric evaluation
   of the impact of methylation at the target site on said outcome.
 
-_In all cases, an estimator of the target parameter is constructed via targeted
-minimum loss-based estimation._
-
 These methods allow differential methylation effects to be quantified in a
-manner that is largely free of assumptions, especially of the variety exploited
+manner that is largely assumption-free, especially of the variety exploited
 in parametric models. __The statistical algorithm consists in several major
 steps:__
 
 1. Pre-screening of genomic sites is used to isolate a subset of sites for
-which there is cursory evidence of differential methylation. For the sake of
-computational feasibility, targeted minimum loss-based estimates of VIMs are
-computed only for this subset of sites. Several screening approaches are
-available, adapting core routines from the following R packages:
-[`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html),
-[`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi).
+  which there is cursory evidence of differential methylation. For the sake of
+  computational feasibility, targeted minimum loss-based estimates of VIMs are
+  computed only for this subset of sites. Several screening approaches are
+  available, adapting core routines from the following R packages:
+  [`limma`](http://bioconductor.org/packages/release/bioc/html/limma.html),
+  [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi).
 2. Nonparametric VIMs are estimated for the specified parameter, currently
-adapting routines from the
-[`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) and
-[`tmle`](https://CRAN.R-project.org/package=tmle) R packages.
+  adapting routines from the
+  [`tmle.npvi`](https://CRAN.R-project.org/package=tmle.npvi) and
+  [`tmle`](https://CRAN.R-project.org/package=tmle) R packages.
 3. Since pre-screening is performed prior to estimating VIMs, we make use of a
-multiple testing correction uniquely suited to such settings. Due to the
-multiple testing nature of the estimation problem, a variant of the Benjamini &
-Hochberg procedure for controlling the False Discovery Rate (FDR) is applied
-[@benjamini1995controlling]. Specifically, we apply the modified marginal
-Benjamini & Hochberg step-up False Discovery Rate controlling procedure for
-multi-stage analyses (FDR-MSA) [@tuglus2009modified].
+  multiple testing correction uniquely suited to such settings. Due to the
+  multiple testing nature of the estimation problem, a variant of the Benjamini
+  & Hochberg procedure for controlling the False Discovery Rate (FDR) is applied
+  [@benjamini1995controlling]. Specifically, we apply the modified marginal
+  Benjamini & Hochberg step-up False Discovery Rate controlling procedure for
+  multi-stage analyses (FDR-MSA) [@tuglus2009modified].
 
-For a general discussion of the framework of targeted minimum loss-based
-estimation, the many applications of this methodology, and the role the
-framework plays in statistical causal inference, the recommended references are
-@vdl2011targeted and @vdl2018targeted. @hernan2018causal and @pearl2000causality
-may be of interest to those desiring a more general introduction to statistical
-causal inference.
+For a general discussion of the framework of targeted minimum loss estimation
+and its myriad applications, the canonical references are @vdl2011targeted and
+@vdl2018targeted. @hernan2018causal and @pearl2000causality may be of interest
+to those desiring a more general introduction to statistical causal inference.
 
 ---
 
