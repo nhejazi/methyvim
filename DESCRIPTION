@@ -15,9 +15,6 @@ Authors@R: c(
          role = c("ctb", "ths"),
          comment = c(ORCID = "0000-0002-3769-0127"))
   )
-Maintainer: Nima Hejazi <nhejazi@berkeley.edu>
-Author: Nima Hejazi [aut, cre, cph], Mark van der Laan [aut, ths], Alan Hubbard
-  [ctb, ths], Rachael Phillips [ctb]
 Description: This package provides facilities for differential methylation
   analysis based on variable importance measures (VIMs), a class of statistical
   target parameters that arise in causal inference. The estimation and inference

@@ -1,23 +1,26 @@
-citHeader("Please cite the paper below for the 'methyvim' software package
-           itself. Please also make sure to cite the appropriate methodology
-           articles describing the statistical techniques being relied upon.")
+citHeader("Please cite the following works when using the 'methyvim' software
+           package, including both the software tool and the article describing
+           the statistical methodology.")
 
-citEntry(
-    entry        = "Article",
-    doi          = "10.12688/f1000research.16047.1",
-    url          = "https://dx.doi.org/10.12688/f1000research.16047.1",
-    year         = "2018",
-    month        = "September",
-    publisher    = "Faculty of 1000 Ltd",
-    volume       = "7",
-    number       = "1424",
-    author       = "Nima S. Hejazi, Rachael V. Phillips, Alan E. Hubbard, Mark
-                    J. van der Laan",
-    title        = "methyvim: Targeted, robust, and model-free differential
-                    methylation analysis in R",
-    journal      = "F1000Research",
-    textVersion  = paste("Hejazi, NS, Phillips, RV, Hubbard, AE, and van der Laan, MJ (2018).",
-                         "methyvim: Targeted, robust, and model-free differential methylation analysis in R",
-                         "F1000Research, 7(1424).")
-)
+year <- format(Sys.Date(), "%Y")
+note <- sprintf("R package version %s", meta$Version)
 
+bibentry(bibtype = "Manual",
+         title = "{methyvim}: Targeted, robust, and model-free differential methylation analysis",
+         author = c(person("Nima", "Hejazi", "S"),
+                    person("Mark", "van der Laan", "J")),
+         year = year,
+         note = note,
+         doi = "10.18129/B9.bioc.methyvim",
+         url = "https://bioconductor.org/packages/methyvim")
+
+bibentry(bibtype = "Article",
+         journal = "F1000Research",
+         title   = "{methyvim}: Targeted, robust, and model-free differential methylation analysis in {R}",
+         author = c(person("Nima", "Hejazi", "S"),
+                    person("Rachael", "Phillips", "V"),
+                    person("Alan", "Hubbard", "E"),
+                    person("Mark", "van der Laan", "J")),
+         year = "2018",
+         doi = "10.12688/f1000research.16047.1",
+         url = "https://dx.doi.org/10.12688/f1000research.16047.1")

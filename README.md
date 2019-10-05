@@ -25,7 +25,7 @@ license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://openso
 > Targeted, Robust, and Model-free Differential Methylation Analysis
 
 **Authors:** [Nima Hejazi](https://nimahejazi.org) and [Mark van der
-Laan](https://vanderlaan-lab.org)
+Laan](https://vanderlaan-lab.org/about)
 
 -----
 
@@ -123,11 +123,10 @@ BiocManager::install("methyvim")
 ```
 
 To contribute, install the bleeding-edge *development version* from
-GitHub via
-[`devtools`](https://www.rstudio.com/products/rpackages/devtools/):
+GitHub via [`remotes`](https://CRAN.R-project.org/package=remotes):
 
 ``` r
-devtools::install_github("nhejazi/methyvim")
+remotes::install_github("nhejazi/methyvim")
 ```
 
 Current and prior [Bioconductor](https://bioconductor.org) releases are
@@ -136,7 +135,7 @@ example, to install the version of this package available via
 Bioconductor 3.6, use
 
 ``` r
-devtools::install_github("nhejazi/methyvim", ref = "RELEASE_3_6")
+remotes::install_github("nhejazi/methyvim", ref = "RELEASE_3_6")
 ```
 
 -----
@@ -184,6 +183,15 @@ After using the `methyvim` R package, please cite the following:
       title = {{methyvim}: Targeted, robust, and model-free differential
         methylation analysis in {R}},
       journal = {F1000Research}
+    }
+
+    @manual{hejazi2019methyvimbioc,
+      author = {Hejazi, Nima S and {van der Laan}, Mark J},
+      title = {{methyvim}: Targeted, robust, and model-free differential
+        methylation analysis},
+      doi = {10.18129/B9.bioc.methyvim},
+      url = {https://bioconductor.org/packages/methyvim},
+      note = {R package version 1.6.0}
     }
 ```
 
