@@ -8,36 +8,35 @@ methyvim_tmle(target_site, methytmle_screened, var_of_interest,
   type = c("Beta", "Mval"), corr, obs_per_covar,
   target_param = c("ate", "rr"), g_lib = c("SL.mean", "SL.glm",
   "SL.glm.interaction"), Q_lib = c("SL.mean", "SL.glm", "SL.gam",
-  "SL.earth"), family = c("gaussian", "binomial"), return_ic = FALSE)
+  "SL.earth"), cv_folds = 5, ..., return_ic = FALSE)
 }
 \arguments{
 \item{target_site}{Numeric indicating the column containing the screened
 CpG site indices that will be looped over in TMLE procedure.}
 
 \item{methytmle_screened}{An object of class \code{methytmle} with clustered
-sites based on genomic windows containing the screened CpG site
-indices column.}
+sites based on genomic windows containing the screened CpG site indices.}
 
 \item{var_of_interest}{Numeric indicating the column index of the binarized
 variable of interest, treated as an exposure.}
 
 \item{type}{Character indicating the particular measure of DNA methylation to
-be used as the observed data in the estimation procedure, either Beta
-values or M-values. The data are accessed via \code{minfi::getBeta} or
-\code{minfi::getM}.}
+be used as the observed data in the estimation procedure, either Beta values
+or M-values. The data are accessed via \code{\link[minfi]{getBeta}} or
+\code{\link[minfi]{getM}}.}
 
 \item{corr}{Numeric indicating the maximum correlation that a neighboring
 site can have with the target site.}
 
 \item{obs_per_covar}{Numeric indicating the number of observations needed for
-for covariate included in W for downstream analysis. This ensures the
-data is sufficient to control for the covariates.}
+for covariate included in W for downstream analysis. This ensures the data
+is sufficient to control for the covariates.}
 
 \item{target_param}{Character indicating the target causal parameter for
-which an estimator will be constructed and computed via targeted
-minimum loss-based estimation. Currently, this is limited to the
-Average Treatment Effect (ATE) and the Risk Ratio (RR), with routines
-from the \code{tmle} package being used for the computation.}
+which an estimator will be constructed and computed via targeted minimum
+loss estimation. Currently, this is limited to the Average Treatment Effect
+(ATE) and the Risk Ratio (RR), with routines from the \pkg{tmle} package
+being used for the computation.}
 
 \item{g_lib}{Character or vector of characters indicating the algorithms to
 be implemented in SuperLearner if \code{tmle_type} is set to "glm".}
@@ -45,17 +44,21 @@ be implemented in SuperLearner if \code{tmle_type} is set to "glm".}
 \item{Q_lib}{Character or vector of characters indicating the algorithms to
 be implemented in SuperLearner if \code{tmle_type} is set to "sl".}
 
-\item{family}{Character indicating the distribution to be implemented to
-describe the error distribution for regressions, generally "gaussian"
-for a continuous outcome and "binomial" for a binary outcome.}
+\item{cv_folds}{A \code{numeric} scalar indicating how many folds to use in
+performing targeted minimum loss estimation. Cross-validated estimates are
+more robust, allowing relaxing of theoretical conditions and construction of
+conservative variance estimates.}
+
+\item{...}{Additional arguments passed to \code{\link[tmle]{tmle}} in fitting
+the targeted minimum loss estimator.}
 
 \item{return_ic}{Logical indicating whether an influence curve estimate
 should be returned for each site that passed through the filter.}
 }
 \value{
 An \code{data.frame} containing the results of the Targeted Minimum
-        Loss-based Estimation (TMLE) procedure for the target parameter of
-        interest for a single CpG site, computed via the \code{tmle} package.
+ Loss Estimation (TMLE) procedure for the target parameter of interest for a
+ single CpG site, computed via the \pkg{tmle} package.
 }
 \description{
 Computes the Targeted Minimum Loss-Based Estimate of the Average Treatment
