@@ -99,7 +99,7 @@ steps:__
 
 For a general discussion of the framework of targeted minimum loss estimation
 and its myriad applications, the canonical references are @vdl2011targeted and
-@vdl2018targeted. @hernan2018causal and @pearl2000causality may be of interest
+@vdl2018targeted. @hernan2019causal and @pearl2000causality may be of interest
 to those desiring a more general introduction to statistical causal inference.
 
 ---

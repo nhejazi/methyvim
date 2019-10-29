@@ -103,10 +103,9 @@ several major steps:**
 
 For a general discussion of the framework of targeted minimum loss
 estimation and its myriad applications, the canonical references are van
-der Laan and Rose (2011) and van der Laan and Rose (2018).
-(<span class="citeproc-not-found" data-reference-id="hernan2018causal">**???**</span>)
-and Pearl (2000) may be of interest to those desiring a more general
-introduction to statistical causal inference.
+der Laan and Rose (2011) and van der Laan and Rose (2018). Hernan and
+Robins (2019) and Pearl (2000) may be of interest to those desiring a
+more general introduction to statistical causal inference.
 
 -----
 
@@ -246,6 +245,13 @@ Chambaz, Antoine, Pierre Neuvial, and Mark J van der Laan. 2012.
 “Estimation of a Non-Parametric Variable Importance Measure of a
 Continuous Exposure.” *Electronic Journal of Statistics* 6. NIH Public
 Access: 1059.
+
+</div>
+
+<div id="ref-hernan2019causal">
+
+Hernan, Miguel A, and James M Robins. 2019. *Causal Inference*. Chapman
+& Hall / CRC Texts in Statistical Science. Taylor & Francis.
 
 </div>
 
