@@ -10,15 +10,15 @@ methyvim(data_grs, var_int, vim = c("ate", "rr", "npvi"),
   obs_per_covar = 20, sites_comp = NULL, parallel = TRUE,
   future_param = NULL, bppar_type = NULL, return_ic = FALSE,
   shrink_ic = FALSE, tmle_type = c("glm", "sl"),
-  tmle_args = list(family = "binomial", g_lib = c("SL.mean", "SL.glm",
-  "SL.bayesglm", "SL.gam"), Q_lib = c("SL.mean", "SL.glm", "SL.gam",
-  "SL.earth"), npvi_cutoff = 0.25, npvi_descr = NULL),
-  tmle_backend = c("tmle", "drtmle", "tmle.npvi"))
+  tmle_args = list(g_lib = c("SL.mean", "SL.glm", "SL.bayesglm",
+  "SL.gam"), Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"), cv_folds
+  = 5, npvi_cutoff = 0.25, npvi_descr = NULL), tmle_backend = c("tmle",
+  "drtmle", "tmle.npvi"))
 }
 \arguments{
-\item{data_grs}{An object of class \code{minfi::GenomicRatioSet}, containing
-standard data structures associated with DNA Methylation experiments.
-Consult the documentation for \code{minfi} to construct such objects.}
+\item{data_grs}{An object of class \code{\link[minfi]{GenomicRatioSet}},
+containing standard data structures for DNA Methylation experiments.
+Consult the documentation of \pkg{minfi} to construct such objects.}
 
 \item{var_int}{A \code{numeric} vector containing subject-level measurements
 of the variable of interest. The length of this vector must match the
@@ -38,12 +38,12 @@ sought.}
 
 \item{type}{Character indicating the particular measure of DNA methylation to
 be used as the observed data in the estimation procedure, either Beta values
-or M-values. The data are accessed via \code{minfi::getBeta} or
-\code{minfi::getM}.}
+or M-values. The data are accessed via \code{\link[minfi]{getBeta}} or
+\code{\link[minfi]{getM}}.}
 
 \item{filter}{Character indicating the model to be implemented when screening
 the \code{data_grs} object for CpG sites. The only currently supported
-option is "limma". Contributions for other methods are welcome.}
+option is "limma".}
 
 \item{filter_cutoff}{Numeric indicating the p-value cutoff that defines which
 sites pass through the \code{filter}.}
@@ -68,12 +68,12 @@ See the documentation of \code{set_parallel} for more information, as this
 argument is passed directly to that internal function.}
 
 \item{future_param}{Character indicating the type of parallelization to be
-used from the list available via the \code{future} package. See the
+used from the list available via the \pkg{future} package. See the
 documentation for \code{set_parallel} for more information, as this argument
 is passed directly to that internal function.}
 
 \item{bppar_type}{Character specifying the type of backend to be used for
-parallelization via \code{BiocParallel}. See the documentation for
+parallelization via \pkg{BiocParallel}. See the documentation for
 \code{set_parallel} for more information, as this argument is passed
 directly to that internal function.}
 
@@ -89,18 +89,18 @@ generally a shorthand and is overridden by \code{tmle_args} if that argument
 is changed from its default values.}
 
 \item{tmle_args}{List giving several key arguments to be passed to one of
-\code{tmle::tmle} or \code{tmle.npvi::tmle.npvi}, depending on the
-particular variable importance measure specified. This overrides
+\code{\link[tmle]{tmle}} or \code{\link[tmle.npvi]{tmle.npvi}}, depending on
+the particular variable importance measure specified. This overrides
 \code{tmle_type}, which itself provides sensible defaults. Consider changing
 this away from default settings only if you have sufficient experience with
 software and the underlying theory for Targeted Learning. For more
-information, consider consulting the documentation of the \code{tmle} and
-\code{tmle.npvi} packages.}
+information, consider consulting the documentation of the \pkg{tmle} and
+\pkg{tmle.npvi} packages.}
 
 \item{tmle_backend}{A \code{character} indicating the package to be used in
 the estimation procedure. The user should only set this parameter if they
 have sufficient familiarity with the backend packages used for estimation.
-Current choices include \code{tmle}, \code{drtmle}, and \code{tmle.npvi}.}
+Current choices include \pkg{tmle}, \pkg{drtmle}, and \pkg{tmle.npvi}.}
 }
 \value{
 An object of class \code{methytmle}, with all unique slots filled in,
@@ -112,10 +112,10 @@ An object of class \code{methytmle}, with all unique slots filled in,
  requested.
 }
 \description{
-Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
-target parameter, formally defined within models from causal inference. The
-variable importance measures currently supported are the Average Treatment
-Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
+Computes the Targeted Minimum Loss Estimate of a specified statistical target
+parameter, formally defined within models from causal inference. The variable
+importance measures currently supported are the Average Treatment Effect
+(ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 defined by Chambaz, Neuvial, and van der Laan <doi:10.1214/12-EJS703>).
 }
 \examples{

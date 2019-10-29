@@ -184,7 +184,7 @@ After using the `methyvim` R package, please cite the following:
             methylation analysis},
           doi = {10.18129/B9.bioc.methyvim},
           url = {https://bioconductor.org/packages/methyvim},
-          note = {R package version 1.6.0}
+          note = {R package version 1.8.0}
         }
 
 ---

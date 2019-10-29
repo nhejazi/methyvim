@@ -39,7 +39,7 @@ Imports:
   superheat,
   dplyr,
   gtools,
-  tmle,
+  tmle (>= 1.4.0.1),
   future,
   doFuture,
   S4Vectors,

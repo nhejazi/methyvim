@@ -45,8 +45,7 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
     }
   } else if (parallel == FALSE) {
     warning(paste(
-      "Sequential evaluation is strongly discouraged.",
-      "\n Proceed with caution."
+      "Sequential evaluation over many probes may take a long time."
     ))
     future::plan(future::sequential)
   }
@@ -74,9 +73,13 @@ set_parallel <- function(parallel = c(TRUE, FALSE),
 #' @param fun A \code{function} to be wrapped in a \code{try} statement.
 #' @param ... Additional arguments passed to the previous argument \code{fun}.
 wrap_in_try <- function(fun, ...) {
-  wrapped <- function(...)
-    try({
-      fun(...)
-    }, silent = TRUE)
+  wrapped <- function(...) {
+    try(
+      {
+        fun(...)
+      },
+      silent = TRUE
+    )
+  }
   return(wrapped)
 }
