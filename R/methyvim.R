@@ -2,15 +2,15 @@ utils::globalVariables(c("colData<-"))
 
 #' Differential Methylation Statistics with Variable Importance Measures
 #'
-#' Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
-#' target parameter, formally defined within models from causal inference. The
-#' variable importance measures currently supported are the Average Treatment
-#' Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
+#' Computes the Targeted Minimum Loss Estimate of a specified statistical target
+#' parameter, formally defined within models from causal inference. The variable
+#' importance measures currently supported are the Average Treatment Effect
+#' (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 #' defined by Chambaz, Neuvial, and van der Laan <doi:10.1214/12-EJS703>).
 #'
-#' @param data_grs An object of class \code{minfi::GenomicRatioSet}, containing
-#'  standard data structures associated with DNA Methylation experiments.
-#'  Consult the documentation for \code{minfi} to construct such objects.
+#' @param data_grs An object of class \code{\link[minfi]{GenomicRatioSet}},
+#'  containing standard data structures for DNA Methylation experiments.
+#'  Consult the documentation of \pkg{minfi} to construct such objects.
 #' @param var_int A \code{numeric} vector containing subject-level measurements
 #'  of the variable of interest. The length of this vector must match the
 #'  number of subjects exactly. If argument \code{vim} is set to "ate" or "rr",
@@ -27,11 +27,11 @@ utils::globalVariables(c("colData<-"))
 #'  sought.
 #' @param type Character indicating the particular measure of DNA methylation to
 #'  be used as the observed data in the estimation procedure, either Beta values
-#'  or M-values. The data are accessed via \code{minfi::getBeta} or
-#'  \code{minfi::getM}.
+#'  or M-values. The data are accessed via \code{\link[minfi]{getBeta}} or
+#'  \code{\link[minfi]{getM}}.
 #' @param filter Character indicating the model to be implemented when screening
 #'  the \code{data_grs} object for CpG sites. The only currently supported
-#'  option is "limma". Contributions for other methods are welcome.
+#'  option is "limma".
 #' @param filter_cutoff Numeric indicating the p-value cutoff that defines which
 #'  sites pass through the \code{filter}.
 #' @param window_bp Numeric indicating the maximum genomic distance (in base
@@ -49,11 +49,11 @@ utils::globalVariables(c("colData<-"))
 #'  See the documentation of \code{set_parallel} for more information, as this
 #'  argument is passed directly to that internal function.
 #' @param future_param Character indicating the type of parallelization to be
-#'  used from the list available via the \code{future} package. See the
+#'  used from the list available via the \pkg{future} package. See the
 #'  documentation for \code{set_parallel} for more information, as this argument
 #'  is passed directly to that internal function.
 #' @param bppar_type Character specifying the type of backend to be used for
-#'  parallelization via \code{BiocParallel}. See the documentation for
+#'  parallelization via \pkg{BiocParallel}. See the documentation for
 #'  \code{set_parallel} for more information, as this argument is passed
 #'  directly to that internal function.
 #' @param return_ic Logical indicating whether an influence curve estimate
@@ -65,17 +65,17 @@ utils::globalVariables(c("colData<-"))
 #'  generally a shorthand and is overridden by \code{tmle_args} if that argument
 #'  is changed from its default values.
 #' @param tmle_args List giving several key arguments to be passed to one of
-#'  \code{tmle::tmle} or \code{tmle.npvi::tmle.npvi}, depending on the
-#'  particular variable importance measure specified. This overrides
+#'  \code{\link[tmle]{tmle}} or \code{\link[tmle.npvi]{tmle.npvi}}, depending on
+#'  the particular variable importance measure specified. This overrides
 #'  \code{tmle_type}, which itself provides sensible defaults. Consider changing
 #'  this away from default settings only if you have sufficient experience with
 #'  software and the underlying theory for Targeted Learning. For more
-#'  information, consider consulting the documentation of the \code{tmle} and
-#'  \code{tmle.npvi} packages.
+#'  information, consider consulting the documentation of the \pkg{tmle} and
+#'  \pkg{tmle.npvi} packages.
 #' @param tmle_backend A \code{character} indicating the package to be used in
 #'  the estimation procedure. The user should only set this parameter if they
 #'  have sufficient familiarity with the backend packages used for estimation.
-#'  Current choices include \code{tmle}, \code{drtmle}, and \code{tmle.npvi}.
+#'  Current choices include \pkg{tmle}, \pkg{drtmle}, and \pkg{tmle.npvi}.
 #'
 #' @return An object of class \code{methytmle}, with all unique slots filled in,
 #'  in particular, including indices of CpG sites that pass screening, cluster
@@ -123,21 +123,17 @@ methyvim <- function(data_grs,
                      shrink_ic = FALSE,
                      tmle_type = c("glm", "sl"),
                      tmle_args = list(
-                       family = "binomial",
                        g_lib = c("SL.mean", "SL.glm", "SL.bayesglm", "SL.gam"),
                        Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
+                       cv_folds = 5,
                        npvi_cutoff = 0.25,
                        npvi_descr = NULL
                      ),
                      tmle_backend = c("tmle", "drtmle", "tmle.npvi")) {
-  # ============================================================================
+  # ===========================================================================
   # catch input for user convenience and check input types where possible
-  # ============================================================================
-
-  # catch function call
+  # ===========================================================================
   call <- match.call(expand.dots = TRUE)
-
-  # type checking (in same order the arguments appear)
   vim <- match.arg(vim)
   type <- match.arg(type)
   filter <- match.arg(filter)
@@ -149,9 +145,9 @@ methyvim <- function(data_grs,
     stop("Variable of interest is not the same size as number of observations.")
   }
 
-  # ============================================================================
+  # ===========================================================================
   # modify arguments to TMLE functions based on type of type requested
-  # ============================================================================
+  # ===========================================================================
   if (tmle_type == "glm") {
     if (vim %in% c("ate", "rr")) {
       # set GLM libraries for "tmle" package
@@ -160,9 +156,9 @@ methyvim <- function(data_grs,
     }
   }
 
-  # ============================================================================
+  # ===========================================================================
   # if NPVI parameter requested, set sensible defaults
-  # ============================================================================
+  # ===========================================================================
   if (vim == "npvi" & is.null(tmle_args$npvi_descr)) {
     npvi_descr_defaults <- list(
       f = identity, iter = 10, cvControl = 2,
@@ -176,25 +172,25 @@ methyvim <- function(data_grs,
     tmle_args$npvi_descr <- npvi_descr_defaults
   }
 
-  # ============================================================================
+  # ===========================================================================
   # invoke S4 class constructor for object
-  # ============================================================================
+  # ===========================================================================
   methy_tmle <- .methytmle(data_grs)
   methy_tmle@call <- call
   methy_tmle@var_int <- var_int
 
-  # =============================================================================
+  # ===========================================================================
   # set up parallelization if so desired
-  # ============================================================================
+  # ===========================================================================
   set_parallel(
     parallel = parallel,
     future_param = future_param,
     bppar_type = bppar_type
   )
 
-  # =============================================================================
+  # ===========================================================================
   # screen sites to produce a subset on which to estimate VIMs
-  # ============================================================================
+  # ===========================================================================
   if (filter == "limma") {
     methy_tmle <- limma_screen(
       methytmle = methy_tmle,
@@ -203,14 +199,14 @@ methyvim <- function(data_grs,
     )
   }
 
-  # =============================================================================
+  # ===========================================================================
   # cluster sites based on genomic windows
-  # =============================================================================
+  # ===========================================================================
   methy_tmle <- cluster_sites(methytmle = methy_tmle)
 
-  # =============================================================================
+  # ===========================================================================
   # TMLEs for the Average Treatment Effect (ATE) and Risk Ratio (RR) parameters
-  # ============================================================================
+  # ===========================================================================
   if (vim %in% c("ate", "rr")) {
     # make sure that the outcome data is of class numeric
     var_of_interest <- as.numeric(methy_tmle@var_int)
@@ -252,12 +248,12 @@ methyvim <- function(data_grs,
       target_param = vim,
       g_lib = tmle_args$g_lib,
       Q_lib = tmle_args$Q_lib,
-      family = tmle_args$family,
+      cv_folds = tmle_args$cv_folds,
       return_ic = return_ic
     )
     methy_vim_out <- do.call(rbind.data.frame, methy_vim_out)
 
-    # TMLE procedure is now done, so let's just make the output object pretty...
+    # TMLE procedure is now done, so let's just clean up the output
     if (vim == "ate") {
       colnames(methy_vim_out) <- c(
         "lwr_ci", "est_ate", "upr_ci",
@@ -273,10 +269,8 @@ methyvim <- function(data_grs,
       )
       methy_tmle@param <- "Risk Ratio"
     }
-
     rownames(methy_vim_out) <- cpg_screened_names
     methy_tmle@vim <- methy_vim_out
   }
-  # Let's give 'em some output
   return(methy_tmle)
 }

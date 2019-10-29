@@ -7,39 +7,41 @@
 #' adjustment set (W). INTERNAL USE ONLY.
 #'
 #' @param target_site Numeric indicating the column containing the screened
-#'        CpG site indices that will be looped over in TMLE procedure.
+#'  CpG site indices that will be looped over in TMLE procedure.
 #' @param methytmle_screened An object of class \code{methytmle} with clustered
-#'        sites based on genomic windows containing the screened CpG site
-#'        indices column.
+#'  sites based on genomic windows containing the screened CpG site indices.
 #' @param var_of_interest Numeric indicating the column index of the binarized
-#'        variable of interest, treated as an exposure.
+#'  variable of interest, treated as an exposure.
 #' @param type Character indicating the particular measure of DNA methylation to
-#'        be used as the observed data in the estimation procedure, either Beta
-#'        values or M-values. The data are accessed via \code{minfi::getBeta} or
-#'        \code{minfi::getM}.
+#'  be used as the observed data in the estimation procedure, either Beta values
+#'  or M-values. The data are accessed via \code{\link[minfi]{getBeta}} or
+#'  \code{\link[minfi]{getM}}.
 #' @param corr Numeric indicating the maximum correlation that a neighboring
-#'        site can have with the target site.
+#'  site can have with the target site.
 #' @param obs_per_covar Numeric indicating the number of observations needed for
-#'        for covariate included in W for downstream analysis. This ensures the
-#'        data is sufficient to control for the covariates.
+#'  for covariate included in W for downstream analysis. This ensures the data
+#'  is sufficient to control for the covariates.
 #' @param target_param Character indicating the target causal parameter for
-#'        which an estimator will be constructed and computed via targeted
-#'        minimum loss-based estimation. Currently, this is limited to the
-#'        Average Treatment Effect (ATE) and the Risk Ratio (RR), with routines
-#'        from the \code{tmle} package being used for the computation.
+#'  which an estimator will be constructed and computed via targeted minimum
+#'  loss estimation. Currently, this is limited to the Average Treatment Effect
+#'  (ATE) and the Risk Ratio (RR), with routines from the \pkg{tmle} package
+#'  being used for the computation.
 #' @param g_lib Character or vector of characters indicating the algorithms to
-#'        be implemented in SuperLearner if \code{tmle_type} is set to "glm".
+#'  be implemented in SuperLearner if \code{tmle_type} is set to "glm".
 #' @param Q_lib Character or vector of characters indicating the algorithms to
-#'        be implemented in SuperLearner if \code{tmle_type} is set to "sl".
-#' @param family Character indicating the distribution to be implemented to
-#'        describe the error distribution for regressions, generally "gaussian"
-#'        for a continuous outcome and "binomial" for a binary outcome.
+#'  be implemented in SuperLearner if \code{tmle_type} is set to "sl".
+#' @param cv_folds A \code{numeric} scalar indicating how many folds to use in
+#'  performing targeted minimum loss estimation. Cross-validated estimates are
+#'  more robust, allowing relaxing of theoretical conditions and construction of
+#'  conservative variance estimates.
+#' @param ... Additional arguments passed to \code{\link[tmle]{tmle}} in fitting
+#'  the targeted minimum loss estimator.
 #' @param return_ic Logical indicating whether an influence curve estimate
-#'        should be returned for each site that passed through the filter.
+#'  should be returned for each site that passed through the filter.
 #'
 #' @return An \code{data.frame} containing the results of the Targeted Minimum
-#'         Loss-based Estimation (TMLE) procedure for the target parameter of
-#'         interest for a single CpG site, computed via the \code{tmle} package.
+#'  Loss Estimation (TMLE) procedure for the target parameter of interest for a
+#'  single CpG site, computed via the \pkg{tmle} package.
 #'
 #' @keywords internal
 #'
@@ -56,12 +58,12 @@ methyvim_tmle <- function(target_site,
                           target_param = c("ate", "rr"),
                           g_lib = c("SL.mean", "SL.glm", "SL.glm.interaction"),
                           Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
-                          family = c("gaussian", "binomial"),
+                          cv_folds = 5,
+                          ...,
                           return_ic = FALSE) {
   ### check arguments where possible
   type <- match.arg(type)
   target_param <- match.arg(target_param)
-  family <- match.arg(family)
 
   ### get neighboring site
   in_cluster <- which(methytmle_screened@clusters %in%
@@ -80,15 +82,6 @@ methyvim_tmle <- function(target_site,
   # get measures at the target site
   y <- as.numeric(as.matrix(expr[target_site, , drop = FALSE]))
 
-  # perform scaling of outcome if using binomial error family
-  if (family == "binomial") {
-    a <- min(y, na.rm = TRUE)
-    b <- max(y, na.rm = TRUE)
-    y_star <- (y - a) / (b - a)
-  } else {
-    y_star <- y
-  }
-
   ### are there enough neighbors for this estimate to be meaningful
   if (length(only_neighbors) != 0) {
     # how many neighbors were there originally?
@@ -101,7 +94,7 @@ methyvim_tmle <- function(target_site,
     stopifnot(nrow(w) == length(only_neighbors))
 
     # find maximum number of covariates that can be in W
-    w_max <- round(length(y_star) / obs_per_covar)
+    w_max <- round(length(y) / obs_per_covar)
 
     # remove neighbors that are highly correlated with target site
     if (sum(abs(stats::cor(y, t(w))) > corr) > 0) {
@@ -146,13 +139,16 @@ methyvim_tmle <- function(target_site,
 
     # compute the ATE
     out <- tmle::tmle(
-      Y = as.numeric(y_star),
+      Y = as.numeric(y),
       A = as.numeric(var_of_interest),
       W = as.data.frame(w_pos),
       Q.SL.library = Q_lib,
       g.SL.library = g_lib,
-      family = family,
-      verbose = FALSE
+      family = ifelse(target_param == "rr", "binomial", "gaussian"),
+      V = cv_folds,
+      prescreenW.g = FALSE,
+      verbose = FALSE,
+      ...
     )
   } else {
     n_neighbors_total <- 0
@@ -164,13 +160,16 @@ methyvim_tmle <- function(target_site,
 
     # compute the ATE
     out <- tmle::tmle(
-      Y = as.numeric(y_star),
+      Y = as.numeric(y),
       A = as.numeric(var_of_interest),
       W = as.data.frame(w_int),
       Q.SL.library = Q_lib,
       g.SL.library = g_lib,
-      family = family,
-      verbose = FALSE
+      family = ifelse(target_param == "rr", "binomial", "gaussian"),
+      V = cv_folds,
+      prescreenW.g = FALSE,
+      verbose = FALSE,
+      ...
     )
   }
 
@@ -184,6 +183,8 @@ methyvim_tmle <- function(target_site,
 
   # extract and rescale estimates
   if (target_param == "ate") {
+    a <- min(y)
+    b <- max(y)
     est <- out$estimates$ATE
     est_raw <- c(est$CI[1], est$psi, est$CI[2], est$var.psi, est$pvalue)
     est_rescaled <- est_raw[1:3] * (b - a)
@@ -192,7 +193,7 @@ methyvim_tmle <- function(target_site,
       est_rescaled, var_rescaled, est_raw[5], n_neighbors_total,
       n_neighbors_reduced, max_corr_w
     )
-  } else if (target_param == "rr" & family == "binomial") {
+  } else if (target_param == "rr") {
     est <- out$estimates$RR
     est_ci_log <- log(est$CI)
     est_out <- c(

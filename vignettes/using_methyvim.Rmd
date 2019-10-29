@@ -442,13 +442,14 @@ Now, we are ready to analyze the effects of cancer status on DNA methylation
 using this data set. To do this with a targeted minimum loss-based estimate of
 the Average Treatment Effect, we may proceed as follows:
 
-```{r, minfidata-methyvim}
+```{r, minfidata-methyvim, eval=FALSE}
 suppressMessages(
   methyvim_cancer_ate <- methyvim(data_grs = grs, var_int = var_int,
                                   vim = "ate", type = "Beta", filter = "limma",
-                                  filter_cutoff = 0.20, obs_per_covar = 2,
-                                  parallel = FALSE, sites_comp = 125,
-                                  tmle_type = "glm"
+                                  filter_cutoff = 0.30, obs_per_covar = 2,
+                                  parallel = FALSE, sites_comp = 50,
+                                  tmle_args = list(cv_folds = 2),
+                                  tmle_type = "sl"
                                  )
 )
 ```
@@ -468,7 +469,7 @@ nonparametric and data-adaptive procedures (i.e., via machine learning).
 Let's examine the table of results by examining the `methytmle` object that was
 produced by our call to the `methyvim` wrapper function:
 
-```{r vim-cancer-ate}
+```{r vim-cancer-ate, eval=FALSE}
 methyvim_cancer_ate
 ```
 
@@ -476,7 +477,7 @@ Finally, we may compute FDR-corrected p-values, by applying a modified procedure
 for controlling the False Discovery Rate for multi-stage analyses (FDR-MSA)
 [@tuglus2009modified]. We do this by simply applying the `fdr_msa` function:
 
-```{r fdr-msa}
+```{r fdr-msa, eval=FALSE}
 fdr_p <- fdr_msa(pvals = vim(methyvim_cancer_ate)$pval,
                  total_obs = nrow(methyvim_cancer_ate))
 ```
@@ -497,7 +498,7 @@ A simple call to `plot` produces side-by-side histograms of the raw p-values
 computed as part of the estimation process and the corrected p-values obtained
 from using the FDR-MSA procedure.
 
-```{r methyvim-pvals-both}
+```{r methyvim-pvals-both, eval=FALSE}
 plot(methyvim_cancer_ate)
 ```
 
@@ -512,7 +513,7 @@ results of differential methylation procedures is the volcano plot, which plots
 the parameter estimate along the x-axis and $-\text{log}_{10}(\text{p-value})$
 along the y-axis. We implement such a plot in the `methyvolc` function:
 
-```{r methyvim-volcano}
+```{r methyvim-volcano, eval=FALSE}
 methyvolc(methyvim_cancer_ate)
 ```
 
@@ -526,7 +527,7 @@ heatmap, which plots estimates of the raw methylation effects (as measured by
 the assay) across subjects using a heat gradient. We implement this in the
 `methyheat` function:
 
-```{r methyvim-heatmap}
+```{r methyvim-heatmap, eval=FALSE}
 methyheat(methyvim_cancer_ate)
 ```
 
