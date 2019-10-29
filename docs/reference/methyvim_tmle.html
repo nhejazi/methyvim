@@ -73,7 +73,7 @@ adjustment set (W). INTERNAL USE ONLY." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">methyvim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@ adjustment set (W). INTERNAL USE ONLY.</p>
   <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Beta"</span>, <span class='st'>"Mval"</span>), <span class='no'>corr</span>, <span class='no'>obs_per_covar</span>,
   <span class='kw'>target_param</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ate"</span>, <span class='st'>"rr"</span>), <span class='kw'>g_lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>,
   <span class='st'>"SL.glm.interaction"</span>), <span class='kw'>Q_lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>, <span class='st'>"SL.gam"</span>,
-  <span class='st'>"SL.earth"</span>), <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>), <span class='kw'>return_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='st'>"SL.earth"</span>), <span class='kw'>cv_folds</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='no'>...</span>, <span class='kw'>return_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,8 +151,7 @@ CpG site indices that will be looped over in TMLE procedure.</p></td>
     <tr>
       <th>methytmle_screened</th>
       <td><p>An object of class <code>methytmle</code> with clustered
-sites based on genomic windows containing the screened CpG site
-indices column.</p></td>
+sites based on genomic windows containing the screened CpG site indices.</p></td>
     </tr>
     <tr>
       <th>var_of_interest</th>
@@ -162,9 +161,9 @@ variable of interest, treated as an exposure.</p></td>
     <tr>
       <th>type</th>
       <td><p>Character indicating the particular measure of DNA methylation to
-be used as the observed data in the estimation procedure, either Beta
-values or M-values. The data are accessed via <code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>minfi::getBeta</a></code> or
-<code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>minfi::getM</a></code>.</p></td>
+be used as the observed data in the estimation procedure, either Beta values
+or M-values. The data are accessed via <code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>getBeta</a></code> or
+<code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>getM</a></code>.</p></td>
     </tr>
     <tr>
       <th>corr</th>
@@ -174,16 +173,16 @@ site can have with the target site.</p></td>
     <tr>
       <th>obs_per_covar</th>
       <td><p>Numeric indicating the number of observations needed for
-for covariate included in W for downstream analysis. This ensures the
-data is sufficient to control for the covariates.</p></td>
+for covariate included in W for downstream analysis. This ensures the data
+is sufficient to control for the covariates.</p></td>
     </tr>
     <tr>
       <th>target_param</th>
       <td><p>Character indicating the target causal parameter for
-which an estimator will be constructed and computed via targeted
-minimum loss-based estimation. Currently, this is limited to the
-Average Treatment Effect (ATE) and the Risk Ratio (RR), with routines
-from the <code>tmle</code> package being used for the computation.</p></td>
+which an estimator will be constructed and computed via targeted minimum
+loss estimation. Currently, this is limited to the Average Treatment Effect
+(ATE) and the Risk Ratio (RR), with routines from the <span class="pkg">tmle</span> package
+being used for the computation.</p></td>
     </tr>
     <tr>
       <th>g_lib</th>
@@ -196,10 +195,16 @@ be implemented in SuperLearner if <code>tmle_type</code> is set to "glm".</p></t
 be implemented in SuperLearner if <code>tmle_type</code> is set to "sl".</p></td>
     </tr>
     <tr>
-      <th>family</th>
-      <td><p>Character indicating the distribution to be implemented to
-describe the error distribution for regressions, generally "gaussian"
-for a continuous outcome and "binomial" for a binary outcome.</p></td>
+      <th>cv_folds</th>
+      <td><p>A <code>numeric</code> scalar indicating how many folds to use in
+performing targeted minimum loss estimation. Cross-validated estimates are
+more robust, allowing relaxing of theoretical conditions and construction of
+conservative variance estimates.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments passed to <code><a href='https://rdrr.io/pkg/tmle/man/tmle.html'>tmle</a></code> in fitting
+the targeted minimum loss estimator.</p></td>
     </tr>
     <tr>
       <th>return_ic</th>
@@ -211,8 +216,8 @@ should be returned for each site that passed through the filter.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An <code>data.frame</code> containing the results of the Targeted Minimum
-        Loss-based Estimation (TMLE) procedure for the target parameter of
-        interest for a single CpG site, computed via the <code>tmle</code> package.</p>
+ Loss Estimation (TMLE) procedure for the target parameter of interest for a
+ single CpG site, computed via the <span class="pkg">tmle</span> package.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
