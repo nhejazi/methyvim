@@ -19,7 +19,6 @@ methyvim_mvals_ate <- methyvim:::methyvim_tmle(
   corr = 0.75,
   obs_per_covar = 20,
   target_param = "ate",
-  family = "binomial",
   return_ic = FALSE
 )
 
@@ -41,7 +40,6 @@ methyvim_mvals_rr <- methyvim:::methyvim_tmle(
   corr = 0.75,
   obs_per_covar = 20,
   target_param = "rr",
-  family = "binomial",
   return_ic = FALSE
 )
 
@@ -64,7 +62,6 @@ methyvim_betas_ate <- methyvim:::methyvim_tmle(
   corr = 0.75,
   obs_per_covar = 20,
   target_param = "ate",
-  family = "binomial",
   return_ic = FALSE
 )
 
@@ -86,7 +83,6 @@ methyvim_betas_rr <- methyvim:::methyvim_tmle(
   corr = 0.75,
   obs_per_covar = 20,
   target_param = "rr",
-  family = "binomial",
   return_ic = FALSE
 )
 
