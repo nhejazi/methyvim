@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">methyvim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.8.0</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@
       <h1>Targeted Data-Adaptive Estimation and Inference for Differential Methylation Analysis</h1>
                         <h4 class="author">Nima Hejazi</h4>
             
-            <h4 class="date">2019-10-04</h4>
+            <h4 class="date">2019-10-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/nhejazi/methyvim/blob/master/vignettes/using_methyvim.Rmd"><code>vignettes/using_methyvim.Rmd</code></a></small>
       <div class="hidden name"><code>using_methyvim.Rmd</code></div>
@@ -135,7 +135,7 @@
 <a href="#preliminaries-setting-up-the-data" class="anchor"></a>Preliminaries: Setting up the Data</h2>
 <p>First, we’ll load the <code>methyvim</code> package and the example data contained in the <code>methyvimData</code> package that accompanies it:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(methyvim)</a></code></pre></div>
-<pre><code>## methyvim v1.7.0: Targeted, Robust, and Model-free Differential Methylation Analysis</code></pre>
+<pre><code>## methyvim v1.8.0: Targeted, Robust, and Model-free Differential Methylation Analysis</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(methyvimData)</a></code></pre></div>
 <p>Now, let’s load the data set and seed the RNG:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">479253</span>)</a>
@@ -190,7 +190,7 @@
 <h3 class="hasAnchor">
 <a href="#the-average-treatment-effect-as-variable-importance-measure" class="anchor"></a>The Average Treatment Effect as Variable Importance Measure</h3>
 <p>The average treatment effect (ATE) is a canonical parameter that arises in statistical causal inference, often denoted <span class="math inline">\(\psi_0 = \psi_0(1) - \psi_0(0)\)</span>, representing the difference in an outcome between the counterfactuals under which all subjects received the treatment/exposure and under which none received such treatment/exposure. Under additional (untestable) assumptions, this parameter has a richer interpretation as a mean counterfactual outcome, wherein the counterfactuals used in this definition define causal effects. When causal assumptions remain unfulfilled or untested, this parameter may still be estimated in the form of a nonparametric VIM.</p>
-<p>Estimating such the VIM corresponding to such a parameter requires two separate regression steps: one for the treatment mechanism (propensity score) and one for the outcome regression. Technical details on the nature of these regressions are discussed in <span class="citation">Hernan and Robins (2018)</span>, and details for estimating these regressions in the framework of targeted minimum loss-based estimation are discussed in <span class="citation">van der Laan and Rose (2011)</span>.</p>
+<p>Estimating such the VIM corresponding to such a parameter requires two separate regression steps: one for the treatment mechanism (propensity score) and one for the outcome regression. Technical details on the nature of these regressions are discussed in <span class="citation">(<span class="citeproc-not-found" data-reference-id="hernan2018causal"><strong>???</strong></span>)</span>, and details for estimating these regressions in the framework of targeted minimum loss-based estimation are discussed in <span class="citation">van der Laan and Rose (2011)</span>.</p>
 <div id="super-learning-for-nonparametric-parameter-estimation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#super-learning-for-nonparametric-parameter-estimation" class="anchor"></a>Super Learning for nonparametric parameter estimation</h4>
@@ -203,37 +203,37 @@
 <a class="sourceLine" id="cb9-5" data-line-number="5">                              <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"sl"</span></a>
 <a class="sourceLine" id="cb9-6" data-line-number="6">                             )</a>
 <a class="sourceLine" id="cb9-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
-##  Proceed with caution.</code></pre>
+<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, :
+## Sequential evaluation over many probes may take a long time.</code></pre>
 <p>As is clear from examining the object <code>methyvim_ate_sl</code>, the output resembles exactly that returned when examining objects of class <code>GenomicRatioSet</code> from the <code>minfi</code> R package. In particular, the returned <code>methytmle</code> object is merely a modified form (in particular, a subclass) of the input <code>GenomicRatioSet</code> object – thus, it contains all of the original slots, with all of the experimental data intact. Several extra pieces of information are contained within the output object as well_.</p>
 <p>We can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the custom S4 accessor function <code>vim</code> (note that the <code>show</code> method of the resultant object also displays this same information, amongst other things):</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="../reference/methytmle-class.html">vim</a></span>(methyvim_ate_sl)</a></code></pre></div>
-<pre><code>##                lwr_ci      est_ate      upr_ci     var_ate         pval
-## cg22913481 -0.3790600 -0.102050802  0.17495839 0.019974514 4.702524e-01
-## cg15131207 -0.3121142 -0.104168904  0.10377642 0.011256054 3.261739e-01
-## cg10613282 -0.4272500 -0.163156791  0.10093638 0.018155249 2.259382e-01
-## cg15857610 -0.3133850 -0.079921692  0.15354160 0.014188127 5.022406e-01
-## cg24775884 -0.4721412  0.040714250  0.55356966 0.068466439 8.763489e-01
-## cg22954484 -0.3257342  0.078871859  0.48347792 0.042614031 7.024076e-01
-## cg23076894 -0.6183534 -0.052289154  0.51377505 0.083410214 8.563272e-01
-## cg07697276 -0.4624108 -0.122402129  0.21760656 0.030093167 4.804405e-01
-## cg01674119 -0.3401104 -0.134900918  0.07030853 0.010961817 1.975831e-01
-## cg02749733 -0.3890318 -0.179951471  0.02912890 0.011379270 9.161596e-02
-## cg12742764 -1.0710144 -0.571145928 -0.07127741 0.065042829 2.512464e-02
-## cg15396367 -1.0280258 -0.486428922  0.05516792 0.076355461 7.834827e-02
-## cg18233010 -0.9778076 -0.498391610 -0.01897559 0.059829165 4.159215e-02
-## cg01532849 -0.8055659 -0.362479262  0.08060737 0.051105207 1.088393e-01
-## cg24268444 -0.9241717 -0.485018561 -0.04586544 0.050201860 3.041038e-02
-## cg10560245 -0.7088957 -0.329362703  0.05017027 0.037496167 8.896015e-02
-## cg20185936 -0.8698814 -0.439974001 -0.01006655 0.048110270 4.486749e-02
-## cg06714180 -0.5315532 -0.355271942 -0.17899065 0.008089102 7.811061e-05
-## cg15817960 -0.1978761 -0.007441991  0.18299216 0.009440120 9.389457e-01
-## cg15611151 -0.3093475 -0.103387517  0.10257249 0.011042150 3.251755e-01
-## cg00567703 -0.3666704 -0.158635981  0.04939840 0.011265697 1.350209e-01
-## cg01609275 -0.3201501 -0.123711749  0.07272665 0.010044784 2.170701e-01
-## cg00058576 -0.2832364  0.132495440  0.54822728 0.044989838 5.321942e-01
-## cg26992600 -0.4453399 -0.071449355  0.30244120 0.036389563 7.079951e-01
-## cg12172984 -0.2547354  0.167287212  0.58930983 0.046361696 4.371988e-01
+<pre><code>##                lwr_ci    est_ate     upr_ci   var_ate         pval
+## cg22913481  -2.241046 -0.5738109  1.0934239 0.7235714 4.999479e-01
+## cg15131207  -1.414328 -0.4633953  0.4875377 0.2353898 3.395171e-01
+## cg10613282  -2.230081 -0.8691549  0.4917713 0.4821220 2.106598e-01
+## cg15857610  -2.044781 -0.2695842  1.5056124 0.8203152 7.659713e-01
+## cg24775884  -3.749987  0.5128954  4.7757779 4.7303641 8.135720e-01
+## cg22954484  -2.570027  0.6063534  3.7827334 2.6263510 7.082903e-01
+## cg23076894  -5.761423 -0.4517812  4.8578604 7.3386853 8.675507e-01
+## cg07697276  -3.079394 -0.7915787  1.4962367 1.3624790 4.976732e-01
+## cg01674119  -2.517292 -1.0973701  0.3225520 0.5248279 1.298325e-01
+## cg02749733  -1.883485 -0.8608829  0.1617195 0.2722084 9.893564e-02
+## cg12742764  -8.686076 -4.4381324 -0.1901884 4.6972689 4.058422e-02
+## cg15396367 -10.948696 -5.4022936  0.1441086 8.0077512 5.625247e-02
+## cg18233010  -8.446659 -4.3621161 -0.2775733 4.3428492 3.633168e-02
+## cg01532849  -6.020016 -2.6830751  0.6538663 2.8985781 1.150391e-01
+## cg24268444  -6.977900 -3.5516457 -0.1253913 3.0558151 4.218095e-02
+## cg10560245  -4.537997 -2.0915700  0.3548566 1.5579455 9.379696e-02
+## cg20185936  -6.528386 -3.3249208 -0.1214552 2.6713328 4.192027e-02
+## cg06714180  -1.905104 -1.2702925 -0.6354814 0.1049003 8.779157e-05
+## cg15817960  -0.998158 -0.1084321  0.7812938 0.2060632 8.112081e-01
+## cg15611151  -1.674590 -0.6383086  0.3979726 0.2795394 2.273231e-01
+## cg00567703  -1.643306 -0.7310898  0.1811269 0.2166127 1.162225e-01
+## cg01609275  -1.675129 -0.6567175  0.3616940 0.2699818 2.062673e-01
+## cg00058576  -3.259925  0.3561932  3.9723111 3.4038704 8.469096e-01
+## cg26992600  -3.346484 -0.2549158  2.8366523 2.4879721 8.716113e-01
+## cg12172984  -2.077834  1.5873883  5.2526103 3.4969421 3.959561e-01
 ##            n_neighbors n_neighbors_control max_cor_neighbors
 ## cg22913481           0                   0                NA
 ## cg15131207           0                   0                NA
@@ -274,36 +274,36 @@
 <a class="sourceLine" id="cb13-5" data-line-number="5">                               <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
 <a class="sourceLine" id="cb13-6" data-line-number="6">                              )</a>
 <a class="sourceLine" id="cb13-7" data-line-number="7">)</a></code></pre></div>
-<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
-##  Proceed with caution.</code></pre>
+<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, :
+## Sequential evaluation over many probes may take a long time.</code></pre>
 <p>Just as before, we can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the custom S4 accessor function <code>vim</code> (note that the <code>show</code> method of the resultant object also displays this same information, amongst other things):</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="../reference/methytmle-class.html">vim</a></span>(methyvim_ate_glm)</a></code></pre></div>
-<pre><code>##                lwr_ci      est_ate      upr_ci     var_ate         pval
-## cg22913481 -0.3790600 -0.102050802  0.17495839 0.019974514 4.702524e-01
-## cg15131207 -0.3121142 -0.104168904  0.10377642 0.011256054 3.261739e-01
-## cg10613282 -0.4272500 -0.163156791  0.10093638 0.018155249 2.259382e-01
-## cg15857610 -0.3536396 -0.078148206  0.19734316 0.019756219 5.782176e-01
-## cg24775884 -0.4059854  0.118341698  0.64266878 0.071563642 6.582171e-01
-## cg22954484 -0.2754717  0.141677106  0.55882588 0.045297039 5.056164e-01
-## cg23076894 -0.6322095 -0.061657956  0.50889361 0.084737894 8.322538e-01
-## cg07697276 -0.4135837 -0.069282818  0.27501808 0.030857744 6.932814e-01
-## cg01674119 -0.3347243 -0.117025406  0.10067353 0.012336742 2.920615e-01
-## cg02749733 -0.3890318 -0.179951471  0.02912890 0.011379270 9.161596e-02
-## cg12742764 -1.0614909 -0.552473363 -0.04345578 0.067445570 3.339277e-02
-## cg15396367 -1.0140072 -0.448027453  0.11795233 0.083385337 1.207751e-01
-## cg18233010 -0.9774119 -0.493887952 -0.01036400 0.060858865 4.528352e-02
-## cg01532849 -0.8010916 -0.352201975  0.09668761 0.052452587 1.240902e-01
-## cg24268444 -0.9111858 -0.482357549 -0.05352934 0.047869022 2.747790e-02
-## cg10560245 -0.6978149 -0.318353901  0.06110706 0.037481939 1.001001e-01
-## cg20185936 -0.8628370 -0.425145647  0.01254573 0.049868217 5.693367e-02
-## cg06714180 -0.5348145 -0.359350711 -0.18388689 0.008014253 5.967583e-05
-## cg15817960 -0.2122452 -0.023940688  0.16436378 0.009230157 8.032132e-01
-## cg15611151 -0.3553286 -0.139979962  0.07536868 0.012071803 2.026526e-01
-## cg00567703 -0.3665134 -0.161195335  0.04412268 0.010973419 1.238537e-01
-## cg01609275 -0.3131549 -0.119067885  0.07501914 0.009805751 2.292030e-01
-## cg00058576 -0.4478545  0.005881229  0.45961698 0.053591247 9.797318e-01
-## cg26992600 -0.5491322 -0.146826816  0.25547861 0.042130793 4.744060e-01
-## cg12172984 -0.4191005  0.054156335  0.52741322 0.058301769 8.225323e-01
+<pre><code>##                 lwr_ci     est_ate      upr_ci   var_ate         pval
+## cg22913481  -2.2737329 -0.61095578  1.05182129 0.7197073 4.714236e-01
+## cg15131207  -1.4052652 -0.46187188  0.48152148 0.2316720 3.372626e-01
+## cg10613282  -2.2542647 -0.88585344  0.48255779 0.4874399 2.045039e-01
+## cg15857610  -2.4325450 -0.48107089  1.47040317 0.9913190 6.289731e-01
+## cg24775884  -3.3747760  1.07346950  5.52171503 5.1506894 6.362164e-01
+## cg22954484  -2.0920242  1.08070264  4.25342943 2.6203132 5.043759e-01
+## cg23076894  -5.7167079 -0.50400813  4.70869167 7.0731568 8.496935e-01
+## cg07697276  -2.8678982 -0.52591073  1.81607675 1.4277659 6.598411e-01
+## cg01674119  -2.4613602 -0.90544317  0.65047384 0.6301743 2.540392e-01
+## cg02749733  -1.8923030 -0.87365602  0.14499097 0.2701066 9.275906e-02
+## cg12742764  -8.8892360 -4.56431555 -0.23939514 4.8690485 3.859389e-02
+## cg15396367 -10.0395853 -4.28710706  1.46537120 8.6138604 1.440937e-01
+## cg18233010  -8.1404001 -3.88759842  0.36520322 4.7080179 7.318299e-02
+## cg01532849  -6.2097167 -2.80064889  0.60841887 3.0252351 1.073548e-01
+## cg24268444  -6.8848141 -3.45993270 -0.03505126 3.0533665 4.769687e-02
+## cg10560245  -4.3925622 -1.98734363  0.41787495 1.5059029 1.053449e-01
+## cg20185936  -6.2100752 -3.05038976  0.10929566 2.5988161 5.846404e-02
+## cg06714180  -1.9161920 -1.27931242 -0.64243279 0.1055851 8.247573e-05
+## cg15817960  -0.9821399 -0.08687332  0.80839327 0.2086376 8.491594e-01
+## cg15611151  -1.6895107 -0.64225180  0.40500713 0.2854934 2.293605e-01
+## cg00567703  -1.5560011 -0.65512297  0.24575516 0.2112613 1.540643e-01
+## cg01609275  -1.5946467 -0.61958346  0.35547977 0.2474876 2.129697e-01
+## cg00058576  -4.0047990 -0.17636854  3.65206191 3.8153060 9.280540e-01
+## cg26992600  -4.6156645 -1.30503285  2.00559882 2.8530513 4.397466e-01
+## cg12172984  -3.8585666  0.26942032  4.39740728 4.4357237 8.982100e-01
 ##            n_neighbors n_neighbors_control max_cor_neighbors
 ## cg22913481           0                   0                NA
 ## cg15131207           0                   0                NA
@@ -349,36 +349,36 @@
 <a class="sourceLine" id="cb17-3" data-line-number="3">                            <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
 <a class="sourceLine" id="cb17-4" data-line-number="4">                            <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"sl"</span></a>
 <a class="sourceLine" id="cb17-5" data-line-number="5">                           )</a></code></pre></div>
-<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
-##  Proceed with caution.</code></pre>
+<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, :
+## Sequential evaluation over many probes may take a long time.</code></pre>
 <p>Just as before, we can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the custom S4 accessor function <code>vim</code> (note that the <code>show</code> method of the resultant object also displays this same information, amongst other things):</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="../reference/methytmle-class.html">vim</a></span>(methyvim_rr_sl)</a></code></pre></div>
-<pre><code>##                 lwr_ci    est_logrr       upr_ci    var_logrr         pval
-## cg22913481 -0.15978435 -0.042980967  0.073822421 0.0035513930 4.707649e-01
-## cg15131207 -0.10832796 -0.036151215  0.036025531 0.0013560711 3.262445e-01
-## cg10613282 -0.18349779 -0.069866731  0.043764333 0.0033611044 2.281579e-01
-## cg15857610 -0.07036267 -0.018196547  0.033969577 0.0007083779 4.941737e-01
-## cg24775884 -0.07952197  0.006419901  0.092361768 0.0019226376 8.835954e-01
-## cg22954484 -0.06730846  0.016055044  0.099418548 0.0018090051 7.058184e-01
-## cg23076894 -0.08936702 -0.007512386  0.074342246 0.0017441120 8.572442e-01
-## cg07697276 -0.10009144 -0.027043490  0.046004458 0.0013890053 4.680702e-01
-## cg01674119 -0.07334796 -0.029361182  0.014625591 0.0005036537 1.907714e-01
-## cg02749733 -0.15979514 -0.073782061  0.012231016 0.0019258250 9.270679e-02
-## cg12742764 -0.17960781 -0.094628568 -0.009649321 0.0018798085 2.906850e-02
-## cg15396367 -0.16045664 -0.074226427  0.012003785 0.0019355606 9.157341e-02
-## cg18233010 -0.16893367 -0.085334593 -0.001735516 0.0018192435 4.542585e-02
-## cg01532849 -0.15248838 -0.067700795  0.017086787 0.0018713385 1.175802e-01
-## cg24268444 -0.17483682 -0.091327227 -0.007817632 0.0018153510 3.207437e-02
-## cg10560245 -0.16852575 -0.078683212  0.011159328 0.0021011251 8.606166e-02
-## cg20185936 -0.17436219 -0.087844810 -0.001327427 0.0019484740 4.658300e-02
-## cg06714180 -0.26395538 -0.176728230 -0.089501076 0.0019805749 7.154299e-05
-## cg15817960 -0.07975254 -0.004943252  0.069866039 0.0014567966 8.969518e-01
-## cg15611151 -0.17015406 -0.054773468  0.060607125 0.0034654002 3.521376e-01
-## cg00567703 -0.19335015 -0.084014736  0.025320677 0.0031117849 1.320443e-01
-## cg01609275 -0.14994534 -0.055622853  0.038699638 0.0023158924 2.477506e-01
-## cg00058576 -0.05539669  0.019962715  0.095322125 0.0014783009 6.036184e-01
-## cg26992600 -0.08479677 -0.011990711  0.060815344 0.0013798213 7.468467e-01
-## cg12172984 -0.04313567  0.033999299  0.111134269 0.0015487827 3.876305e-01
+<pre><code>##                lwr_ci    est_logrr      upr_ci  var_logrr         pval
+## cg22913481 -0.4092109 -0.157928211  0.09335450 0.01643664 0.2180100541
+## cg15131207 -0.3866242 -0.132565211  0.12149379 0.01680185 0.3064465908
+## cg10613282 -0.4609511 -0.209992283  0.04096657 0.01639430 0.1009949347
+## cg15857610 -0.3912380 -0.122627974  0.14598203 0.01878158 0.3708967928
+## cg24775884 -0.3001760 -0.012590429  0.27499517 0.02152891 0.9316187833
+## cg22954484 -0.2096686  0.082632719  0.37493408 0.02224076 0.5795199112
+## cg23076894 -0.3972518 -0.118400427  0.16045096 0.02024107 0.4052865289
+## cg07697276 -0.4183878 -0.147105093  0.12417763 0.01915720 0.2878614482
+## cg01674119 -0.5631423 -0.260549225  0.04204388 0.02383449 0.0914751160
+## cg02749733 -0.3595319 -0.107507455  0.14451703 0.01653382 0.4031054760
+## cg12742764 -0.7252065 -0.443645032 -0.16208358 0.02063641 0.0020130988
+## cg15396367 -0.4854500 -0.195317164  0.09481569 0.02191198 0.1870119863
+## cg18233010 -0.5963658 -0.310380117 -0.02439445 0.02129004 0.0334045380
+## cg01532849 -0.4587578 -0.185399867  0.08795806 0.01945142 0.1837381017
+## cg24268444 -0.6211676 -0.329263725 -0.03735987 0.02218031 0.0270459272
+## cg10560245 -0.4215148 -0.156131854  0.10925108 0.01833301 0.2488610324
+## cg20185936 -0.6060344 -0.325562935 -0.04509150 0.02047694 0.0228993370
+## cg06714180 -0.7287084 -0.472424460 -0.21614047 0.01709743 0.0003026843
+## cg15817960 -0.2907364 -0.005245429  0.28024557 0.02121645 0.9712729639
+## cg15611151 -0.3362025 -0.106709841  0.12278280 0.01370962 0.3621037170
+## cg00567703 -0.4298602 -0.162501535  0.10485717 0.01860701 0.2335379131
+## cg01609275 -0.5015721 -0.240907053  0.01975800 0.01768697 0.0700735236
+## cg00058576 -0.4121000 -0.130558355  0.15098334 0.02063352 0.3634007899
+## cg26992600 -0.6375980 -0.328990324 -0.02038266 0.02479141 0.0366670157
+## cg12172984 -0.2061964  0.055151896  0.31650019 0.01777981 0.6791556913
 ##            n_neighbors n_neighbors_control max_cor_neighbors
 ## cg22913481           0                   0                NA
 ## cg15131207           0                   0                NA
@@ -416,62 +416,62 @@
 <a class="sourceLine" id="cb21-3" data-line-number="3">                            <span class="dt">filter =</span> <span class="st">"limma"</span>, <span class="dt">filter_cutoff =</span> <span class="fl">0.10</span>,</a>
 <a class="sourceLine" id="cb21-4" data-line-number="4">                            <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
 <a class="sourceLine" id="cb21-5" data-line-number="5">                           )</a></code></pre></div>
-<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
-##  Proceed with caution.</code></pre>
+<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, :
+## Sequential evaluation over many probes may take a long time.</code></pre>
 <p>Just as before, we can take a look at the results produced from the estimation procedure (stored in the <code>vim</code> <code>slot</code> of the <code>methytmle</code> object) simply by invoking the custom S4 accessor function <code>vim</code> (note that the <code>show</code> method of the resultant object also displays this same information, amongst other things):</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="../reference/methytmle-class.html">vim</a></span>(methyvim_rr_glm)</a></code></pre></div>
-<pre><code>##                 lwr_ci    est_logrr        upr_ci    var_logrr
-## cg22913481 -0.15978435 -0.042980967  7.382242e-02 0.0035513930
-## cg15131207 -0.10832796 -0.036151215  3.602553e-02 0.0013560711
-## cg10613282 -0.18349779 -0.069866731  4.376433e-02 0.0033611044
-## cg15857610 -0.07974751 -0.018332914  4.308168e-02 0.0009818182
-## cg24775884 -0.06765713  0.021359558  1.103762e-01 0.0020626745
-## cg22954484 -0.05665933  0.029256620  1.151726e-01 0.0019214780
-## cg23076894 -0.08967646 -0.007905527  7.386541e-02 0.0017405470
-## cg07697276 -0.09041091 -0.015472590  5.946573e-02 0.0014618262
-## cg01674119 -0.07220189 -0.025430226  2.134143e-02 0.0005694471
-## cg02749733 -0.15979514 -0.073782061  1.223102e-02 0.0019258250
-## cg12742764 -0.17731281 -0.093561510 -9.810214e-03 0.0018258745
-## cg15396367 -0.16017533 -0.070415588  1.934415e-02 0.0020972539
-## cg18233010 -0.16857672 -0.084301141 -2.556669e-05 0.0018488058
-## cg01532849 -0.15182820 -0.066931427  1.796534e-02 0.0018761613
-## cg24268444 -0.17572759 -0.091832568 -7.937542e-03 0.0018321469
-## cg10560245 -0.16717236 -0.076242843  1.468667e-02 0.0021522741
-## cg20185936 -0.17420010 -0.085527966  3.144164e-03 0.0020467375
-## cg06714180 -0.26379919 -0.176476997 -8.915481e-02 0.0019848930
-## cg15817960 -0.08310152 -0.007487626  6.812627e-02 0.0014883021
-## cg15611151 -0.19720228 -0.076641869  4.391854e-02 0.0037835311
-## cg00567703 -0.19136712 -0.081996579  2.737397e-02 0.0031137849
-## cg01609275 -0.14849842 -0.056792278  3.491386e-02 0.0021891962
-## cg00058576 -0.08249554 -0.002134939  7.822566e-02 0.0016810250
-## cg26992600 -0.10787219 -0.029732920  4.840635e-02 0.0015893756
-## cg12172984 -0.07485293  0.008223716  9.130036e-02 0.0017965766
-##                    pval n_neighbors n_neighbors_control max_cor_neighbors
-## cg22913481 4.707649e-01           0                   0                NA
-## cg15131207 3.262445e-01           0                   0                NA
-## cg10613282 2.281579e-01           0                   0                NA
-## cg15857610 5.584933e-01           5                   4        0.77207047
-## cg24775884 6.381392e-01           5                   2        0.88975664
-## cg22954484 5.044968e-01           5                   2        0.86439358
-## cg23076894 8.497082e-01           5                   1        0.88975664
-## cg07697276 6.857104e-01           5                   2        0.84238389
-## cg01674119 2.865720e-01           5                   5        0.61874408
-## cg02749733 9.270679e-02           0                   0                NA
-## cg12742764 2.855437e-02           8                   2        0.90569752
-## cg15396367 1.241465e-01           8                   2        0.90569752
-## cg18233010 4.992633e-02           8                   2        0.88601655
-## cg01532849 1.222890e-01           8                   2        0.89423768
-## cg24268444 3.191760e-02           8                   2        0.89690199
-## cg10560245 1.002947e-01           8                   2        0.86644061
-## cg20185936 5.869089e-02           8                   2        0.87376499
-## cg06714180 7.459459e-05           8                   8       -0.09301902
-## cg15817960 8.461070e-01           8                   8        0.40419875
-## cg15611151 2.127650e-01           7                   7        0.13851867
-## cg00567703 1.417139e-01           7                   7        0.13851867
-## cg01609275 2.248243e-01           7                   7        0.20795189
-## cg00058576 9.584719e-01           7                   4        0.88568207
-## cg26992600 4.557862e-01           7                   4        0.85605741
-## cg12172984 8.461607e-01           7                   4        0.87356095</code></pre>
+<pre><code>##                lwr_ci    est_logrr      upr_ci  var_logrr         pval
+## cg22913481 -0.4069465 -0.155520490  0.09590554 0.01645540 0.2253726279
+## cg15131207 -0.3873508 -0.133384529  0.12058178 0.01678959 0.3032903444
+## cg10613282 -0.4643026 -0.211461376  0.04137980 0.01664116 0.1011658212
+## cg15857610 -0.4228660 -0.155410347  0.11204529 0.01862050 0.2547463475
+## cg24775884 -0.3033120 -0.016800891  0.26971026 0.02136835 0.9084977837
+## cg22954484 -0.2082032  0.086205045  0.38061331 0.02256253 0.5660332076
+## cg23076894 -0.4000291 -0.121096780  0.15783558 0.02025283 0.3948126687
+## cg07697276 -0.4239004 -0.152774774  0.11835081 0.01913502 0.2694077189
+## cg01674119 -0.5602798 -0.261862697  0.03655444 0.02318117 0.0854486358
+## cg02749733 -0.3663749 -0.114789703  0.13679545 0.01647623 0.3711715787
+## cg12742764 -0.7247314 -0.442113551 -0.15949570 0.02079156 0.0021685034
+## cg15396367 -0.5015719 -0.211841735  0.07788841 0.02185120 0.1518316990
+## cg18233010 -0.6001598 -0.314071570 -0.02798334 0.02130531 0.0314198235
+## cg01532849 -0.4735781 -0.194981413  0.08361524 0.02020411 0.1701428235
+## cg24268444 -0.6319682 -0.339784180 -0.04760017 0.02222290 0.0226488361
+## cg10560245 -0.4216809 -0.155147888  0.11138516 0.01849226 0.2539079346
+## cg20185936 -0.6129249 -0.329697504 -0.04647011 0.02088134 0.0225139071
+## cg06714180 -0.7220646 -0.464710184 -0.20735573 0.01724055 0.0004013234
+## cg15817960 -0.2824709  0.002817598  0.28810607 0.02118636 0.9845558569
+## cg15611151 -0.3524153 -0.119936485  0.11254236 0.01406872 0.3119353187
+## cg00567703 -0.4340690 -0.167252518  0.09956395 0.01853161 0.2192158746
+## cg01609275 -0.5099162 -0.246428433  0.01705934 0.01807211 0.0667875358
+## cg00058576 -0.3969395 -0.111432402  0.17407468 0.02121884 0.4442828298
+## cg26992600 -0.6417775 -0.332846224 -0.02391490 0.02484344 0.0347098769
+## cg12172984 -0.2504724  0.014082907  0.27863817 0.01821884 0.9169031295
+##            n_neighbors n_neighbors_control max_cor_neighbors
+## cg22913481           0                   0                NA
+## cg15131207           0                   0                NA
+## cg10613282           0                   0                NA
+## cg15857610           5                   4        0.77207047
+## cg24775884           5                   2        0.88975664
+## cg22954484           5                   2        0.86439358
+## cg23076894           5                   1        0.88975664
+## cg07697276           5                   2        0.84238389
+## cg01674119           5                   5        0.61874408
+## cg02749733           0                   0                NA
+## cg12742764           8                   2        0.90569752
+## cg15396367           8                   2        0.90569752
+## cg18233010           8                   2        0.88601655
+## cg01532849           8                   2        0.89423768
+## cg24268444           8                   2        0.89690199
+## cg10560245           8                   2        0.86644061
+## cg20185936           8                   2        0.87376499
+## cg06714180           8                   8       -0.09301902
+## cg15817960           8                   8        0.40419875
+## cg15611151           7                   7        0.13851867
+## cg00567703           7                   7        0.13851867
+## cg01609275           7                   7        0.20795189
+## cg00058576           7                   4        0.88568207
+## cg26992600           7                   4        0.85605741
+## cg12172984           7                   4        0.87356095</code></pre>
 <p><em>Remark:</em> Here, the estimates are obtained via GLMs, making each of the regression steps less robust than if nonparametric regressions were used. It is expected that these estimates differ from those obtained previously.</p>
 <hr>
 </div>
@@ -515,306 +515,32 @@
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span>(</a>
 <a class="sourceLine" id="cb29-2" data-line-number="2">  methyvim_cancer_ate &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methyvim.html">methyvim</a></span>(<span class="dt">data_grs =</span> grs, <span class="dt">var_int =</span> var_int,</a>
 <a class="sourceLine" id="cb29-3" data-line-number="3">                                  <span class="dt">vim =</span> <span class="st">"ate"</span>, <span class="dt">type =</span> <span class="st">"Beta"</span>, <span class="dt">filter =</span> <span class="st">"limma"</span>,</a>
-<a class="sourceLine" id="cb29-4" data-line-number="4">                                  <span class="dt">filter_cutoff =</span> <span class="fl">0.20</span>, <span class="dt">obs_per_covar =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">                                  <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">sites_comp =</span> <span class="dv">125</span>,</a>
-<a class="sourceLine" id="cb29-6" data-line-number="6">                                  <span class="dt">tmle_type =</span> <span class="st">"glm"</span></a>
-<a class="sourceLine" id="cb29-7" data-line-number="7">                                 )</a>
-<a class="sourceLine" id="cb29-8" data-line-number="8">)</a></code></pre></div>
-<pre><code>## Warning in set_parallel(parallel = parallel, future_param = future_param, : Sequential evaluation is strongly discouraged. 
-##  Proceed with caution.</code></pre>
+<a class="sourceLine" id="cb29-4" data-line-number="4">                                  <span class="dt">filter_cutoff =</span> <span class="fl">0.30</span>, <span class="dt">obs_per_covar =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">                                  <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">sites_comp =</span> <span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6">                                  <span class="dt">tmle_args =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">cv_folds =</span> <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb29-7" data-line-number="7">                                  <span class="dt">tmle_type =</span> <span class="st">"sl"</span></a>
+<a class="sourceLine" id="cb29-8" data-line-number="8">                                 )</a>
+<a class="sourceLine" id="cb29-9" data-line-number="9">)</a></code></pre></div>
 <p>Note that we set the <code>obs_per_covar</code> argument to a relatively low value (2, where the recommended default is 20) for the purposes of this example as the sample size is only 10. We do this only to exemplify the estimation procedure and it is important to point out that such low values for <code>obs_per_covar</code> will compromise the quality of inference obtained because this setting directly affects the definition of the target parameter.</p>
 <p>Further, note that here we apply the <code>glm</code> flavor of the <code>tmle_type</code> argument, which produces faster results by fitting models for the propensity score and outcome regressions using a limited number of parametric models. By contrast, the <code>sl</code> (for “Super Learning”) flavor fits these two regressions using highly nonparametric and data-adaptive procedures (i.e., via machine learning).</p>
 <p>Let’s examine the table of results by examining the <code>methytmle</code> object that was produced by our call to the <code>methyvim</code> wrapper function:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">methyvim_cancer_ate</a></code></pre></div>
-<pre><code>## class: methytmle 
-## dim: 485512 6 
-## metadata(0):
-## assays(2): Beta CN
-## rownames(485512): cg13869341 cg14008030 ... cg08265308 cg14273923
-## rowData names(0):
-## colnames(6): 5723646052_R02C02 5723646052_R04C01 ...
-##   5723646053_R05C02 5723646053_R06C02
-## colData names(13): Sample_Name Sample_Well ... Basename filenames
-## Annotation
-##   array: IlluminaHumanMethylation450k
-##   annotation: ilmn12.hg19
-## Preprocessing
-##   Method: Raw (no normalization or bg correction)
-##   minfi version: 1.21.2
-##   Manifest version: 0.4.0
-## Target Parameter: Average Treatment Effect
-## Results: 
-##                   lwr_ci       est_ate        upr_ci      var_ate
-## cg14008030 -1.195660e-01 -0.0314159619  0.0567340489 2.022705e-03
-## cg20253340 -8.850637e-02 -0.0588661418 -0.0292259165 2.286919e-04
-## cg21870274 -9.499057e-02 -0.0291189817  0.0367526091 1.129495e-03
-## cg17308840 -4.626018e-02 -0.0071524518  0.0319552773 3.981191e-04
-## cg00645010 -2.691383e-02 -0.0137141499 -0.0005144724 4.535389e-05
-## cg27534567  6.745648e-02  0.1157118536  0.1639672225 6.061486e-04
-## cg08258224  1.365045e-01  0.3050884951  0.4736724770 7.398105e-03
-## cg20275697 -3.021026e-01 -0.1231299608  0.0558427144 8.337989e-03
-## cg24373735 -4.283533e-02  0.0076666975  0.0581687266 6.639043e-04
-## cg12445832 -6.082411e-02  0.0150395574  0.0909032203 1.498151e-03
-## cg01097950 -4.392159e-02  0.0658323796  0.1755863507 3.135656e-03
-## cg01782097 -1.082072e-02  0.0010232901  0.0128672954 3.651615e-05
-## cg20825023 -7.234531e-02 -0.0208235321  0.0306982409 6.909863e-04
-## cg11851804  3.003538e-02  0.0817984194  0.1335614630 6.974731e-04
-## cg22226438 -7.042069e-02 -0.0210914143  0.0282378620 6.334281e-04
-## cg22699361  9.021931e-05  0.0189939658  0.0378977123 9.302156e-05
-## cg13176867 -3.982570e-02  0.0102881181  0.0604019360 6.537367e-04
-## cg11407801  1.658757e-02  0.0708784631  0.1251693586 7.672588e-04
-## cg02896266 -3.293606e-02 -0.0005293529  0.0318773586 2.733744e-04
-## cg23225454  3.075572e-02  0.0465408299  0.0623259380 6.486090e-05
-## cg00976181 -3.750870e-02 -0.0241520475 -0.0107953921 4.643905e-05
-## cg10711230 -6.650039e-02 -0.0279601016  0.0105801850 3.866498e-04
-## cg06624358 -1.723776e-03  0.0267867578  0.0552972917 2.115917e-04
-## cg22485363 -1.272149e-02  0.0112638704  0.0352492284 1.497546e-04
-## cg03269716 -5.925021e-02 -0.0161064593  0.0270372891 4.845333e-04
-## cg21830050  9.534492e-04  0.0139111008  0.0268687524 4.370594e-05
-## cg20453388 -1.013392e-01 -0.0473886036  0.0065620090 7.576709e-04
-## cg12663811  5.721221e-02  0.1046990846  0.1521859590 5.869958e-04
-## cg23207077 -1.220050e-01 -0.0601353054  0.0017343926 9.964232e-04
-## cg22381068 -2.562184e-02 -0.0043115664  0.0169987034 1.182131e-04
-## cg22481263 -4.349972e-03  0.0105245519  0.0253990758 5.759357e-05
-## cg07195057 -2.028669e-02  0.0276054283  0.0754975481 5.970573e-04
-## cg16352072 -3.229915e-02  0.0132561875  0.0588115294 5.402148e-04
-## cg18166741 -7.438801e-02 -0.0318264285  0.0107351567 4.715453e-04
-## cg22699004 -1.709283e-02 -0.0026436233  0.0118055791 5.434700e-05
-## cg22599150 -1.356880e-02  0.0135881197  0.0407450402 1.919769e-04
-## cg16349774 -2.117415e-02 -0.0078640868  0.0054459814 4.611566e-05
-## cg18439833 -7.026948e-03 -0.0020005355  0.0030258774 6.576642e-06
-## cg10201533 -9.297224e-03 -0.0003728095  0.0085516048 2.073229e-05
-## cg11235921 -5.322923e-03  0.0029743604  0.0112716433 1.792089e-05
-## cg26003967 -2.389433e-02  0.0271863252  0.0782669813 6.792049e-04
-## cg18977839 -3.255145e-02 -0.0165725845 -0.0005937213 6.646295e-05
-## cg25350899 -4.071724e-02  0.0100058938  0.0607290284 6.697304e-04
-## cg13219080 -1.571638e-01 -0.0579581904  0.0412474416 2.561890e-03
-## cg09364122 -1.135209e-01  0.0223918222  0.1583045280 4.808482e-03
-## cg17142931 -2.653638e-02 -0.0201333923 -0.0137304080 1.067217e-05
-## cg20064006 -1.232526e-02  0.0107282069  0.0337816772 1.383440e-04
-## cg17006413 -2.371768e-02 -0.0032614155  0.0171948504 1.089283e-04
-## cg21472517 -3.686919e-02 -0.0155903103  0.0056885739 1.178652e-04
-## cg18019572 -1.118500e-02 -0.0084712259 -0.0057574520 1.917058e-06
-## cg22673826 -1.902462e-02 -0.0004327885  0.0181590443 8.997716e-05
-## cg10625579 -1.369898e-02  0.0009749442  0.0156488714 5.605064e-05
-## cg01922485 -9.218835e-03  0.0003252457  0.0098693264 2.371134e-05
-## cg12763038 -3.872149e-02 -0.0248983430 -0.0110751912 4.973957e-05
-## cg24004483 -1.934948e-02 -0.0136260851 -0.0079026927 8.526973e-06
-## cg23281018 -4.521362e-02 -0.0297025790 -0.0141915421 6.262814e-05
-## cg25552017 -9.006432e-02  0.0306306737  0.1513256651 3.791983e-03
-## cg10984178 -2.525855e-02  0.0025689929  0.0303965347 2.015754e-04
-## cg26837773  1.966447e-02  0.1049289178  0.1901933649 1.892447e-03
-## cg18272461 -8.100315e-02 -0.0374401161  0.0061229197 4.939968e-04
-## cg02288964 -1.497629e-01  0.0370572835  0.2238774289 9.085216e-03
-## cg02341264 -2.677992e-02  0.0647195614  0.1562190417 2.179341e-03
-## cg06712559 -2.876953e-03  0.0047016133  0.0122801799 1.495072e-05
-## cg14663984 -7.959552e-02 -0.0274965183  0.0246024806 7.065560e-04
-## cg16318112  2.701537e-02  0.0502270677  0.0734387694 1.402497e-04
-## cg09248054 -1.280138e-02  0.1046187501  0.2220388840 3.588996e-03
-## cg15840462  1.800713e-02  0.0645371659  0.1110671971 5.635787e-04
-## cg25759916  1.389667e-01  0.2839114029  0.4288561425 5.468809e-03
-## cg08387293 -5.385090e-04  0.0828487341  0.1662359773 1.810035e-03
-## cg23801338 -1.879002e-02  0.0433663416  0.1055227033 1.005678e-03
-## cg13244315 -6.739108e-02  0.0217293754  0.1108498301 2.067486e-03
-## cg08480609 -4.307870e-03  0.0302165974  0.0647410647 3.102715e-04
-## cg03120284 -1.954136e-03  0.0615706855  0.1250955067 1.050448e-03
-## cg22627753 -1.516261e-02  0.0432823214  0.1017272487 8.891632e-04
-## cg11405655  5.914546e-02  0.1236616311  0.1881778055 1.083490e-03
-## cg24475622 -8.217696e-03  0.1237986166  0.2558149291 4.536731e-03
-## cg26702212  7.996717e-03  0.1503924366  0.2927881561 5.278150e-03
-## cg24517686 -1.007508e-01  0.0652126420  0.2311760835 7.169894e-03
-## cg14964771  2.192794e-02  0.1035763913  0.1852248399 1.735337e-03
-## cg11200797 -3.497005e-02  0.1095205300  0.2540111056 5.434591e-03
-## cg19999567  2.625519e-02  0.0541464276  0.0820376670 2.024993e-04
-## cg20961824 -7.794454e-02  0.1950799545  0.4681044518 1.940399e-02
-## cg10126324  4.633413e-02  0.1511566408  0.2559791511 2.860204e-03
-## cg06036677 -5.953444e-02  0.1550205411  0.3695755194 1.198299e-02
-## cg19626656 -7.676209e-02  0.0103390998  0.0974402930 1.974859e-03
-## cg10113217  6.378553e-04  0.0212721677  0.0419064802 1.108327e-04
-## cg20619296 -1.447535e-01  0.0093087983  0.1633711131 6.178466e-03
-## cg18329352 -3.264596e-02  0.0377976370  0.1082412340 1.291727e-03
-## cg25973293  1.023512e-01  0.2042465460  0.3061419204 2.702693e-03
-## cg05655247  3.487131e-02  0.0801435810  0.1254158494 5.335220e-04
-## cg01776299  2.388854e-03  0.0094088790  0.0164289039 1.282818e-05
-## cg15688253 -1.683983e-02 -0.0058456899  0.0051484519 3.146375e-05
-## cg22864340 -8.558874e-02 -0.0240423123  0.0375041137 9.860377e-04
-## cg22521151  4.333372e-02  0.0843719800  0.1254102400 4.383951e-04
-## cg00207921 -1.327917e-01 -0.0147964266  0.1031988321 3.624240e-03
-## cg20544808 -1.708357e-02  0.0123917814  0.0418671327 2.261548e-04
-## cg18792131 -3.534902e-02  0.0232478812  0.0818447823 8.937934e-04
-## cg21475076 -1.266859e-01  0.0162130728  0.1591120870 5.315527e-03
-## cg00152708 -1.082416e-01 -0.0130866412  0.0820683443 2.356953e-03
-## cg23651812  6.695841e-03  0.0631083723  0.1195209039 8.283980e-04
-## cg18348086 -3.018517e-02  0.0369923095  0.1041697894 1.174722e-03
-## cg26578072 -8.912739e-02  0.0276687410  0.1444648733 3.550952e-03
-## cg14786652  6.404053e-02  0.1244298103  0.1848190883 9.493089e-04
-## cg07841371  2.615108e-02  0.0715760669  0.1170010488 5.371275e-04
-## cg14220262  5.350178e-02  0.1629972182  0.2724926566 3.120900e-03
-## cg14008593  2.260122e-02  0.0498047582  0.0770082947 1.926365e-04
-## cg18976046 -1.846427e-02  0.0869704854  0.1924052383 2.893713e-03
-## cg09021712  2.055584e-02  0.1173074962  0.2140591527 2.436715e-03
-## cg24807889 -7.144895e-03 -0.0030696412  0.0010056121 4.323118e-06
-## cg12810734 -9.888352e-03  0.0598362001  0.1295607518 1.265492e-03
-## cg08090128 -8.455936e-02  0.0099657147  0.1044907870 2.325851e-03
-## cg14886269 -7.686011e-02  0.0465028904  0.1698658859 3.961482e-03
-## cg15706223  5.557085e-02  0.1822450500  0.3089192488 4.176997e-03
-## cg25725823 -8.006845e-02 -0.0059187527  0.0682309488 1.431221e-03
-## cg00086243 -1.412578e-01  0.0061871703  0.1536321535 5.659106e-03
-## cg02709725  2.211118e-02  0.0596296304  0.0971480816 3.664187e-04
-## cg10583942 -9.283937e-03  0.0250191788  0.0593222946 3.063056e-04
-## cg20996124  7.504502e-02  0.1079321733  0.1408193283 2.815402e-04
-## cg15993652 -5.487043e-02 -0.0059558485  0.0429587289 6.228228e-04
-## cg25625296  2.140687e-02  0.0660563447  0.1107058161 5.189440e-04
-## cg09503311  6.615812e-02  0.1069158884  0.1476736544 4.324228e-04
-## cg20544186  3.901735e-04  0.0550816857  0.1097731978 7.786239e-04
-## cg23166857  5.710902e-03  0.0655512844  0.1253916666 9.321302e-04
-## cg23867494 -3.877795e-02  0.0129483639  0.0646746747 6.964836e-04
-## cg21815220 -1.622674e-02  0.0052392822  0.0267053039 1.199474e-04
-##                    pval n_neighbors n_neighbors_control max_cor_neighbors
-## cg14008030 4.848468e-01           0                   0                NA
-## cg20253340 9.917426e-05           0                   0                NA
-## cg21870274 3.862537e-01           2                   1         0.9443580
-## cg17308840 7.199943e-01           2                   1         0.9443580
-## cg00645010 4.171089e-02           2                   2         0.5236810
-## cg27534567 2.602936e-06           1                   0         0.9362968
-## cg08258224 3.895914e-04           1                   0         0.9362968
-## cg20275697 1.775155e-01           0                   0                NA
-## cg24373735 7.660489e-01           0                   0                NA
-## cg12445832 6.976022e-01           0                   0                NA
-## cg01097950 2.397377e-01           0                   0                NA
-## cg01782097 8.655302e-01           1                   1        -0.3941083
-## cg20825023 4.282602e-01           1                   1        -0.3941083
-## cg11851804 1.953020e-03           0                   0                NA
-## cg22226438 4.020166e-01           0                   0                NA
-## cg22699361 4.891243e-02           0                   0                NA
-## cg13176867 6.874057e-01          14                   3         0.7204513
-## cg11407801 1.050217e-02          14                   3         0.8400298
-## cg02896266 9.744593e-01          14                   3         0.9572872
-## cg23225454 7.520572e-09          14                   3         0.8400298
-## cg00976181 3.938785e-04          14                   3         0.8307222
-## cg10711230 1.550450e-01          14                   3         0.9489030
-## cg06624358 6.554885e-02          14                   3         0.9579203
-## cg22485363 3.573406e-01          14                   3         0.9044341
-## cg03269716 4.643463e-01          14                   3         0.4837353
-## cg21830050 3.535921e-02          14                   3         0.7454396
-## cg20453388 8.514103e-02          14                   3         0.9943918
-## cg12663811 1.550360e-05          14                   3         0.9061372
-## cg23207077 5.677288e-02          14                   3         0.9943918
-## cg22381068 6.916965e-01          14                   3         0.9572872
-## cg22481263 1.655001e-01          14                   3         0.9579203
-## cg07195057 2.585770e-01           0                   0                NA
-## cg16352072 5.684457e-01           0                   0                NA
-## cg18166741 1.427474e-01           0                   0                NA
-## cg22699004 7.198934e-01           7                   3         0.7304732
-## cg22599150 3.267421e-01           7                   3         0.9229552
-## cg16349774 2.468471e-01           7                   3         0.9334052
-## cg18439833 4.353385e-01           7                   3         0.7823498
-## cg10201533 9.347443e-01           7                   3         0.8858650
-## cg11235921 4.822994e-01           7                   3         0.9512559
-## cg26003967 2.968751e-01           7                   3         0.9512559
-## cg18977839 4.207000e-02           7                   3         0.9510524
-## cg25350899 6.990233e-01           0                   0                NA
-## cg13219080 2.521774e-01           0                   0                NA
-## cg09364122 7.467612e-01           0                   0                NA
-## cg17142931 7.138960e-10          10                   3         0.8320771
-## cg20064006 3.617112e-01          10                   1         0.8861739
-## cg17006413 7.546683e-01          10                   2         0.5155767
-## cg21472517 1.509952e-01          10                   2         0.5878401
-## cg18019572 9.459635e-10          10                   3         0.9068319
-## cg22673826 9.636086e-01          10                   1         0.9194307
-## cg10625579 8.963896e-01          10                   1         0.9194307
-## cg01922485 9.467462e-01          10                   1         0.4378177
-## cg12763038 4.149889e-04          10                   2         0.8739741
-## cg24004483 3.066559e-06          10                   3         0.8739741
-## cg23281018 1.745451e-04          10                   3         0.9068319
-## cg25552017 6.188928e-01           1                   1        -0.5522566
-## cg10984178 8.564116e-01           1                   1        -0.5522566
-## cg26837773 1.586384e-02           0                   0                NA
-## cg18272461 9.208200e-02           0                   0                NA
-## cg02288964 6.974376e-01           1                   0         0.7988483
-## cg02341264 1.656399e-01           1                   0         0.7988483
-## cg06712559 2.240038e-01           0                   0                NA
-## cg14663984 3.009315e-01           1                   1         0.2563707
-## cg16318112 2.223457e-05           1                   1         0.2563707
-## cg09248054 8.075592e-02           0                   0                NA
-## cg15840462 6.557459e-03           1                   0         0.9390294
-## cg25759916 1.234549e-04           1                   0         0.9390294
-## cg08387293 5.149369e-02           0                   0                NA
-## cg23801338 1.714726e-01           4                   3         0.8102542
-## cg13244315 6.327301e-01           4                   2         0.8930951
-## cg08480609 8.626523e-02           4                   3         0.5124892
-## cg03120284 5.747159e-02           4                   2         0.9442837
-## cg22627753 1.466381e-01           4                   1         0.9442837
-## cg11405655 1.720740e-04           0                   0                NA
-## cg24475622 6.606318e-02           4                   2         0.8817194
-## cg26702212 3.844574e-02           4                   3         0.8817194
-## cg24517686 4.412108e-01           4                   3         0.7972397
-## cg14964771 1.290472e-02           4                   3         0.7972397
-## cg11200797 1.373757e-01           4                   3         0.8282292
-## cg19999567 1.417871e-04           3                   0         0.9706586
-## cg20961824 1.613791e-01           3                   0         0.9986763
-## cg10126324 4.707910e-03           3                   0         0.9706586
-## cg06036677 1.567340e-01           3                   0         0.9986763
-## cg19626656 8.160284e-01           8                   3         0.8918280
-## cg10113217 4.332241e-02           8                   3         0.8012101
-## cg20619296 9.057288e-01           8                   3         0.9031718
-## cg18329352 2.929513e-01           8                   2         0.6979246
-## cg25973293 8.538236e-05           8                   3         0.8918280
-## cg05655247 5.210302e-04           8                   3         0.7042553
-## cg01776299 8.614864e-03           8                   3         0.7042553
-## cg15688253 2.973418e-01           8                   2         0.3537765
-## cg22864340 4.438854e-01           8                   3         0.9031718
-## cg22521151 5.586427e-05          10                   3         0.9583885
-## cg00207921 8.058517e-01          10                   2         0.9021920
-## cg20544808 4.099357e-01          10                   3         0.6248466
-## cg18792131 4.367958e-01          10                   3         0.6248466
-## cg21475076 8.240195e-01          10                   3         0.8419439
-## cg00152708 7.875001e-01          10                   3         0.8419439
-## cg23651812 2.833328e-02          10                   3         0.9583885
-## cg18348086 2.804522e-01          10                   2         0.9154635
-## cg26578072 6.424188e-01          10                   2         0.9021920
-## cg14786652 5.379284e-05          10                   3         0.9550230
-## cg07841371 2.012586e-03          10                   3         0.9565353
-## cg14220262 3.526265e-03           5                   2         0.4894003
-## cg14008593 3.327063e-04           5                   3         0.7569997
-## cg18976046 1.059312e-01           5                   1         0.8517718
-## cg09021712 1.748149e-02           5                   2         0.8517718
-## cg24807889 1.398502e-01           5                   2         0.6747690
-## cg12810734 9.256257e-02           5                   2         0.8147859
-## cg08090128 8.362899e-01          33                   2         0.7266892
-## cg14886269 4.600034e-01          33                   2         0.6649734
-## cg15706223 4.804840e-03          33                   3         0.8231806
-## cg25725823 8.756780e-01          33                   2         0.8232178
-## cg00086243 9.344506e-01          33                   2         0.9537928
-## cg02709725 1.838768e-03          33                   3         0.8231806
-## cg10583942 1.528498e-01          33                   3         0.7696489
-## cg20996124 1.255111e-10          33                   3         0.9110564
-## cg15993652 8.113770e-01          33                   2         0.8232178
-## cg25625296 3.735103e-03          33                   2         0.8234000
-## cg09503311 2.725862e-07          33                   3         0.8793982
-## cg20544186 4.838370e-02          33                   2         0.9867328
-## cg23166857 3.178900e-02          33                   2         0.9867328
-## cg23867494 6.236839e-01          33                   2         0.9426473
-## cg21815220 6.323772e-01          33                   3         0.9221804</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">methyvim_cancer_ate</a></code></pre></div>
 <p>Finally, we may compute FDR-corrected p-values, by applying a modified procedure for controlling the False Discovery Rate for multi-stage analyses (FDR-MSA) <span class="citation">(Tuglus and van der Laan 2009)</span>. We do this by simply applying the <code>fdr_msa</code> function:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">fdr_p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fdr_msa.html">fdr_msa</a></span>(<span class="dt">pvals =</span> <span class="kw"><a href="../reference/methytmle-class.html">vim</a></span>(methyvim_cancer_ate)<span class="op">$</span>pval,</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">                 <span class="dt">total_obs =</span> <span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(methyvim_cancer_ate))</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">fdr_p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fdr_msa.html">fdr_msa</a></span>(<span class="dt">pvals =</span> <span class="kw"><a href="../reference/methytmle-class.html">vim</a></span>(methyvim_cancer_ate)<span class="op">$</span>pval,</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">                 <span class="dt">total_obs =</span> <span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(methyvim_cancer_ate))</a></code></pre></div>
 <p>Having explored the results of our analysis numerically, we now proceed to use the visualization tools provided with the <code>methyvim</code> R package to further enhance our understanding of the results.</p>
 <div id="visualization-of-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#visualization-of-results" class="anchor"></a>Visualization of Results</h3>
 <p>While making allowance for users to explore the full set of results produced by the estimation procedure (by way of exposing these directly to the user), the <code>methyvim</code> package also provides <em>three</em> (3) visualization utilities that produce plots commonly used in examining the results of differential methylation analyses.</p>
 <p>A simple call to <code>plot</code> produces side-by-side histograms of the raw p-values computed as part of the estimation process and the corrected p-values obtained from using the FDR-MSA procedure.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(methyvim_cancer_ate)</a></code></pre></div>
-<p><img src="using_methyvim_files/figure-html/methyvim-pvals-both-1.png" width="700"></p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(methyvim_cancer_ate)</a></code></pre></div>
 <p><strong>Remark:</strong> The plots displayed above may also be generated separately by explicitly setting the argument “type” to <code>plot.methytmle</code>. For a plot of the raw p-values, specify <code>type = "raw_pvals"</code>, and for a plot of the FDR-corrected p-values, specify <code>type = "fdr_pvals"</code>.</p>
 <p>While histograms of the p-values may be generally useful in inspecting the results of the estimation procedure, a more common plot used in examining the results of differential methylation procedures is the volcano plot, which plots the parameter estimate along the x-axis and <span class="math inline">\(-\text{log}_{10}(\text{p-value})\)</span> along the y-axis. We implement such a plot in the <code>methyvolc</code> function:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="../reference/methyvolc.html">methyvolc</a></span>(methyvim_cancer_ate)</a></code></pre></div>
-<p><img src="using_methyvim_files/figure-html/methyvim-volcano-1.png" width="700"></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw"><a href="../reference/methyvolc.html">methyvolc</a></span>(methyvim_cancer_ate)</a></code></pre></div>
 <p>The purpose of such a plot is to ensure that very low (possibly statistically significant) p-values do not arise from cases of low variance. This appears to be the case in the plot above (notice that most parameter estimates are <em>near zero</em>, even in cases where the raw p-values are quite low).</p>
 <p>Yet another popular plot for visualizing effects in such settings is the heatmap, which plots estimates of the raw methylation effects (as measured by the assay) across subjects using a heat gradient. We implement this in the <code>methyheat</code> function:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw"><a href="../reference/methyheat.html">methyheat</a></span>(methyvim_cancer_ate)</a></code></pre></div>
-<p><img src="using_methyvim_files/figure-html/methyvim-heatmap-1.png" width="700"></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw"><a href="../reference/methyheat.html">methyheat</a></span>(methyvim_cancer_ate)</a></code></pre></div>
 <p>Invoking <code>methyheat</code> in this manner produces a plot of the top sites (<span class="math inline">\(25\)</span>, by default) based on the raw p-value, using the raw methylation measures in the plot. This uses the exceptional <code>superheat</code> R package <span class="citation">(Barter and Yu 2017)</span>.</p>
 <hr>
 </div>
@@ -848,46 +574,47 @@
 ##  [3] IlluminaHumanMethylation450kmanifest_0.4.0        
 ##  [4] arm_1.10-1                                        
 ##  [5] lme4_1.1-21                                       
-##  [6] Matrix_1.2-17                                     
-##  [7] MASS_7.3-51.4                                     
-##  [8] earth_5.1.1                                       
-##  [9] plotmo_3.5.5                                      
-## [10] TeachingDemos_2.10                                
-## [11] plotrix_3.7-6                                     
-## [12] Formula_1.2-3                                     
-## [13] gam_1.16.1                                        
-## [14] doFuture_0.8.1                                    
-## [15] future_1.14.0                                     
-## [16] globals_0.12.4                                    
-## [17] methyvimData_1.6.0                                
-## [18] methyvim_1.7.0                                    
-## [19] minfi_1.30.0                                      
-## [20] bumphunter_1.26.0                                 
-## [21] locfit_1.5-9.1                                    
-## [22] iterators_1.0.12                                  
-## [23] foreach_1.4.7                                     
-## [24] Biostrings_2.52.0                                 
-## [25] XVector_0.24.0                                    
-## [26] SummarizedExperiment_1.14.1                       
-## [27] DelayedArray_0.10.0                               
-## [28] BiocParallel_1.18.1                               
-## [29] matrixStats_0.55.0                                
-## [30] Biobase_2.44.0                                    
-## [31] GenomicRanges_1.36.0                              
-## [32] GenomeInfoDb_1.20.0                               
-## [33] IRanges_2.18.2                                    
-## [34] S4Vectors_0.22.0                                  
-## [35] BiocGenerics_0.30.0                               
-## [36] tmle_1.3.0-2                                      
-## [37] SuperLearner_2.0-25-9000                          
-## [38] nnls_1.4                                          
-## [39] BiocStyle_2.12.0                                  
+##  [6] MASS_7.3-51.4                                     
+##  [7] earth_5.1.1                                       
+##  [8] plotmo_3.5.6                                      
+##  [9] TeachingDemos_2.10                                
+## [10] plotrix_3.7-6                                     
+## [11] Formula_1.2-3                                     
+## [12] gam_1.16.1                                        
+## [13] doFuture_0.8.2                                    
+## [14] future_1.14.0                                     
+## [15] globals_0.12.4                                    
+## [16] methyvimData_1.6.0                                
+## [17] methyvim_1.8.0                                    
+## [18] minfi_1.30.0                                      
+## [19] bumphunter_1.26.0                                 
+## [20] locfit_1.5-9.1                                    
+## [21] iterators_1.0.12                                  
+## [22] Biostrings_2.52.0                                 
+## [23] XVector_0.24.0                                    
+## [24] SummarizedExperiment_1.14.1                       
+## [25] DelayedArray_0.10.0                               
+## [26] BiocParallel_1.18.1                               
+## [27] matrixStats_0.55.0                                
+## [28] Biobase_2.44.0                                    
+## [29] GenomicRanges_1.36.1                              
+## [30] GenomeInfoDb_1.20.0                               
+## [31] IRanges_2.18.3                                    
+## [32] S4Vectors_0.22.1                                  
+## [33] BiocGenerics_0.30.0                               
+## [34] tmle_1.4.0.1                                      
+## [35] SuperLearner_2.0-25-9000                          
+## [36] nnls_1.4                                          
+## [37] glmnet_2.0-18                                     
+## [38] foreach_1.4.7                                     
+## [39] Matrix_1.2-17                                     
+## [40] BiocStyle_2.12.0                                  
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] backports_1.1.5          plyr_1.8.4              
 ##   [3] lazyeval_0.2.2           listenv_0.7.0           
-##   [5] ggplot2_3.2.1            digest_0.6.21           
-##   [7] htmltools_0.3.6          magrittr_1.5            
+##   [5] ggplot2_3.2.1            digest_0.6.22           
+##   [7] htmltools_0.4.0          magrittr_1.5            
 ##   [9] memoise_1.1.0            cluster_2.1.0           
 ##  [11] limma_3.40.6             readr_1.3.1             
 ##  [13] annotate_1.62.0          askpass_1.1             
@@ -900,7 +627,7 @@
 ##  [27] survival_2.44-1.1        glue_1.3.1              
 ##  [29] registry_0.5-1           gtable_0.3.0            
 ##  [31] zlibbioc_1.30.0          superheat_0.1.0         
-##  [33] Rhdf5lib_1.6.0           HDF5Array_1.12.2        
+##  [33] Rhdf5lib_1.6.3           HDF5Array_1.12.3        
 ##  [35] abind_1.4-5              scales_1.0.0            
 ##  [37] DBI_1.0.0                rngtools_1.4            
 ##  [39] bibtex_0.4.2             Rcpp_1.0.2              
@@ -909,38 +636,37 @@
 ##  [45] preprocessCore_1.46.0    httr_1.4.1              
 ##  [47] RColorBrewer_1.1-2       pkgconfig_2.0.3         
 ##  [49] reshape_0.8.8            XML_3.98-1.20           
-##  [51] labeling_0.3             tidyselect_0.2.5        
-##  [53] rlang_0.4.0              AnnotationDbi_1.46.1    
-##  [55] munsell_0.5.0            tools_3.6.1             
-##  [57] RSQLite_2.1.2            ggdendro_0.1-20         
-##  [59] evaluate_0.14            stringr_1.4.0           
-##  [61] yaml_2.2.0               knitr_1.25              
-##  [63] bit64_0.9-7              fs_1.3.1                
-##  [65] beanplot_1.2             scrime_1.3.5            
-##  [67] purrr_0.3.2              nlme_3.1-141            
-##  [69] doRNG_1.7.1              nor1mix_1.3-0           
-##  [71] xml2_1.2.2               biomaRt_2.40.4          
-##  [73] compiler_3.6.1           tibble_2.1.3            
-##  [75] stringi_1.4.3            GenomicFeatures_1.36.4  
-##  [77] desc_1.2.0               lattice_0.20-38         
-##  [79] nloptr_1.2.1             ggsci_2.9               
-##  [81] multtest_2.40.0          vctrs_0.2.0             
-##  [83] pillar_1.4.2             lifecycle_0.1.0         
-##  [85] BiocManager_1.30.4       data.table_1.12.4       
-##  [87] bitops_1.0-6             rtracklayer_1.44.3      
-##  [89] R6_2.4.0                 bookdown_0.14           
-##  [91] gridExtra_2.3            codetools_0.2-16        
-##  [93] boot_1.3-23              gtools_3.8.1            
-##  [95] assertthat_0.2.1         rhdf5_2.28.0            
-##  [97] openssl_1.4.1            pkgmaker_0.27           
-##  [99] rprojroot_1.3-2          withr_2.1.2             
-## [101] GenomicAlignments_1.20.1 Rsamtools_2.0.0         
-## [103] GenomeInfoDbData_1.2.1   hms_0.5.1               
-## [105] quadprog_1.5-7           grid_3.6.1              
-## [107] coda_0.19-3              minqa_1.2.4             
-## [109] tidyr_1.0.0              base64_2.0              
-## [111] rmarkdown_1.16           DelayedMatrixStats_1.6.0
-## [113] illuminaio_0.26.0</code></pre>
+##  [51] tidyselect_0.2.5         rlang_0.4.1             
+##  [53] AnnotationDbi_1.46.1     munsell_0.5.0           
+##  [55] tools_3.6.1              RSQLite_2.1.2           
+##  [57] evaluate_0.14            stringr_1.4.0           
+##  [59] yaml_2.2.0               knitr_1.25              
+##  [61] bit64_0.9-7              fs_1.3.1                
+##  [63] beanplot_1.2             scrime_1.3.5            
+##  [65] purrr_0.3.3              nlme_3.1-141            
+##  [67] doRNG_1.7.1              nor1mix_1.3-0           
+##  [69] xml2_1.2.2               biomaRt_2.40.5          
+##  [71] compiler_3.6.1           tibble_2.1.3            
+##  [73] stringi_1.4.3            GenomicFeatures_1.36.4  
+##  [75] desc_1.2.0               lattice_0.20-38         
+##  [77] nloptr_1.2.1             ggsci_2.9               
+##  [79] multtest_2.40.0          vctrs_0.2.0             
+##  [81] pillar_1.4.2             lifecycle_0.1.0         
+##  [83] BiocManager_1.30.9       data.table_1.12.6       
+##  [85] bitops_1.0-6             rtracklayer_1.44.4      
+##  [87] R6_2.4.0                 bookdown_0.14           
+##  [89] gridExtra_2.3            codetools_0.2-16        
+##  [91] boot_1.3-23              gtools_3.8.1            
+##  [93] assertthat_0.2.1         rhdf5_2.28.1            
+##  [95] openssl_1.4.1            pkgmaker_0.27           
+##  [97] rprojroot_1.3-2          withr_2.1.2             
+##  [99] GenomicAlignments_1.20.1 Rsamtools_2.0.3         
+## [101] GenomeInfoDbData_1.2.1   hms_0.5.2               
+## [103] quadprog_1.5-7           grid_3.6.1              
+## [105] coda_0.19-3              minqa_1.2.4             
+## [107] tidyr_1.0.0              base64_2.0              
+## [109] rmarkdown_1.16           DelayedMatrixStats_1.6.1
+## [111] illuminaio_0.26.0</code></pre>
 <hr>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -967,9 +693,6 @@
 </div>
 <div id="ref-fortin2014functional">
 <p>Fortin, Jean-Philippe, Aurelie Labbe, Mathieu Lemire, Brent W Zanke, Thomas J Hudson, Elana J Fertig, Celia MT Greenwood, and Kasper D Hansen. 2014. “Functional Normalization of 450k Methylation Array Data Improves Replication in Large Cancer Studies.” <em>bioRxiv</em>. Cold Spring Harbor Labs Journals.</p>
-</div>
-<div id="ref-hernan2018causal">
-<p>Hernan, Miguel A, and James M Robins. 2018. <em>Causal Inference</em>. Chapman &amp; Hall / CRC Texts in Statistical Science. Taylor &amp; Francis.</p>
 </div>
 <div id="ref-pearl2000causality">
 <p>Pearl, Judea. 2000. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>

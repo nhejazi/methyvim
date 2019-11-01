@@ -36,10 +36,10 @@
 
 
 <meta property="og:title" content="Differential Methylation Statistics with Variable Importance Measures — methyvim" />
-<meta property="og:description" content="Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
-target parameter, formally defined within models from causal inference. The
-variable importance measures currently supported are the Average Treatment
-Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
+<meta property="og:description" content="Computes the Targeted Minimum Loss Estimate of a specified statistical target
+parameter, formally defined within models from causal inference. The variable
+importance measures currently supported are the Average Treatment Effect
+(ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 defined by Chambaz, Neuvial, and van der Laan &amp;lt;doi:10.1214/12-EJS703&amp;gt;)." />
 <meta name="twitter:card" content="summary" />
 
@@ -73,7 +73,7 @@ defined by Chambaz, Neuvial, and van der Laan &amp;lt;doi:10.1214/12-EJS703&amp;
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">methyvim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.8.0</span>
       </span>
     </div>
 
@@ -127,10 +127,10 @@ defined by Chambaz, Neuvial, and van der Laan &amp;lt;doi:10.1214/12-EJS703&amp;
     </div>
 
     <div class="ref-description">
-    <p>Computes the Targeted Minimum Loss-Based Estimate of a specified statistical
-target parameter, formally defined within models from causal inference. The
-variable importance measures currently supported are the Average Treatment
-Effect (ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
+    <p>Computes the Targeted Minimum Loss Estimate of a specified statistical target
+parameter, formally defined within models from causal inference. The variable
+importance measures currently supported are the Average Treatment Effect
+(ATE) and a Nonparametric Variable Importance Measure (NPVI, formally
 defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;).</p>
     </div>
 
@@ -140,19 +140,19 @@ defined by Chambaz, Neuvial, and van der Laan &lt;doi:10.1214/12-EJS703&gt;).</p
   <span class='kw'>obs_per_covar</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>sites_comp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>future_param</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bppar_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>return_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>shrink_ic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tmle_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"glm"</span>, <span class='st'>"sl"</span>),
-  <span class='kw'>tmle_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"binomial"</span>, <span class='kw'>g_lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>,
-  <span class='st'>"SL.bayesglm"</span>, <span class='st'>"SL.gam"</span>), <span class='kw'>Q_lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>, <span class='st'>"SL.gam"</span>,
-  <span class='st'>"SL.earth"</span>), <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>),
-  <span class='kw'>tmle_backend</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"tmle"</span>, <span class='st'>"drtmle"</span>, <span class='st'>"tmle.npvi"</span>))</pre>
+  <span class='kw'>tmle_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>g_lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>, <span class='st'>"SL.bayesglm"</span>,
+  <span class='st'>"SL.gam"</span>), <span class='kw'>Q_lib</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SL.mean"</span>, <span class='st'>"SL.glm"</span>, <span class='st'>"SL.gam"</span>, <span class='st'>"SL.earth"</span>), <span class='kw'>cv_folds</span>
+  <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>npvi_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>npvi_descr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>), <span class='kw'>tmle_backend</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"tmle"</span>,
+  <span class='st'>"drtmle"</span>, <span class='st'>"tmle.npvi"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data_grs</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/pkg/minfi/man/GenomicRatioSet-class.html'>minfi::GenomicRatioSet</a></code>, containing
-standard data structures associated with DNA Methylation experiments.
-Consult the documentation for <code>minfi</code> to construct such objects.</p></td>
+      <td><p>An object of class <code><a href='https://rdrr.io/pkg/minfi/man/GenomicRatioSet-class.html'>GenomicRatioSet</a></code>,
+containing standard data structures for DNA Methylation experiments.
+Consult the documentation of <span class="pkg">minfi</span> to construct such objects.</p></td>
     </tr>
     <tr>
       <th>var_int</th>
@@ -178,14 +178,14 @@ sought.</p></td>
       <th>type</th>
       <td><p>Character indicating the particular measure of DNA methylation to
 be used as the observed data in the estimation procedure, either Beta values
-or M-values. The data are accessed via <code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>minfi::getBeta</a></code> or
-<code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>minfi::getM</a></code>.</p></td>
+or M-values. The data are accessed via <code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>getBeta</a></code> or
+<code><a href='https://rdrr.io/pkg/minfi/man/MethylSet-class.html'>getM</a></code>.</p></td>
     </tr>
     <tr>
       <th>filter</th>
       <td><p>Character indicating the model to be implemented when screening
 the <code>data_grs</code> object for CpG sites. The only currently supported
-option is "limma". Contributions for other methods are welcome.</p></td>
+option is "limma".</p></td>
     </tr>
     <tr>
       <th>filter_cutoff</th>
@@ -224,14 +224,14 @@ argument is passed directly to that internal function.</p></td>
     <tr>
       <th>future_param</th>
       <td><p>Character indicating the type of parallelization to be
-used from the list available via the <code>future</code> package. See the
+used from the list available via the <span class="pkg">future</span> package. See the
 documentation for <code>set_parallel</code> for more information, as this argument
 is passed directly to that internal function.</p></td>
     </tr>
     <tr>
       <th>bppar_type</th>
       <td><p>Character specifying the type of backend to be used for
-parallelization via <code>BiocParallel</code>. See the documentation for
+parallelization via <span class="pkg">BiocParallel</span>. See the documentation for
 <code>set_parallel</code> for more information, as this argument is passed
 directly to that internal function.</p></td>
     </tr>
@@ -255,20 +255,20 @@ is changed from its default values.</p></td>
     <tr>
       <th>tmle_args</th>
       <td><p>List giving several key arguments to be passed to one of
-<code><a href='https://rdrr.io/pkg/tmle/man/tmle.html'>tmle::tmle</a></code> or <code>tmle.npvi::tmle.npvi</code>, depending on the
-particular variable importance measure specified. This overrides
+<code><a href='https://rdrr.io/pkg/tmle/man/tmle.html'>tmle</a></code> or <code><a href='https://rdrr.io/pkg/tmle.npvi/man/tmle.npvi..html'>tmle.npvi</a></code>, depending on
+the particular variable importance measure specified. This overrides
 <code>tmle_type</code>, which itself provides sensible defaults. Consider changing
 this away from default settings only if you have sufficient experience with
 software and the underlying theory for Targeted Learning. For more
-information, consider consulting the documentation of the <code>tmle</code> and
-<code>tmle.npvi</code> packages.</p></td>
+information, consider consulting the documentation of the <span class="pkg">tmle</span> and
+<span class="pkg">tmle.npvi</span> packages.</p></td>
     </tr>
     <tr>
       <th>tmle_backend</th>
       <td><p>A <code>character</code> indicating the package to be used in
 the estimation procedure. The user should only set this parameter if they
 have sufficient familiarity with the backend packages used for estimation.
-Current choices include <code>tmle</code>, <code>drtmle</code>, and <code>tmle.npvi</code>.</p></td>
+Current choices include <span class="pkg">tmle</span>, <span class="pkg">drtmle</span>, and <span class="pkg">tmle.npvi</span>.</p></td>
     </tr>
     </table>
 
