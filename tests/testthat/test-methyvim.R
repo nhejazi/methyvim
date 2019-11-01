@@ -58,7 +58,10 @@ test_that("Slot of screening IDs are of numeric type and correct length", {
 
 test_that("Variable importance results in tolerance and of correct length", {
   expect_equal(nrow(methyvim_out_ate@vim), 3)
-  expect_lt(sum(range(methyvim_out_ate@vim$pval) - c(0.225938, 0.470252)), 0.01)
+  expect_lt(
+    sum(range(methyvim_out_ate@vim$pval) - c(0.225938, 0.470252)),
+    0.02
+  )
 })
 
 test_that("Cluster IDs are of appropriate length and unique length", {
@@ -69,6 +72,6 @@ test_that("Cluster IDs are of appropriate length and unique length", {
 test_that("Variable importance results within tolerance for the RR parameter", {
   expect_lt(
     sum(range(methyvim_out_rr@vim$pval) - c(0.2281579, 0.4707649)),
-    0.01
+    0.02
   )
 })
