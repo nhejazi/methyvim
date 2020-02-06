@@ -45,9 +45,10 @@ build_script:
   - echo Current directory=%CD%
   - travis-tool.sh install_r base64 BiocManager testthat knitr
   - travis-tool.sh install_github r-lib/remotes r-lib/covr
-  - travis-tool.sh install_bioc BiocStyle BiocCheck BiocGenerics S4Vectors
-  - travis-tool.sh install_bioc SummarizedExperiment IRanges limma minfi
-  - travis-tool.sh install_bioc GenomeInfoDb bumphunter minfiData
+  - travis-tool.sh install_bioc BiocStyle BiocCheck BiocGenerics S4Vectors \
+    SummarizedExperiment IRanges limma minfi GenomeInfoDb bumphunter minfiData
+  - travis-tool.sh install_r ggplot2 ggsci gridExtra superheat gtools earth \
+    gam arm SuperLearner tmle BatchJobs future doFuture
   - travis-tool.sh install_github nhejazi/methyvimData
 
 test_script:
