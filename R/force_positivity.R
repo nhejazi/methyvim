@@ -26,7 +26,7 @@
 force_positivity <- function(A, W, pos_min = 0.1, q_init = 10) {
   stopifnot(length(A) == nrow(W))
 
-  if (class(W) != "data.frame") W <- as.data.frame(W) # cover use of "ncol"
+  if (!is.data.frame(W)) W <- as.data.frame(W) # cover use of "ncol"
   out_w <- NULL # concatenate W columnwise as we discretize each covar below
 
   for (obs_w in seq_len(ncol(W))) {

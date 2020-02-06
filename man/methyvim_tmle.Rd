@@ -4,11 +4,20 @@
 \alias{methyvim_tmle}
 \title{Differential Methylation with Classical Target Parameters}
 \usage{
-methyvim_tmle(target_site, methytmle_screened, var_of_interest,
-  type = c("Beta", "Mval"), corr, obs_per_covar,
-  target_param = c("ate", "rr"), g_lib = c("SL.mean", "SL.glm",
-  "SL.glm.interaction"), Q_lib = c("SL.mean", "SL.glm", "SL.gam",
-  "SL.earth"), cv_folds = 5, ..., return_ic = FALSE)
+methyvim_tmle(
+  target_site,
+  methytmle_screened,
+  var_of_interest,
+  type = c("Beta", "Mval"),
+  corr,
+  obs_per_covar,
+  target_param = c("ate", "rr"),
+  g_lib = c("SL.mean", "SL.glm", "SL.glm.interaction"),
+  Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"),
+  cv_folds = 5,
+  ...,
+  return_ic = FALSE
+)
 }
 \arguments{
 \item{target_site}{Numeric indicating the column containing the screened

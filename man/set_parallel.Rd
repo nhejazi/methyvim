@@ -4,8 +4,7 @@
 \alias{set_parallel}
 \title{Parallelization with Futures and BiocParallel}
 \usage{
-set_parallel(parallel = c(TRUE, FALSE), future_param = NULL,
-  bppar_type = NULL)
+set_parallel(parallel = c(TRUE, FALSE), future_param = NULL, bppar_type = NULL)
 }
 \arguments{
 \item{parallel}{Logical indicating whether parallelization ought to be used.

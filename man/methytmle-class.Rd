@@ -14,8 +14,6 @@ vim(object)
 }
 \arguments{
 \item{object}{S4 object of class \code{methytmle}.}
-
-\item{object}{S4 object of class \code{methytmle}.}
 }
 \value{
 \code{methytmle} object, subclassed from \code{GenomicRatioSet}.
