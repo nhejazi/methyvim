@@ -4,16 +4,28 @@
 \alias{methyvim}
 \title{Differential Methylation Statistics with Variable Importance Measures}
 \usage{
-methyvim(data_grs, var_int, vim = c("ate", "rr", "npvi"),
-  type = c("Beta", "Mval"), filter = c("limma"),
-  filter_cutoff = 0.05, window_bp = 1000, corr_max = 0.75,
-  obs_per_covar = 20, sites_comp = NULL, parallel = TRUE,
-  future_param = NULL, bppar_type = NULL, return_ic = FALSE,
-  shrink_ic = FALSE, tmle_type = c("glm", "sl"),
-  tmle_args = list(g_lib = c("SL.mean", "SL.glm", "SL.bayesglm",
-  "SL.gam"), Q_lib = c("SL.mean", "SL.glm", "SL.gam", "SL.earth"), cv_folds
-  = 5, npvi_cutoff = 0.25, npvi_descr = NULL), tmle_backend = c("tmle",
-  "drtmle", "tmle.npvi"))
+methyvim(
+  data_grs,
+  var_int,
+  vim = c("ate", "rr", "npvi"),
+  type = c("Beta", "Mval"),
+  filter = c("limma"),
+  filter_cutoff = 0.05,
+  window_bp = 1000,
+  corr_max = 0.75,
+  obs_per_covar = 20,
+  sites_comp = NULL,
+  parallel = TRUE,
+  future_param = NULL,
+  bppar_type = NULL,
+  return_ic = FALSE,
+  shrink_ic = FALSE,
+  tmle_type = c("glm", "sl"),
+  tmle_args = list(g_lib = c("SL.mean", "SL.glm", "SL.bayesglm", "SL.gam"), Q_lib =
+    c("SL.mean", "SL.glm", "SL.gam", "SL.earth"), cv_folds = 5, npvi_cutoff = 0.25,
+    npvi_descr = NULL),
+  tmle_backend = c("tmle", "drtmle", "tmle.npvi")
+)
 }
 \arguments{
 \item{data_grs}{An object of class \code{\link[minfi]{GenomicRatioSet}},

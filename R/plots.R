@@ -104,8 +104,8 @@ plot.methytmle <- function(x, ..., type = "both") {
 #'  transformation into influence curve space (with respect to the target
 #'  parameter of interest). The latter uses the fact that the parameters have
 #'  asymptotically linear representations to obtain a rotation of the raw data
-#'  into an alternative space; moreover, in this setting, the heatmap reduces to
-#'  visualizing a supervised clustering procedure.
+#'  into an alternative space; moreover, in this setting, the heatmap reduces
+#'  to visualizing a supervised clustering procedure.
 #'
 #' @return Nothing. This function is called for its side-effect of outputting a
 #'  heatmap to the graphics device. The heatmap is constructed using the
